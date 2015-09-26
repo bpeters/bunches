@@ -38,6 +38,7 @@ module.exports = React.createClass({
       user.set('email', this.state.email);
       user.set('name', this.state.name);
       user.set('studentId', this.state.id);
+      user.set('verifiedClasses', false);
 
       user.signUp(null, {
         success: (user) => {

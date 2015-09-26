@@ -70,5 +70,27 @@ module.exports = StyleSheet.create({
   },
   bigButtonText: {
     fontSize: 20,
+  },
+  list: {
+    marginTop: 0,
+    height: 300,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 80,
+    paddingLeft: 20,
+  },
+  rowSeparator: {
+    height: 1,
+    backgroundColor: light,
+  },
+  rowText: {
+    flex: 1,
+    fontSize: 20,
+  },
+  switch: {
+    right: 20
   }
 });

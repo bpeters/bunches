@@ -4,6 +4,7 @@ var React = require('react-native');
 
 var LogIn = require('./login');
 var Activity = require('./activity');
+var VerifyClasses = require('./verifyClasses');
 
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
@@ -37,12 +38,20 @@ module.exports= React.createClass({
   },
   render: function() {
 
+    var user = this.data.user || this.state.user;
     var route;
 
-    if (this.data.user || this.state.user) {
-      route = {
-        name: 'activity',
-        component: Activity
+    if (user) {
+      if (user.verifiedClasses) {
+        route = {
+          name: 'activity',
+          component: Activity
+        }
+      } else {
+        route = {
+          name: 'verifyClasses',
+          component: VerifyClasses
+        }
       }
     } else {
       route = {
