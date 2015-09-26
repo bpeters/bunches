@@ -7,6 +7,13 @@ var {StyleSheet} = React;
 var light = '#f4f4f4';
 
 module.exports = StyleSheet.create({
+  splash: {
+    flex: 1,
+    alignItems: 'stretch',
+  },
+  splashImage: {
+    flex: 1,
+  },
   navBar: {
     flex: 1,
     flexDirection: 'row',
@@ -73,7 +80,7 @@ module.exports = StyleSheet.create({
   },
   list: {
     marginTop: 0,
-    height: 300,
+    height: 600,
   },
   row: {
     flexDirection: 'row',

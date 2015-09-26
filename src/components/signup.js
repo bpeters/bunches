@@ -7,7 +7,7 @@ var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
 
 var NavBar = require('./navBar');
-var VerifyClasses = require('./verifyClasses');
+var SetClasses = require('./setClasses');
 
 var {
   Text,
@@ -38,13 +38,14 @@ module.exports = React.createClass({
       user.set('email', this.state.email);
       user.set('name', this.state.name);
       user.set('studentId', this.state.id);
-      user.set('verifiedClasses', false);
+      user.set('setClasses', false);
+      user.set('setTutorClasses', false);
 
       user.signUp(null, {
         success: (user) => {
           this.props.navigator.push({
-            name: 'verify classes',
-            component: VerifyClasses
+            name: 'setClasses',
+            component: SetClasses
           })
         },
         error: (user, error) => {

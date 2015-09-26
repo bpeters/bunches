@@ -8,6 +8,7 @@ var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
 
 var NavBar = require('./navBar');
+var Activity = require('./activity');
 
 var {
   Text,
@@ -18,30 +19,18 @@ var {
   SwitchIOS,
 } = React;
 
-var CLASSES = [
-  {
-    id: 1,
-    name: 'Math 101',
-    verified: false,
-  },
-  {
-    id: 2,
-    name: 'English 101',
-    verified: false,
-  },
-];
-
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
-    route: React.PropTypes.object
+    route: React.PropTypes.object,
+    classes: React.PropTypes.array,
   },
   getInitialState: function() {
     return {
-      dataSource: ds.cloneWithRows(CLASSES),
-      classes: CLASSES,
+      dataSource: ds.cloneWithRows(this.props.classes),
+      classes: this.props.classes,
     };
   },
   onPressRow: function(rowData) {
@@ -49,7 +38,7 @@ module.exports = React.createClass({
 
     _.forEach(classes, (classItem) => {
       if (rowData.id === classItem.id ) {
-        classItem.verified = !classItem.verified;
+        classItem.tutoring = !classItem.tutoring;
       }
     });
 
@@ -66,7 +55,7 @@ module.exports = React.createClass({
             <Text style={Styles.rowText}>
               {rowData.name}
             </Text>
-            <SwitchIOS style={Styles.switch} value={rowData.verified} />
+            <SwitchIOS style={Styles.switch} value={rowData.tutoring} />
           </View>
           <View style={Styles.rowSeparator} />
         </View>
@@ -77,13 +66,13 @@ module.exports = React.createClass({
     return (
       <View>
         <NavBar
-          title='Verify Classes'
+          title='Set Tutor Classes'
           rightButton={{
-            text: 'Next',
+            text: 'Done',
             onPress: () => {
               this.props.navigator.push({
-                name: 'login',
-                component: LogIn
+                name: 'activity',
+                component: Activity
               });
             }
           }}
