@@ -1,8 +1,8 @@
 'use strict';
 
-import React from "react-native";
-import App from "./src/components/app";
+var React = require('react-native');
+var App = require('./src/components/app');
 
-let {AppRegistry} = React;
+var {AppRegistry} = React;
 
 AppRegistry.registerComponent("bunches", () => App);

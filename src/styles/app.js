@@ -1,10 +1,10 @@
 'use strict';
 
-import React from "react-native";
+var React = require('react-native');
 
-let {StyleSheet} = React;
+var {StyleSheet} = React;
 
-let Styles = StyleSheet.create({
+var Styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -23,4 +23,4 @@ let Styles = StyleSheet.create({
   },
 });
 
-export default Styles;
+module.exports = Styles;

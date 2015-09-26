@@ -1,24 +1,24 @@
 'use strict';
 
-import React from 'react-native';
-import Styles from '../styles/app';
+var React = require('react-native');
+var Styles = require('../styles/app');
 
-let {
+var {
   Text,
   View,
 } = React;
 
-let App = React.createClass({
+var App = React.createClass({
   render: function() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
+      <View style={Styles.container}>
+        <Text style={Styles.welcome}>
           Welcome to React Native!
         </Text>
-        <Text style={styles.instructions}>
+        <Text style={Styles.instructions}>
           To get started, edit index.ios.js
         </Text>
-        <Text style={styles.instructions}>
+        <Text style={Styles.instructions}>
           Press Cmd+R to reload,{'\n'}
           Cmd+D or shake for dev menu
         </Text>
@@ -27,4 +27,4 @@ let App = React.createClass({
   }
 });
 
-export default App;
+module.exports = App;
