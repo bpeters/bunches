@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react-native');
+var Reflux = require('reflux');
 var _ = require('lodash');
 var Styles = require('../styles');
 
@@ -9,6 +10,8 @@ var ParseReact = require('parse-react/react-native');
 
 var NavBar = require('./navBar');
 var Activity = require('./activity');
+
+var UserPastClassesStore = require('../stores/userPastClasses');
 
 var {
   Text,
@@ -22,16 +25,21 @@ var {
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 module.exports = React.createClass({
+  mixins: [
+    Reflux.connect(UserPastClassesStore, 'classes')
+  ],
   propTypes: {
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
-    classes: React.PropTypes.array,
+    user: React.PropTypes.object,
   },
-  getInitialState: function() {
-    return {
-      dataSource: ds.cloneWithRows(this.props.classes),
-      classes: this.props.classes,
-    };
+  onDone: function() {
+    ParseReact.Mutation.Set(this.props.user, {setTutorClasses: true}).dispatch();
+
+    this.props.navigator.push({
+      name: 'activity',
+      component: Activity,
+    });
   },
   onPressRow: function(rowData) {
     var classes = _.cloneDeep(this.state.classes);
@@ -69,18 +77,13 @@ module.exports = React.createClass({
           title='Set Tutor Classes'
           rightButton={{
             text: 'Done',
-            onPress: () => {
-              this.props.navigator.push({
-                name: 'activity',
-                component: Activity
-              });
-            }
+            onPress: this.onDone
           }}
         />
         <View style={Styles.container}>
           <ListView
             style={Styles.list}
-            dataSource={this.state.dataSource}
+            dataSource={ds.cloneWithRows(this.state.classes)}
             renderRow={this.renderRow}
             automaticallyAdjustContentInsets={false}
           />

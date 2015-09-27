@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react-native');
+var Reflux = require('reflux');
 var _ = require('lodash');
 var Styles = require('../styles');
 
@@ -9,6 +10,8 @@ var ParseReact = require('parse-react/react-native');
 
 var NavBar = require('./navBar');
 var SetTutorClasses = require('./setTutorClasses');
+
+var UserClassesStore = require('../stores/userClasses');
 
 var {
   Text,
@@ -19,91 +22,43 @@ var {
   SwitchIOS,
 } = React;
 
-var CLASSES = [
-  {
-    id: 1,
-    name: 'Math 101',
-    verified: true,
-  },
-  {
-    id: 2,
-    name: 'English 101',
-    verified: true,
-  },
-  {
-    id: 3,
-    name: 'Math 102',
-    verified: true,
-  },
-  {
-    id: 4,
-    name: 'English 102',
-    verified: true,
-  },
-  {
-    id: 5,
-    name: 'Math 103',
-    verified: true,
-  },
-  {
-    id: 6,
-    name: 'English 103',
-    verified: true,
-  },
-  {
-    id: 7,
-    name: 'Math 104',
-    verified: true,
-  },
-  {
-    id: 8,
-    name: 'English 104',
-    verified: true,
-  },
-];
-
-var TUTOR_CLASSES = [
-  {
-    id: 1,
-    name: 'GEO 101',
-    tutoring: true,
-  },
-];
-
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 module.exports = React.createClass({
+  mixins: [
+    Reflux.connect(UserClassesStore, 'classes'),
+  ],
   propTypes: {
     navigator: React.PropTypes.object,
-    route: React.PropTypes.object
-  },
-  getInitialState: function() {
-    return {
-      user: ParseReact.currentUser,
-      dataSource: ds.cloneWithRows(CLASSES),
-      classes: CLASSES,
-    };
-  },
-  observe: function() {
-    return {
-      user: ParseReact.currentUser
-    };
+    route: React.PropTypes.object,
+    user: React.PropTypes.object,
   },
   onNext: function() {
-    console.log(this.data.user);
+    var batch = new ParseReact.Mutation.Batch();
+    var user = Parse.User.current();
+    var acl = new Parse.ACL(user);
 
-    //this.state.user.set('setClasses', true);
-    //this.state.user.save();
+    acl.setPublicReadAccess(true);
 
-    /*
+    ParseReact.Mutation.Set(this.props.user, {setClasses: true}).dispatch({ batch: batch });
+
+    _.forEach(this.state.classes, (classItem) => {
+      if (classItem.verified) {
+        ParseReact.Mutation.Create('UserClass', {
+          user: user,
+          ACL: acl,
+          classId: classItem.id,
+          name: classItem.name,
+        }).dispatch({ batch: batch });
+      }
+    });
+
+    batch.dispatch();
+
     this.props.navigator.push({
       name: 'setTutorClasses',
       component: SetTutorClasses,
-      passProps: {
-        classes: TUTOR_CLASSES
-      }
     });
-*/
   },
   onPressRow: function(rowData) {
     var classes = _.cloneDeep(this.state.classes);
@@ -119,7 +74,7 @@ module.exports = React.createClass({
       classes: classes,
     });
   },
-  renderRow: function(rowData, i) {
+  renderRow: function(rowData) {
     return (
       <TouchableOpacity onPress={() => this.onPressRow(rowData)}>
         <View>
@@ -147,7 +102,7 @@ module.exports = React.createClass({
         <View style={Styles.container}>
           <ListView
             style={Styles.list}
-            dataSource={this.state.dataSource}
+            dataSource={ds.cloneWithRows(this.state.classes)}
             renderRow={this.renderRow}
             automaticallyAdjustContentInsets={false}
           />

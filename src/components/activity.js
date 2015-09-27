@@ -17,9 +17,18 @@ var {
 } = React;
 
 module.exports = React.createClass({
+  mixins: [ParseReact.Mixin],
   propTypes: {
     navigator: React.PropTypes.object,
-    route: React.PropTypes.object
+    route: React.PropTypes.object,
+    user: React.PropTypes.object,
+  },
+  observe: function() {
+    return {
+      classes: (new Parse.Query('UserClass'))
+        .equalTo('user', Parse.User.current())
+        .descending('createdAt')
+    };
   },
   render: function() {
 

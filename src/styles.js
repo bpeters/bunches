@@ -7,6 +7,13 @@ var {StyleSheet} = React;
 var light = '#f4f4f4';
 
 module.exports = StyleSheet.create({
+  app: {
+    flex: 1,
+  },
+  statusBar: {
+    height: 20,
+    backgroundColor: light
+  },
   splash: {
     flex: 1,
     alignItems: 'stretch',
@@ -19,25 +26,25 @@ module.exports = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    height: 88,
+    height: 44,
     backgroundColor: light,
   },
   navBarLeft: {
     flex: 1,
     justifyContent: 'center',
-    height: 88,
+    height: 44,
   },
   navBarCenter: {
-    flex: 1,
+    flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 88,
+    height: 44,
   },
   navBarRight: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-end',
-    height: 88,
+    height: 44,
   },
   leftNavButton: {
     left: 20,
@@ -48,7 +55,8 @@ module.exports = StyleSheet.create({
     fontSize: 16,
   },
   navBarTitle: {
-    fontSize: 20,
+    fontSize: 18,
+    flexWrap: 'wrap'
   },
   container: {
     flex: 1,
@@ -67,7 +75,7 @@ module.exports = StyleSheet.create({
     borderColor: light,
     paddingLeft: 20,
     borderWidth: 1,
-    fontSize: 20,
+    fontSize: 18,
   },
   bigButton: {
     height: 80,
@@ -76,7 +84,7 @@ module.exports = StyleSheet.create({
     alignItems: 'center',
   },
   bigButtonText: {
-    fontSize: 20,
+    fontSize: 18,
   },
   list: {
     marginTop: 0,
@@ -95,7 +103,7 @@ module.exports = StyleSheet.create({
   },
   rowText: {
     flex: 1,
-    fontSize: 20,
+    fontSize: 18,
   },
   switch: {
     right: 20

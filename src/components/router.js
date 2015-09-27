@@ -1,10 +1,13 @@
 'use strict';
 
 var React = require('react-native');
+var Parse = require('parse/react-native');
+var Styles = require('../styles');
 
 var LogIn = require('./login');
 var Activity = require('./activity');
 var SetClasses = require('./setClasses');
+var SetTutorClasses = require('./setTutorClasses');
 
 var {
   View,
@@ -20,7 +23,7 @@ module.exports= React.createClass({
 
     return (
       <View>
-        <Component navigator={navigator} route={route} />
+        <Component navigator={navigator} route={route} user={this.props.user} />
       </View>
     );
   },
@@ -30,15 +33,20 @@ module.exports= React.createClass({
     var route;
 
     if (user) {
-      if (user.verifiedClasses) {
+      if (user.setClasses && user.setTutorClasses) {
         route = {
           name: 'activity',
-          component: Activity
+          component: Activity,
+        }
+      } else if (user.setClasses) {
+        route = {
+          name: 'setTutorClasses',
+          component: SetTutorClasses,
         }
       } else {
         route = {
           name: 'setClasses',
-          component: SetClasses
+          component: SetClasses,
         }
       }
     } else {
@@ -49,10 +57,13 @@ module.exports= React.createClass({
     }
 
     return (
-      <Navigator
-        renderScene={this.renderScene}
-        initialRoute={route}
-      />
+      <View style={Styles.app}>
+        <View style={Styles.statusBar} />
+        <Navigator
+          renderScene={this.renderScene}
+          initialRoute={route}
+        />
+      </View>
     );
   }
 });

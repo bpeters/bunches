@@ -45,7 +45,8 @@ module.exports = React.createClass({
         success: (user) => {
           this.props.navigator.push({
             name: 'setClasses',
-            component: SetClasses
+            component: SetClasses,
+            user: user,
           })
         },
         error: (user, error) => {
