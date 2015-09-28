@@ -41,16 +41,6 @@ module.exports = React.createClass({
         <NavBar
           title='Activity'
           menuButton={this.props.menuButton}
-          rightButton={{
-            text: 'Log Out',
-            onPress: () => {
-              Parse.User.logOut();
-               this.props.navigator.push({
-                  name: 'login',
-                  component: LogIn
-                });
-            }
-          }}
         />
         <View style={Styles.container}>
 

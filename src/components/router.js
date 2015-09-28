@@ -48,18 +48,20 @@ module.exports= React.createClass({
     if (_.indexOf(SIDE_MENU_ROUTES, route.name) >= 0) {
       return (
         <SideMenu
-          menu={<Menu />}
+          menu={<Menu navigator={navigator} user={this.props.user} />}
           touchToClose={this.state.touchToClose}
           onChange={this.handleChange}
         >
-          <Component
-            navigator={navigator}
-            route={route}
-            user={this.props.user}
-            menuButton={{
-              onPress: this.handleOpenWithTouchToClose
-            }}
-          />
+          <View style={Styles.shadow}>
+            <Component
+              navigator={navigator}
+              route={route}
+              user={this.props.user}
+              menuButton={{
+                onPress: this.handleOpenWithTouchToClose
+              }}
+            />
+          </View>
         </SideMenu>
       );
     } else {

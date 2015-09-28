@@ -22,8 +22,6 @@ var {
   SwitchIOS,
 } = React;
 
-var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
 module.exports = React.createClass({
   mixins: [
     Reflux.connect(UserPastClassesStore, 'classes')
@@ -32,6 +30,13 @@ module.exports = React.createClass({
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
     user: React.PropTypes.object,
+  },
+  getInitialState: function() {
+    return {
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2
+      }),
+    };
   },
   onDone: function() {
     var batch = new ParseReact.Mutation.Batch();
@@ -69,7 +74,6 @@ module.exports = React.createClass({
     });
 
     this.setState({
-      dataSource: ds.cloneWithRows(classes),
       classes: classes,
     });
   },
@@ -101,7 +105,7 @@ module.exports = React.createClass({
         <View style={Styles.container}>
           <ListView
             style={Styles.list}
-            dataSource={ds.cloneWithRows(this.state.classes)}
+            dataSource={this.state.dataSource.cloneWithRows(this.state.classes)}
             renderRow={this.renderRow}
             automaticallyAdjustContentInsets={false}
           />
