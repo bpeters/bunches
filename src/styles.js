@@ -1,9 +1,12 @@
 'use strict';
 
 var React = require('react-native');
+var Dimensions = require('Dimensions');
 
 var {StyleSheet} = React;
 
+var window = Dimensions.get('window');
+var white = '#ffffff';
 var light = '#f4f4f4';
 
 module.exports = StyleSheet.create({
@@ -63,6 +66,9 @@ module.exports = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'stretch',
+    backgroundColor: white,
+    width: window.width,
+    height: window.height,
   },
   body: {
     flex: 1,
@@ -88,7 +94,8 @@ module.exports = StyleSheet.create({
   },
   list: {
     marginTop: 0,
-    height: 600,
+    width: window.width,
+    height: window.height,
   },
   row: {
     flexDirection: 'row',

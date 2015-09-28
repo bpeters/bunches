@@ -4,6 +4,7 @@ var React = require('react-native');
 var Styles = require('../styles');
 
 var NavButton = require('./navButton');
+var MenuButton = require('./menuButton');
 
 var {
   Text,
@@ -16,9 +17,16 @@ module.exports = React.createClass({
     title: React.PropTypes.string,
     leftButton: React.PropTypes.object,
     rightButton: React.PropTypes.object,
+    menuButton: React.PropTypes.object,
   },
   renderLeftButton: function() {
-    if (this.props.leftButton) {
+    if (this.props.menuButton) {
+      return (
+         <MenuButton
+          onPress={this.props.menuButton.onPress}
+        />
+      );
+    } else if (this.props.leftButton) {
       return (
         <NavButton
           text={this.props.leftButton.text}
