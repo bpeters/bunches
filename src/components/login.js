@@ -25,6 +25,7 @@ module.exports = React.createClass({
     return {
       email: null,
       password: null,
+      error: null.
     };
   },
   onHandlePress: function() {
@@ -37,8 +38,9 @@ module.exports = React.createClass({
           })
         },
         error: (user, error) => {
-          // The login failed. Check error to see why.
-          alert("Error: " + error.code + " " + error.message);
+          this.setState({
+            error: error
+          });
         }
       });
     }

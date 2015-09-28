@@ -27,6 +27,7 @@ module.exports = React.createClass({
       email: null,
       name: null,
       password: null,
+      error: null,
     };
   },
   onHandlePress: function() {
@@ -50,8 +51,9 @@ module.exports = React.createClass({
           })
         },
         error: (user, error) => {
-          // Show the error message somewhere and let the user try again.
-          alert("Error: " + error.code + " " + error.message);
+          this.setState({
+            error: error
+          });
         }
       });
     }
