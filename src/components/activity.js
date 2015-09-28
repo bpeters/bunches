@@ -8,8 +8,6 @@ var ParseReact = require('parse-react/react-native');
 
 var NavBar = require('./navBar');
 var LogIn = require('./login');
-var SideMenu = require('react-native-side-menu');
-var Menu = require('./menu');
 
 var {
   Text,
@@ -24,11 +22,7 @@ module.exports = React.createClass({
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
     user: React.PropTypes.object,
-  },
-  getInitialState: function() {
-    return {
-      touchToClose: false,
-    };
+    menuButton: React.PropTypes.object,
   },
   observe: function() {
     return {
@@ -37,51 +31,31 @@ module.exports = React.createClass({
         .descending('createdAt')
     };
   },
-  handleOpenWithTouchToClose: function () {
-    this.setState({
-      touchToClose: true,
-    });
-  },
-  handleChange: function (isOpen) {
-    if (!isOpen) {
-      this.setState({
-        touchToClose: false,
-      });
-    }
-  },
   render: function() {
 
     //lazy loading cause cyclical deps
     var LogIn = require('./login');
 
     return (
-      <SideMenu
-        menu={<Menu />}
-        touchToClose={this.state.touchToClose}
-        onChange={this.handleChange}
-      >
-        <View>
-          <NavBar
-            title='Activity'
-            menuButton={{
-              onPress : this.handleOpenWithTouchToClose
-            }}
-            rightButton={{
-              text: 'Log Out',
-              onPress: () => {
-                Parse.User.logOut();
-                 this.props.navigator.push({
-                    name: 'login',
-                    component: LogIn
-                  });
-              }
-            }}
-          />
-          <View style={Styles.container}>
+      <View>
+        <NavBar
+          title='Activity'
+          menuButton={this.props.menuButton}
+          rightButton={{
+            text: 'Log Out',
+            onPress: () => {
+              Parse.User.logOut();
+               this.props.navigator.push({
+                  name: 'login',
+                  component: LogIn
+                });
+            }
+          }}
+        />
+        <View style={Styles.container}>
 
-          </View>
         </View>
-      </SideMenu>
+      </View>
     );
   }
 });

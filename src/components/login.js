@@ -33,7 +33,7 @@ module.exports = React.createClass({
         success: (user) => {
           this.props.navigator.push({
             name: 'activity',
-            component: Activity
+            component: Activity,
           })
         },
         error: (user, error) => {
