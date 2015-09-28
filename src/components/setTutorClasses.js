@@ -34,7 +34,25 @@ module.exports = React.createClass({
     user: React.PropTypes.object,
   },
   onDone: function() {
-    ParseReact.Mutation.Set(this.props.user, {setTutorClasses: true}).dispatch();
+    var batch = new ParseReact.Mutation.Batch();
+    var user = Parse.User.current();
+    var acl = new Parse.ACL(user);
+
+    acl.setPublicReadAccess(true);
+
+    ParseReact.Mutation.Set(this.props.user, {setTutorClasses: true}).dispatch({ batch: batch });
+
+    _.forEach(this.state.classes, (classItem) => {
+      ParseReact.Mutation.Create('UserTutorClass', {
+        user: user,
+        ACL: acl,
+        classId: classItem.id,
+        name: classItem.name,
+        verified: classItem.verified
+      }).dispatch({ batch: batch });
+    });
+
+    batch.dispatch();
 
     this.props.navigator.push({
       name: 'activity',
@@ -46,7 +64,7 @@ module.exports = React.createClass({
 
     _.forEach(classes, (classItem) => {
       if (rowData.id === classItem.id ) {
-        classItem.tutoring = !classItem.tutoring;
+        classItem.verified = !classItem.verified;
       }
     });
 
@@ -63,7 +81,7 @@ module.exports = React.createClass({
             <Text style={Styles.rowText}>
               {rowData.name}
             </Text>
-            <SwitchIOS style={Styles.switch} value={rowData.tutoring} />
+            <SwitchIOS style={Styles.switch} value={rowData.verified} />
           </View>
           <View style={Styles.rowSeparator} />
         </View>

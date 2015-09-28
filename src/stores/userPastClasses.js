@@ -9,7 +9,7 @@ module.exports = Reflux.createStore({
     {
       id: 1,
       name: 'Geo 101',
-      tutoring: true,
+      verified: true,
     },
   ],
   init: function() {},
