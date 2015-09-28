@@ -25,7 +25,7 @@ module.exports = React.createClass({
     return {
       email: null,
       password: null,
-      error: null.
+      error: null,
     };
   },
   onHandlePress: function() {
@@ -35,6 +35,7 @@ module.exports = React.createClass({
           this.props.navigator.push({
             name: 'activity',
             component: Activity,
+            hasSideMenu: true,
           })
         },
         error: (user, error) => {

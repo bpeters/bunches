@@ -6,6 +6,9 @@ var Dimensions = require('Dimensions');
 var {StyleSheet} = React;
 
 var window = Dimensions.get('window');
+var statusBarHeight = 20;
+var navBarHeight = 44;
+var bodyHeight = window.height - statusBarHeight - navBarHeight;
 var white = '#ffffff';
 var light = '#f4f4f4';
 var dark = '#2e2e2e';
@@ -24,7 +27,7 @@ module.exports = StyleSheet.create({
     },
   },
   statusBar: {
-    height: 20,
+    height: statusBarHeight,
     backgroundColor: light
   },
   menu: {
@@ -70,25 +73,25 @@ module.exports = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    height: 44,
+    height: navBarHeight,
     backgroundColor: light,
   },
   navBarLeft: {
     flex: 1,
     justifyContent: 'center',
-    height: 44,
+    height: navBarHeight,
   },
   navBarCenter: {
     flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 44,
+    height: navBarHeight,
   },
   navBarRight: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-end',
-    height: 44,
+    height: navBarHeight,
   },
   leftNavButton: {
     left: 20,
@@ -160,5 +163,51 @@ module.exports = StyleSheet.create({
   },
   switch: {
     right: 20
-  }
+  },
+  channel: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
+    backgroundColor: white,
+    height: bodyHeight - 40,
+  },
+  channelList: {
+    marginTop: 0,
+  },
+  channelRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    paddingLeft: 20,
+  },
+  channelUser: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+    paddingLeft: 20,
+  },
+  channelUserText: {
+    flex: 1,
+    fontSize: 14,
+    color: dark,
+    fontWeight: 'bold',
+  },
+  channelRowText: {
+    flex: 1,
+    fontSize: 14,
+    color: dark,
+    paddingLeft: 20,
+  },
+  channelInput: {
+    height: 40,
+    borderColor: light,
+    paddingLeft: 20,
+    borderWidth: 1,
+    fontSize: 18,
+    color: dark,
+    backgroundColor: white,
+  },
 });

@@ -62,6 +62,7 @@ module.exports = React.createClass({
     this.props.navigator.push({
       name: 'activity',
       component: Activity,
+      hasSideMenu: true,
     });
   },
   onPressRow: function(rowData) {

@@ -6,6 +6,7 @@
     "start": "node_modules/react-native/packager/packager.sh"
   },
   "dependencies": {
+    "firebase": "^2.3.0",
     "lodash": "^3.10.1",
     "parse": "^1.6.3",
     "parse-react": "^0.5.0",

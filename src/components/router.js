@@ -17,13 +17,9 @@ var {
   Navigator,
 } = React;
 
-var SIDE_MENU_ROUTES = [
-  'activity',
-];
-
 module.exports= React.createClass({
   propTypes: {
-    user: React.PropTypes.object
+    user: React.PropTypes.object,
   },
   getInitialState: function() {
     return {
@@ -45,7 +41,7 @@ module.exports= React.createClass({
   renderScene: function(route, navigator) {
     var Component = route.component;
 
-    if (_.indexOf(SIDE_MENU_ROUTES, route.name) >= 0) {
+    if (route.hasSideMenu) {
       return (
         <SideMenu
           menu={<Menu navigator={navigator} user={this.props.user} />}
@@ -83,6 +79,7 @@ module.exports= React.createClass({
         route = {
           name: 'activity',
           component: Activity,
+          hasSideMenu: true,
         }
       } else if (user.setClasses) {
         route = {

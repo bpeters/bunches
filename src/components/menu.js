@@ -7,6 +7,7 @@ var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
 
 var LogIn = require('./login');
+var Channel = require('./channel');
 
 var {
   View,
@@ -42,10 +43,15 @@ module.exports= React.createClass({
     };
   },
   onPressRow: function(rowData) {
-    console.log(rowData);
 
     if (rowData.onPress) {
       rowData.onPress();
+    } else {
+     this.props.navigator.push({
+        name: rowData.name,
+        component: Channel,
+        hasSideMenu: true,
+      });
     }
 
   },
