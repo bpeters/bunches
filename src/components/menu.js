@@ -1,12 +1,15 @@
 'use strict';
 
 var React = require('react-native');
+var _ = require('lodash');
 var Styles = require('../styles');
 
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
 
 var LogIn = require('./login');
+var Activity = require('./activity');
+var Profile = require('./profile');
 var Channel = require('./channel');
 
 var {
@@ -34,11 +37,6 @@ module.exports= React.createClass({
     return {
       classes: (new Parse.Query('UserClass'))
         .equalTo('user', Parse.User.current())
-        .equalTo('verified', true)
-        .ascending('name'),
-      tutoring: (new Parse.Query('UserTutorClass'))
-        .equalTo('user', Parse.User.current())
-        .equalTo('verified', true)
         .ascending('name'),
     };
   },
@@ -48,7 +46,7 @@ module.exports= React.createClass({
       rowData.onPress();
     } else {
      this.props.navigator.push({
-        name: rowData.name,
+        class: rowData,
         component: Channel,
         hasSideMenu: true,
       });
@@ -80,11 +78,34 @@ module.exports= React.createClass({
   render: function() {
     var dataBlob = {}
 
-    dataBlob['Classes'] = this.data.classes;
-    dataBlob['Tutoring'] = this.data.tutoring;
+    dataBlob['Classes'] = _.filter(this.data.classes, (classItem) => { 
+      return classItem.enrolled && classItem.verified;
+    });
+
+    dataBlob['Tutoring'] = _.filter(this.data.classes, (classItem) => { 
+      return !classItem.enrolled && classItem.verified;
+    });
+
     dataBlob['Account'] = [
       {
-        name: 'Profile'
+        name: 'Activity',
+        onPress: () => {
+           this.props.navigator.push({
+              name: 'activity',
+              component: Activity,
+              hasSideMenu: true,
+            });
+        }
+      },
+      {
+        name: 'Profile',
+        onPress: () => {
+           this.props.navigator.push({
+              name: 'profile',
+              component: Profile,
+              hasSideMenu: true,
+            });
+        }
       },
       {
         name: 'Log Out',

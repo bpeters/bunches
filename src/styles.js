@@ -31,9 +31,8 @@ module.exports = StyleSheet.create({
     backgroundColor: light
   },
   menu: {
-    flex: 1,
-    alignItems: 'stretch',
     backgroundColor: medium,
+    height: bodyHeight + navBarHeight,
   },
   menuRow: {
     flexDirection: 'row',
@@ -150,8 +149,6 @@ module.exports = StyleSheet.create({
   },
   list: {
     marginTop: 0,
-    width: window.width,
-    height: window.height,
   },
   row: {
     flexDirection: 'row',

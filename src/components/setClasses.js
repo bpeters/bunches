@@ -51,6 +51,7 @@ module.exports = React.createClass({
       ParseReact.Mutation.Create('UserClass', {
         user: user,
         ACL: acl,
+        institution: this.props.user.institution,
         classId: classItem.id,
         name: classItem.name,
         verified: classItem.verified,
@@ -64,6 +65,7 @@ module.exports = React.createClass({
       name: 'setTutorClasses',
       component: SetTutorClasses,
     });
+
   },
   onPressRow: function(rowData) {
     var classes = _.cloneDeep(this.state.classes);

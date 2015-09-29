@@ -20,6 +20,7 @@ var {
 } = React;
 
 module.exports = React.createClass({
+  mixins: [ParseReact.Mixin],
   propTypes: {
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
@@ -27,7 +28,7 @@ module.exports = React.createClass({
     menuButton: React.PropTypes.object,
   },
   getInitialState: function() {
-    var url = "https://bunches.firebaseio.com/" + _.kebabCase(this.props.route.name);
+    var url = 'https://bunches.firebaseio.com/institution/' + this.props.user.institution + '/class/' + this.props.route.class.classId;
 
     return {
       messenger: new Firebase(url),
@@ -36,6 +37,14 @@ module.exports = React.createClass({
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2
       }),
+    };
+  },
+  observe: function() {
+    return {
+      people: (new Parse.Query('UserClass'))
+        .equalTo('classId', this.props.route.class.classId)
+        .equalTo('institution', this.props.user.institution)
+        .equalTo('verified', true)
     };
   },
   componentDidMount: function() {
@@ -80,10 +89,12 @@ module.exports = React.createClass({
     );
   },
   render: function() {
+    console.log(this.data.people);
+
     return (
       <View>
         <NavBar
-          title={this.props.route.name}
+          title={this.props.route.class.name}
           menuButton={this.props.menuButton}
         />
         <View style={Styles.channel}>

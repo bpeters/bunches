@@ -48,9 +48,10 @@ module.exports = React.createClass({
     ParseReact.Mutation.Set(this.props.user, {setTutorClasses: true}).dispatch({ batch: batch });
 
     _.forEach(this.state.classes.past, (classItem) => {
-      ParseReact.Mutation.Create('UserTutorClass', {
+      ParseReact.Mutation.Create('UserClass', {
         user: user,
         ACL: acl,
+        institution: this.props.user.institution,
         classId: classItem.id,
         name: classItem.name,
         verified: classItem.verified,
