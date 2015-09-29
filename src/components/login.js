@@ -14,6 +14,7 @@ var {
   TextInput,
   TouchableOpacity,
   View,
+  AlertIOS,
 } = React;
 
 module.exports = React.createClass({
@@ -38,10 +39,16 @@ module.exports = React.createClass({
             hasSideMenu: true,
           })
         },
-        error: (user, error) => {
+        error: (error) => {
           this.setState({
             error: error
           });
+        }
+      });
+    } else {
+      this.setState({
+        error: {
+          message: 'all fields required'
         }
       });
     }
@@ -50,6 +57,16 @@ module.exports = React.createClass({
 
     //lazy loading cause cyclical deps
     var SignUp = require('./signup');
+
+    if (this.state.error) {
+      AlertIOS.alert(
+        'Failed to Log In',
+        this.state.error.message,
+        [
+          {text: 'Try Again', onPress: () => this.setState({error: null})},
+        ]
+      );
+    }
 
     return (
       <View>
@@ -82,13 +99,15 @@ module.exports = React.createClass({
               onChangeText={(password) => this.setState({password})}
               value={this.state.password}
             />
-            <TouchableOpacity onPress={this.onHandlePress}>
-              <View style={Styles.bigButton}>
-                <Text style={Styles.bigButtonText}>
-                  Log In
-                </Text>
-              </View>
-            </TouchableOpacity>
+        </View>
+        <View style={Styles.footer}>
+          <TouchableOpacity onPress={this.onHandlePress}>
+            <View style={Styles.bigButton}>
+              <Text style={Styles.bigButtonText}>
+                Log In
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     );

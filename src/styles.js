@@ -114,7 +114,15 @@ module.exports = StyleSheet.create({
     alignItems: 'stretch',
     backgroundColor: white,
     width: window.width,
-    height: window.height,
+    height: bodyHeight,
+  },
+  footer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
+    height: 80,
+    top: -80,
   },
   body: {
     flex: 1,
@@ -209,5 +217,10 @@ module.exports = StyleSheet.create({
     fontSize: 18,
     color: dark,
     backgroundColor: white,
+  },
+  picker: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: light,
   },
 });

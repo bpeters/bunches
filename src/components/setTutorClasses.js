@@ -11,7 +11,7 @@ var ParseReact = require('parse-react/react-native');
 var NavBar = require('./navBar');
 var Activity = require('./activity');
 
-var UserPastClassesStore = require('../stores/userPastClasses');
+var UserClassesStore = require('../stores/userClasses');
 
 var {
   Text,
@@ -24,7 +24,7 @@ var {
 
 module.exports = React.createClass({
   mixins: [
-    Reflux.connect(UserPastClassesStore, 'classes')
+    Reflux.connect(UserClassesStore, 'classes')
   ],
   propTypes: {
     navigator: React.PropTypes.object,
@@ -47,13 +47,14 @@ module.exports = React.createClass({
 
     ParseReact.Mutation.Set(this.props.user, {setTutorClasses: true}).dispatch({ batch: batch });
 
-    _.forEach(this.state.classes, (classItem) => {
+    _.forEach(this.state.classes.past, (classItem) => {
       ParseReact.Mutation.Create('UserTutorClass', {
         user: user,
         ACL: acl,
         classId: classItem.id,
         name: classItem.name,
-        verified: classItem.verified
+        verified: classItem.verified,
+        enrolled: classItem.enrolled,
       }).dispatch({ batch: batch });
     });
 
@@ -68,7 +69,7 @@ module.exports = React.createClass({
   onPressRow: function(rowData) {
     var classes = _.cloneDeep(this.state.classes);
 
-    _.forEach(classes, (classItem) => {
+    _.forEach(classes.past, (classItem) => {
       if (rowData.id === classItem.id ) {
         classItem.verified = !classItem.verified;
       }
@@ -106,7 +107,7 @@ module.exports = React.createClass({
         <View style={Styles.container}>
           <ListView
             style={Styles.list}
-            dataSource={this.state.dataSource.cloneWithRows(this.state.classes)}
+            dataSource={this.state.dataSource.cloneWithRows(this.state.classes.past)}
             renderRow={this.renderRow}
             automaticallyAdjustContentInsets={false}
           />
