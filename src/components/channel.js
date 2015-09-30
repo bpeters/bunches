@@ -37,6 +37,11 @@ module.exports = React.createClass({
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2
       }),
+      showChat: true,
+      showEnrolled: false,
+      showTutors: false,
+      showBunches: false,
+      people: [],
     };
   },
   observe: function() {
@@ -61,16 +66,54 @@ module.exports = React.createClass({
     });
   },
   handleSubmit: function() {
-    this.state.messenger.push({
-      message: this.state.message,
-      userName: this.props.user.name,
-    });
+    if (this.state.message) {
+      this.state.messenger.push({
+        message: this.state.message,
+        userName: this.props.user.name,
+      });
 
+      this.setState({
+        message: null
+      });
+    }
+  },
+  onPressEnrolled: function() {
     this.setState({
-      message: null
+      showChat: false,
+      showEnrolled: true,
+      showTutors: false,
+      showBunches: false,
+      people: _.pluck(_.filter(this.data.people, 'enrolled', true), 'user'),
     });
   },
-  renderRow: function(rowData) {
+  onPressTutors: function() {
+    this.setState({
+      showChat: false,
+      showEnrolled: false,
+      showTutors: true,
+      showBunches: false,
+      people: _.pluck(_.filter(this.data.people, 'enrolled', false), 'user'),
+    });
+  },
+  onPressBunches: function() {
+    this.setState({
+      showChat: false,
+      showEnrolled: false,
+      showTutors: false,
+      showBunches: true,
+      people: [],
+    });
+  },
+  handleFocus: function() {
+    this.setState({
+      showChat: true,
+      showEnrolled: false,
+      showTutors: false,
+      showBunches: false,
+      people: [],
+    });
+  },
+  renderChatRow: function(rowData) {
     return (
       <TouchableOpacity>
         <View>
@@ -88,8 +131,47 @@ module.exports = React.createClass({
       </TouchableOpacity>
     );
   },
+  renderChat: function() {
+    return (
+      <View style={Styles.channel}>
+        <ListView
+          style={Styles.channelList}
+          dataSource={this.state.dataSource.cloneWithRows(this.state.messages)}
+          renderRow={this.renderChatRow}
+          automaticallyAdjustContentInsets={false}
+        />
+      </View>
+    );
+  },
+  renderPeopleRow: function(rowData) {
+    return (
+      <TouchableOpacity>
+        <View>
+          <View style={Styles.channelUser}>
+            <Text style={Styles.channelUserText}>
+              {rowData.name || 'Anon'}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  },
+  renderPeople: function() {
+    return (
+      <View style={Styles.channel}>
+        <ListView
+          style={Styles.channelList}
+          dataSource={this.state.dataSource.cloneWithRows(this.state.people)}
+          renderRow={this.renderPeopleRow}
+          automaticallyAdjustContentInsets={false}
+        />
+      </View>
+    );
+  },
   render: function() {
-    console.log(this.data.people);
+    var enrolledCount = _.filter(this.data.people, 'enrolled', true).length;
+    var tutorCount = _.filter(this.data.people, 'enrolled', false).length;
+    var bunchesCount = 0;
 
     return (
       <View>
@@ -97,21 +179,47 @@ module.exports = React.createClass({
           title={this.props.route.class.name}
           menuButton={this.props.menuButton}
         />
-        <View style={Styles.channel}>
-          <ListView
-            style={Styles.channelList}
-            dataSource={this.state.dataSource.cloneWithRows(this.state.messages)}
-            renderRow={this.renderRow}
-            automaticallyAdjustContentInsets={false}
-          />
+        <View style={Styles.channelInfo}>
+          <TouchableOpacity onPress={this.onPressEnrolled}>
+            <View style={Styles.channelInfoButton}>
+              <Text style={this.state.showEnrolled ? Styles.channelInfoHighlight : Styles.channelInfoText}>
+                {enrolledCount + ' Enrolled'}
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.onPressTutors}>
+            <View style={Styles.channelInfoButton}>
+              <Text style={this.state.showTutors ? Styles.channelInfoHighlight : Styles.channelInfoText}>
+                {tutorCount + ' Tutors'}
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.onPressBunches}>
+            <View style={Styles.channelInfoButton}>
+              <Text style={this.state.showBunches ? Styles.channelInfoHighlight : Styles.channelInfoText}>
+                {bunchesCount + ' Bunches'}
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
-        <TextInput
-          style={Styles.channelInput}
-          placeholder='Message'
-          onChangeText={(message) => this.setState({message})}
-          value={this.state.message}
-          onSubmitEditing={this.handleSubmit}
-        />
+        {this.state.showChat ? this.renderChat() : this.renderPeople()}
+        <View style={Styles.channelInputBox}>
+          <TextInput
+            style={Styles.channelInput}
+            placeholder='Message'
+            onFocus={this.handleFocus}
+            onChangeText={(message) => this.setState({message})}
+            value={this.state.message}
+            onSubmitEditing={this.handleSubmit}
+          />
+          <TouchableOpacity onPress={this.handleSubmit}>
+            <View style={Styles.channelSendButton}>
+              <Text style={Styles.channelSendText}>
+                {'Send'}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }

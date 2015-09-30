@@ -101,7 +101,6 @@ module.exports= React.createClass({
 
     return (
       <View style={Styles.app}>
-        <View style={Styles.statusBar} />
         <Navigator
           renderScene={this.renderScene}
           initialRoute={route}

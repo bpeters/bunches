@@ -6,9 +6,8 @@ var Dimensions = require('Dimensions');
 var {StyleSheet} = React;
 
 var window = Dimensions.get('window');
-var statusBarHeight = 20;
 var navBarHeight = 44;
-var bodyHeight = window.height - statusBarHeight - navBarHeight;
+var bodyHeight = window.height - navBarHeight;
 var white = '#ffffff';
 var light = '#f4f4f4';
 var dark = '#2e2e2e';
@@ -25,10 +24,6 @@ module.exports = StyleSheet.create({
       width: 0,
       height: 2
     },
-  },
-  statusBar: {
-    height: statusBarHeight,
-    backgroundColor: light
   },
   menu: {
     backgroundColor: medium,
@@ -169,13 +164,34 @@ module.exports = StyleSheet.create({
   switch: {
     right: 20
   },
+  channelInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    backgroundColor: white,
+  },
+  channelInfoButton: {
+    flex: 1,
+    height: 40,
+    width: window.width / 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: light,
+    borderBottomWidth: 2,
+    borderWidth: 1,
+  },
+  channelInfoText: {
+    color: medium,
+    fontSize: 14,
+  },
   channel: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     backgroundColor: white,
-    height: bodyHeight - 40,
+    height: bodyHeight - 80,
   },
   channelList: {
     marginTop: 0,
@@ -206,14 +222,38 @@ module.exports = StyleSheet.create({
     color: dark,
     paddingLeft: 20,
   },
+  channelInputBox: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    backgroundColor: white,
+    borderColor: light,
+    borderWidth: 2,
+  },
   channelInput: {
     height: 40,
-    borderColor: light,
+    width: window.width - 60,
     paddingLeft: 20,
-    borderWidth: 1,
     fontSize: 18,
     color: dark,
     backgroundColor: white,
+  },
+  channelSendButton: {
+    flex: 1,
+    height: 40,
+    width: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: light,
+    borderLeftWidth: 2,
+  },
+  channelSendText: {
+    color: medium,
+  },
+  channelInfoHighlight: {
+    fontWeight: 'bold',
+    color: dark,
   },
   picker: {
     flex: 1,
