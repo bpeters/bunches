@@ -2,7 +2,7 @@
 
 var React = require('react-native');
 
-var routes = require('../routes');
+var routes = require('./routes');
 var SideMenu = require('./containers/sideMenu');
 
 var {

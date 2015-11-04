@@ -4,7 +4,7 @@ var React = require('react-native');
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
 
-var NavBar = require('./components/navBar');
+var NavBar = require('../components/navBar');
 
 var {
   View,

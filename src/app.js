@@ -5,7 +5,7 @@ var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
 Parse.initialize("dsgXdFhexcMreakStwdqPqNLY0tUjMzGFKsF6g5H", "T0bfFv1Tt7av6go36WcIWmnmYDqi1ciSHZtDwC0Z");
 
-var Router = require('./containers/router');
+var Router = require('./router');
 var Splash = require('./elements/splash');
 
 module.exports= React.createClass({
@@ -16,20 +16,20 @@ module.exports= React.createClass({
     };
   },
   intializeBunch: function(user) {
-    new Parse.Query('Bunch'))
-      .equalTo('name', 'Global')
-      .first({
-        success: (bunch) => {
-          ParseReact.Mutation.Create('Bunch2User', {
-            bunch: bunch,
-            user: user,
-            isMain: true,
-          });
-        },
-        error: (error) => {
-          console.log(error);
-        }
-      });
+    var query = new Parse.Query('Bunch');
+    query.equalTo('name', 'Global');
+    query.first({
+      success: (bunch) => {
+        ParseReact.Mutation.Create('Bunch2User', {
+          bunch: bunch,
+          user: user,
+          isMain: true,
+        });
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   },
   generateAnonUser: function() {
     var user = new Parse.User();
@@ -52,7 +52,7 @@ module.exports= React.createClass({
   render: function() {
     if (this.data.user) {
       return (
-        <Router user={user} />
+        <Router user={this.data.user} />
       );
     } else {
       return (

@@ -2,6 +2,8 @@
 
 var React = require('react-native');
 
+var defaultStyles = require('../styles');
+
 var {
   Text,
   TouchableOpacity,
@@ -12,7 +14,7 @@ var Styles = StyleSheet.create({
   text: {
     left: 20,
     fontSize: 16,
-    color: '#2e2e2e',
+    color: defaultStyles.dark,
   },
 });
 

@@ -3,7 +3,9 @@
 var React = require('react-native');
 
 var ReactSideMenu = require('react-native-side-menu');
-var Menu = require('./components/menu');
+var Menu = require('../components/menu');
+
+var defaultStyles = require('../styles');
 
 var {
   View,
@@ -12,7 +14,7 @@ var {
 
 var Styles = StyleSheet.create({
   view: {
-    shadowColor: dark,
+    shadowColor: defaultStyles.dark,
     shadowOpacity: 0.5,
     shadowOffset: {
       width: 0,

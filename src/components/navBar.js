@@ -2,7 +2,9 @@
 
 var React = require('react-native');
 
-var MenuButton = require('./elements/menuButton');
+var MenuButton = require('../elements/menuButton');
+
+var defaultStyles = require('../styles');
 
 var {
   Text,
@@ -17,7 +19,7 @@ var Styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
     height: 44,
-    backgroundColor: light,
+    backgroundColor: defaultStyles.light,
   },
   left: {
     flex: 1,
@@ -32,7 +34,7 @@ var Styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    color: '#2e2e2e',
+    color: defaultStyles.dark,
   },
 });
 

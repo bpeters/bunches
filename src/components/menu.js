@@ -32,7 +32,7 @@ var Styles = StyleSheet.create({
   rowText: {
     flex: 1,
     fontSize: 14,
-    color: light,
+    color: defaultStyles.light,
   },
   section: {
     flexDirection: 'row',
