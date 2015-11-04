@@ -2,7 +2,7 @@
 
 var React = require('react-native');
 
-var App = require('./src/components/app');
+var App = require('./src/app');
 
 var {AppRegistry} = React;
 

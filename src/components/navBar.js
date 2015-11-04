@@ -1,67 +1,70 @@
 'use strict';
 
 var React = require('react-native');
-var Styles = require('../styles');
 
-var NavButton = require('./navButton');
-var MenuButton = require('./menuButton');
+var MenuButton = require('./elements/menuButton');
 
 var {
   Text,
   View,
-  TouchableOpacity,
+  StyleSheet,
 } = React;
 
-module.exports = React.createClass({
+var Styles = StyleSheet.create({
+  body: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    height: 44,
+    backgroundColor: light,
+  },
+  left: {
+    flex: 1,
+    justifyContent: 'center',
+    height: 44,
+  },
+  center: {
+    flex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 44,
+  },
+  title: {
+    fontSize: 18,
+    color: '#2e2e2e',
+  },
+});
+
+var NavBar = React.createClass({
   propTypes: {
     title: React.PropTypes.string,
-    leftButton: React.PropTypes.object,
-    rightButton: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
-  renderLeftButton: function() {
-    if (this.props.menuButton) {
-      return (
-         <MenuButton
-          onPress={this.props.menuButton.onPress}
-        />
-      );
-    } else if (this.props.leftButton) {
-      return (
-        <NavButton
-          text={this.props.leftButton.text}
-          onPress={this.props.leftButton.onPress}
-          side='left'
-        />
-      );
-    }
-  },
-  renderRightButton: function() {
-    if (this.props.rightButton) {
-      return (
-        <NavButton
-          text={this.props.rightButton.text}
-          onPress={this.props.rightButton.onPress}
-          side='right'
-        />
-      );
-    }
+  onHandlePress: function(e) {
+    this.context.menuActions.toggle();
+    this.props.menuButton.onPress(e);
   },
   render: function() {
     return (
-      <View style={Styles.navBar}>
-        <View style={Styles.navBarLeft}>
-          {this.renderLeftButton()}
+      <View style={Styles.body}>
+        <View style={Styles.left}>
+          <MenuButton
+            onPress={this.onHandlePress}
+          />
         </View>
-        <View style={Styles.navBarCenter}>
-          <Text style={Styles.navBarTitle}>
+        <View style={Styles.center}>
+          <Text style={Styles.title}>
             {this.props.title}
           </Text>
-        </View>
-        <View style={Styles.navBarRight}>
-          {this.renderRightButton()}
         </View>
       </View>
     );
   }
 });
+
+NavBar.contextTypes = {
+  menuActions: React.PropTypes.object.isRequired
+};
+
+module.exports = NavBar;
