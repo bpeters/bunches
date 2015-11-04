@@ -12,6 +12,8 @@ var defaultStyles = require('../styles');
 
 var {
   View,
+  TextInput,
+  Text,
   StyleSheet,
 } = React;
 
