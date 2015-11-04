@@ -12,9 +12,10 @@ var {
 
 var Styles = StyleSheet.create({
   text: {
-    left: 20,
-    fontSize: 16,
-    color: defaultStyles.dark,
+    top: 16,
+    left: 16,
+    fontSize: 20,
+    color: defaultStyles.white,
   },
 });
 

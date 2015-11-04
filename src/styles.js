@@ -6,21 +6,21 @@ var Dimensions = require('Dimensions');
 var {StyleSheet} = React;
 
 var window = Dimensions.get('window');
-var navBarHeight = 44;
+var navBarHeight = 56;
 var bodyHeight = window.height - navBarHeight;
 var bodyWidth= window.width;
-var white = '#ffffff';
-var light = '#f4f4f4';
-var dark = '#2e2e2e';
-var medium = '#b4b4b4';
 
 module.exports = {
   window: window,
   navBarHeight: navBarHeight,
   bodyHeight: bodyHeight,
   bodyWidth: bodyWidth,
-  white: white,
-  light: light,
-  dark: dark,
-  medium: medium,
+  blue: '#31C3D9',
+  red: '#B96B6B',
+  yellow: '#F9CA6B',
+  background: '#F1F5F7',
+  white: '#ffffff',
+  light: '#f4f4f4',
+  dark: '#2e2e2e',
+  medium: '#b4b4b4',
 };

@@ -16,7 +16,7 @@ var {
 
 var Styles = StyleSheet.create({
   body: {
-    backgroundColor: defaultStyles.dark,
+    backgroundColor: defaultStyles.background,
     height: defaultStyles.bodyHeight,
   },
 });

@@ -16,25 +16,22 @@ var Styles = StyleSheet.create({
   body: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    height: 44,
-    backgroundColor: defaultStyles.light,
+    height: defaultStyles.navBarHeight,
+    backgroundColor: defaultStyles.blue,
   },
   left: {
     flex: 1,
-    justifyContent: 'center',
-    height: 44,
+    alignItems: 'flex-start',
   },
   center: {
-    flex: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 44,
+    flex: 3,
+    alignItems: 'flex-start',
   },
   title: {
-    fontSize: 18,
-    color: defaultStyles.dark,
+    top: 16,
+    left: 16,
+    fontSize: 20,
+    color: defaultStyles.white,
   },
 });
 
