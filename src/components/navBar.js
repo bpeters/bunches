@@ -29,9 +29,9 @@ var Styles = StyleSheet.create({
   },
   title: {
     top: 16,
-    left: 16,
     fontSize: 20,
     color: defaultStyles.white,
+    fontFamily: 'Roboto-Medium',
   },
 });
 

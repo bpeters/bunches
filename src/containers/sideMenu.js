@@ -51,6 +51,7 @@ module.exports= React.createClass({
 
     return (
       <ReactSideMenu
+        openMenuOffset={defaultStyles.bodyWidth - 56}
         menu={<Menu navigator={navigator} user={this.props.user} />}
         touchToClose={this.state.touchToClose}
         onChange={this.handleChange}
