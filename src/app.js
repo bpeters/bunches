@@ -9,14 +9,6 @@ var Router = require('./router');
 var Splash = require('./elements/splash');
 
 module.exports= React.createClass({
-  mixins: [ParseReact.Mixin],
-  observe: function() {
-    return {
-      bunch: (new Parse.Query('Bunch2User'))
-        .equalTo('user', this.props.user)
-        .equalTo('isMain', true)
-    };
-  },
   getInitialState: function () {
     return {
       user: null

@@ -18,7 +18,7 @@ var {
 var Styles = StyleSheet.create({
   body: {
     backgroundColor: defaultStyles.medium,
-    height: defaultStyles.bodyHeight + defaultStyles.navBarHeight,
+    height: defaultStyles.window.height,
     width: defaultStyles.bodyWidth,
   },
   list: {

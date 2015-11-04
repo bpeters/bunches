@@ -18,6 +18,12 @@ var Styles = StyleSheet.create({
     flexDirection: 'row',
     height: defaultStyles.navBarHeight,
     backgroundColor: defaultStyles.blue,
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    shadowOffset: {
+      width: 0,
+      height: 1
+    },
   },
   left: {
     flex: 1,
