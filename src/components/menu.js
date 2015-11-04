@@ -3,6 +3,7 @@
 var React = require('react-native');
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
+var _ = require('lodash');
 
 var defaultStyles = require('../styles');
 
@@ -18,6 +19,7 @@ var Styles = StyleSheet.create({
   body: {
     backgroundColor: defaultStyles.medium,
     height: defaultStyles.bodyHeight + defaultStyles.navBarHeight,
+    width: defaultStyles.bodyWidth,
   },
   list: {
     marginTop: 0,
@@ -68,13 +70,8 @@ module.exports= React.createClass({
     return {
       bunches: (new Parse.Query('Bunch2User'))
         .equalTo('user', this.props.user)
-        .ascending('name'),
-      createdChats: (new Parse.Query('Chat'))
-        .equalTo('createdBy', this.props.user)
-        .ascending('createdAt'),
-      participatingChats: (new Parse.Query('Chat2User'))
-        .equalTo('user', this.props.user)
-        .ascending('createdAt'),
+        .ascending('name')
+        .include("bunch")
     };
   },
   onPressRow: function(rowData) {
@@ -105,9 +102,7 @@ module.exports= React.createClass({
   render: function() {
     var dataBlob = {}
 
-    dataBlob['Bunches'] = this.data.bunches;
-    dataBlob['My Chats'] = this.data.createdChats;
-    dataBlob['Participating Chats'] = this.data.participatingChats;
+    dataBlob['Bunches'] = _.pluck(this.data.bunches, 'bunch');
 
     return (
       <View style={Styles.body}>

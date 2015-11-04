@@ -3,12 +3,23 @@
 var React = require('react-native');
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
+var _ = require('lodash');
 
 var NavBar = require('../components/navBar');
 
+var defaultStyles = require('../styles');
+
 var {
   View,
+  StyleSheet,
 } = React;
+
+var Styles = StyleSheet.create({
+  body: {
+    backgroundColor: defaultStyles.dark,
+    height: defaultStyles.bodyHeight,
+  },
+});
 
 module.exports = React.createClass({
   mixins: [ParseReact.Mixin],
@@ -20,20 +31,30 @@ module.exports = React.createClass({
   },
   observe: function() {
     return {
-      bunch: (new Parse.Query('Bunch2User'))
+      bunches: (new Parse.Query('Bunch2User'))
         .equalTo('user', this.props.user)
         .equalTo('isMain', true)
+        .include("bunch")
     };
   },
   render: function() {
-    var bunch = this.props.route.bunch || this.data.bunch;
+
+    var bunch = _.chain(this.data.bunches)
+      .first()
+      .get('bunch')
+      .value();
+
+    console.log(bunch);
 
     return (
       <View>
         <NavBar
-          title={bunch.name}
+          title={bunch ? bunch.name : ''}
           menuButton={this.props.menuButton}
         />
+        <View style={Styles.body}>
+
+        </View>
       </View>
     );
   }

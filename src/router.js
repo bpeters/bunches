@@ -8,14 +8,7 @@ var SideMenu = require('./containers/sideMenu');
 var {
   View,
   Navigator,
-  StyleSheet,
 } = React;
-
-var Styles = StyleSheet.create({
-  view: {
-    flex: 1,
-  },
-});
 
 module.exports= React.createClass({
   propTypes: {
@@ -44,12 +37,10 @@ module.exports= React.createClass({
   },
   render: function() {
     return (
-      <View style={Styles.view}>
-        <Navigator
-          renderScene={this.renderScene}
-          initialRoute={routes.bunch}
-        />
-      </View>
+      <Navigator
+        renderScene={this.renderScene}
+        initialRoute={routes.bunch}
+      />
     );
   }
 });
