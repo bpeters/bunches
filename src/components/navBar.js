@@ -24,7 +24,7 @@ var Styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   center: {
-    flex: 3,
+    flex: 4,
     alignItems: 'flex-start',
   },
   title: {

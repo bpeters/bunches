@@ -2,6 +2,12 @@
 
 var React = require('react-native');
 
+/* Not Working
+var {
+  Icon,
+} = require('react-native-icons');
+*/
+
 var defaultStyles = require('../styles');
 
 var {
@@ -15,6 +21,13 @@ var Styles = StyleSheet.create({
     top: 16,
     left: 16,
     fontSize: 20,
+    color: defaultStyles.white,
+  },
+  icon: {
+    top: 16,
+    left: 16,
+    width: 24,
+    height: 24,
     color: defaultStyles.white,
   },
 });
