@@ -4,16 +4,13 @@ var React = require('react-native');
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
 var _ = require('lodash');
+var Firebase = require('firebase');
 
 var NavBar = require('../components/navBar');
 var ChatBar = require('../components/chatBar');
+var ChatContainer = require('../components/chatContainer');
 
 var defaultStyles = require('../styles');
-
-// Firebase Test
-var Firebase = require('firebase');
-// end firebase test
-
 
 
 var {
@@ -47,70 +44,28 @@ module.exports = React.createClass({
     };
   },
 
-
-
-
- 
- // Firebase Test
- getInitialState: function() {
-    var url = 'https://bunches.firebaseio.com/items/';
-
-    return {
-      messenger: new Firebase(url),
-      message: null,
-      messages: [],
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 !== r2
-      }),
-      showChat: true,
-      showEnrolled: false,
-      showTutors: false,
-      showBunches: false,
-      people: [],
-    };
-  },
-
-  componentDidMount: function() {
-    var messages = _.cloneDeep(this.state.messages);
-
-    this.state.messenger.on('value', (snapshot) => {
-      var data = snapshot.val();
-
-      messages.push(data);
-
-      this.setState({
-        messages: messages
-      });
-    });
-  },
-
-
-
-
-
-
-
-
-
-
-
-
-
   render: function() {
+    
     var bunch = _.chain(this.data.bunches)
       .first()
       .get('bunch')
-      .value();
+      .value();      
+
+    if(bunch){
+      var id = {"id":bunch.objectId}
+    }
 
     return (
       <View style={Styles.body}>
         <NavBar
           title={bunch ? bunch.name : ''}
           menuButton={this.props.menuButton}
+        />       
+
+        <ChatContainer
+          user={this.props.user} 
+          bunch={id}
         />
-        <Text>
-        {this.state.messages}
-        </Text>
         <ChatBar
           user={this.props.user}
         />

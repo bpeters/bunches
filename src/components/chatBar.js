@@ -15,6 +15,7 @@ var {
   ScrollView,
   TextInput,
   StyleSheet, 
+  TouchableHighlight,
 } = React;
 
 var Styles = StyleSheet.create({
@@ -87,6 +88,16 @@ module.exports = React.createClass({
       );
     }, 50);
   },
+
+
+  addChat: function(){
+  
+    console.log('pooper');
+  },
+
+
+
+
   render: function() {
     return (
       <ScrollView
@@ -101,12 +112,15 @@ module.exports = React.createClass({
         </View>
         <View ref='chat' style={Styles.body}>
           <View style={Styles.wrap}>
+
+          <TouchableHighlight onPress={this.addChat}>
             <Icon
               name='fontawesome|paper-plane'
               size={24}
               color='#b4b4b4'
               style={Styles.icon}
             />
+          </TouchableHighlight>
             <TextInput
               style={Styles.input}
               onChangeText={(message) => this.setState({message})}
