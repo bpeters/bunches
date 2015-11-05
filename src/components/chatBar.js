@@ -14,7 +14,7 @@ var {
   View,
   ScrollView,
   TextInput,
-  StyleSheet,
+  StyleSheet, 
 } = React;
 
 var Styles = StyleSheet.create({

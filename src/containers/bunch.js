@@ -10,11 +10,18 @@ var ChatBar = require('../components/chatBar');
 
 var defaultStyles = require('../styles');
 
+// Firebase Test
+var Firebase = require('firebase');
+// end firebase test
+
+
+
 var {
   View,
-  TextInput,
-  Text,
   StyleSheet,
+  Platform,
+  Text,
+  ListView,
 } = React;
 
 var Styles = StyleSheet.create({
@@ -39,8 +46,57 @@ module.exports = React.createClass({
         .include("bunch"),
     };
   },
-  render: function() {
 
+
+
+
+ 
+ // Firebase Test
+ getInitialState: function() {
+    var url = 'https://bunches.firebaseio.com/items/';
+
+    return {
+      messenger: new Firebase(url),
+      message: null,
+      messages: [],
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2
+      }),
+      showChat: true,
+      showEnrolled: false,
+      showTutors: false,
+      showBunches: false,
+      people: [],
+    };
+  },
+
+  componentDidMount: function() {
+    var messages = _.cloneDeep(this.state.messages);
+
+    this.state.messenger.on('value', (snapshot) => {
+      var data = snapshot.val();
+
+      messages.push(data);
+
+      this.setState({
+        messages: messages
+      });
+    });
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+  render: function() {
     var bunch = _.chain(this.data.bunches)
       .first()
       .get('bunch')
@@ -52,6 +108,9 @@ module.exports = React.createClass({
           title={bunch ? bunch.name : ''}
           menuButton={this.props.menuButton}
         />
+        <Text>
+        {this.state.messages}
+        </Text>
         <ChatBar
           user={this.props.user}
         />
