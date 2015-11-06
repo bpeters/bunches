@@ -90,14 +90,6 @@ module.exports = React.createClass({
   },
 
 
-  addChat: function(){
-  
-    console.log('pooper');
-  },
-
-
-
-
   render: function() {
     return (
       <ScrollView

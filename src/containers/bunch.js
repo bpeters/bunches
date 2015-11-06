@@ -43,6 +43,38 @@ module.exports = React.createClass({
         .include("bunch"),
     };
   },
+  getInitialState: function(){
+    return {
+      messages: []
+    }
+  },
+
+
+ 
+
+
+  componentWillReceiveProps:  function(nextProps){
+    console.log('here')
+    var url = 'https://bunches.firebaseio.com/chat/' + nextProps.bunch.id.objectId;
+    var messages = _.cloneDeep(this.state.messages);
+    console.log(url)
+    this.state.messenger = new Firebase(url);
+    this.state.messenger.on('child_added', (snapshot) => {
+      var data = snapshot.val();
+      console.log('poop');
+
+      messages.push(data);
+
+      
+
+      this.setState({
+        messages: messages
+      });
+    });
+  },
+
+
+
 
   render: function() {
     
@@ -51,9 +83,15 @@ module.exports = React.createClass({
       .get('bunch')
       .value();      
 
-    if(bunch){
-      var id = {"id":bunch.objectId}
-    }
+     
+
+    
+
+
+
+
+
+
 
     return (
       <View style={Styles.body}>
@@ -62,10 +100,8 @@ module.exports = React.createClass({
           menuButton={this.props.menuButton}
         />       
 
-        <ChatContainer
-          user={this.props.user} 
-          bunch={id}
-        />
+        
+
         <ChatBar
           user={this.props.user}
         />
