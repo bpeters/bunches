@@ -7,9 +7,10 @@ var Firebase = require('firebase');
 var NavBar = require('../components/navBar');
 var ChatBar = require('../components/chatBar');
 var ChatContainer = require('../components/chatContainer');
+var StringButton = require('../components/stringButton');
 
 var defaultStyles = require('../styles');
-
+var config = require('../config');
 
 var {
   View,
@@ -34,57 +35,40 @@ module.exports = React.createClass({
   },
   getInitialState: function(){
     return {
-      messages: []
+      messages: [],
+      url: null,
     }
   },
   componentWillReceiveProps:  function(nextProps){
-    console.log('here')
-    var url = 'https://bunches.firebaseio.com/chat/' + nextProps.route.bunch.id.objectId;
-    var messages = _.cloneDeep(this.state.messages);
-    console.log(url)
-    this.state.messenger = new Firebase(url);
-    this.state.messenger.on('child_added', (snapshot) => {
-      var data = snapshot.val();
-      console.log('poop');
-
-      messages.push(data);
-
-      
-
-      this.setState({
-        messages: messages
+    if(this.props.route.bunch){
+      var url = config.firebase.url + this.props.route.bunch.id.objectId;
+      var messages = _.cloneDeep(this.state.messages);
+      this.state.messenger = new Firebase(url);
+      this.state.messenger.on('child_added', (snapshot) => {
+        var data = snapshot.val();
+        messages.push(data);
+        this.setState({
+          messages: messages,
+          url : url
+        });
       });
-    });
+    }   
   },
 
-
-
-
   render: function() {
-    
-      
-
-     
-
-    
-
-
-
-
-
-
-
     return (
       <View style={Styles.body}>
         <NavBar
-          title={bunch ? bunch.name : ''}
+          title={this.props.route.bunch ? this.props.route.bunch.name : ''}
           menuButton={this.props.menuButton}
-        />       
-
-        
-
+        />
+        <ChatContainer
+          user={this.props.user}
+          messages={this.state.messages}
+        />        
         <ChatBar
           user={this.props.user}
+          url={this.state.url}
         />
       </View>
     );

@@ -28,6 +28,7 @@ var Styles = StyleSheet.create({
   left: {
     flex: 1,
     alignItems: 'flex-start',
+    height: defaultStyles.navBarHeight,
   },
   center: {
     flex: 4,

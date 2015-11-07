@@ -3,9 +3,11 @@
 var React = require('react-native');
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
+var _ = require('lodash');
 
 var routes = require('./routes');
 var SideMenu = require('./containers/sideMenu');
+
 
 var {
   View,

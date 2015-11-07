@@ -8,7 +8,7 @@ var {StyleSheet} = React;
 var window = Dimensions.get('window');
 var navBarHeight = 56;
 var chatBarHeight = 76;
-var bodyHeight = window.height - navBarHeight - chatBarHeight;
+var bodyHeight = window.height - navBarHeight - chatBarHeight- 20;
 var bodyWidth= window.width;
 
 module.exports = {

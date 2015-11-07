@@ -1,14 +1,18 @@
 'use strict';
 
 var React = require('react-native');
+var Firebase = require('firebase');
 
 //var ChatInput = require('../elements/chatInput');
+
+var StringButton = require('../components/stringButton');
 
 var {
   Icon,
 } = require('react-native-icons');
 
 var defaultStyles = require('../styles');
+var config = require('../config');
 
 var {
   View,
@@ -53,23 +57,26 @@ var Styles = StyleSheet.create({
     borderRadius: 2,
   },
   input : {
-    left: 20,
+    left: 10,
     fontFamily: 'Roboto-light',
     color: defaultStyles.dark,
     height: 42,
-    width: defaultStyles.bodyWidth - 88
+    width: defaultStyles.bodyWidth - 58,
+    borderBottomWidth: 0,
+    borderWidth: 0,
   },
   icon: {
-    top: 10,
-    left: 10,
-    width: 24,
-    height: 24,
+    top: 5,
+    left: 3,
+    width: 30,
+    height: 30,
   },
 });
 
 module.exports = React.createClass({
   propTypes: {
     user: React.PropTypes.object,
+    url: React.PropTypes.string,
   },
   getInitialState: function () {
     return {
@@ -89,39 +96,43 @@ module.exports = React.createClass({
     }, 50);
   },
 
+  addChat: function() {
+    var chat = {
+      uid: this.props.user.id,
+      text: this.state.message,
+      time: new Date().getTime()
+    }
+    var ref = new Firebase(this.props.url);
+    ref.push().set(chat);
+  },
 
   render: function() {
     return (
-      <ScrollView
-        ref='scrollView'
-        keyboardDismissMode='on-drag'
-        style={Styles.scroll}
-        contentContainerStyle={Styles.contentContainerStyle}
-        scrollEnabled={this.state.scrollEnabled}
-      >
-        <View style={Styles.list}>
 
-        </View>
-        <View ref='chat' style={Styles.body}>
-          <View style={Styles.wrap}>
-
-          <TouchableHighlight onPress={this.addChat}>
-            <Icon
-              name='fontawesome|paper-plane'
-              size={24}
-              color='#b4b4b4'
-              style={Styles.icon}
-            />
-          </TouchableHighlight>
+      <View>      
+        <ScrollView
+          ref='scrollView'
+          keyboardDismissMode='on-drag'
+          style={Styles.scroll}
+          contentContainerStyle={Styles.contentContainerStyle}
+          scrollEnabled={this.state.scrollEnabled}
+        >
+       <View ref='chat' style={Styles.body}>
+          <View style={Styles.wrap}>         
             <TextInput
               style={Styles.input}
               onChangeText={(message) => this.setState({message})}
               value={this.state.message}
               onFocus={this.inputFocused.bind(this, 'chat')}
+              onSubmitEditing={this.addChat}
             />
           </View>
         </View>
       </ScrollView>
+      <StringButton
+        user={this.props.user}
+      />
+      </View>
     );
   }
 });

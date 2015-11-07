@@ -15,8 +15,8 @@ var {
 
 var Styles = StyleSheet.create({
   icon: {
-    top: 16,
-    left: 16,
+    top: 5,
+    left: 5,
     width: 24,
     height: 24,
   },
