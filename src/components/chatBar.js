@@ -3,11 +3,9 @@
 var React = require('react-native');
 var Firebase = require('firebase');
 
-var routes = require('../routes');
+var routes = require('../routes.js');
 var ChatButton = require('../elements/chatButton');
-
-console.log(routes);
-
+var NewChat = require('../containers/newChat');
 
 var {
   Icon,
@@ -111,7 +109,11 @@ module.exports = React.createClass({
     console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
     console.log(routes);
     console.log(routes.newChat);
-    // this.props.navigator.push(routes.newChat);
+    this.props.navigator.push({
+    name: "new chat",
+    component: NewChat,
+    hasSideMenu: true,
+  });
   },
   render: function() {
     return (
