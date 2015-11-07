@@ -4,8 +4,8 @@ var React = require('react-native');
 var Firebase = require('firebase');
 
 //var ChatInput = require('../elements/chatInput');
-
-var StringButton = require('../components/stringButton');
+var routes = require('./routes');
+var ChatButton = require('../elements/chatButton');
 
 var {
   Icon,
@@ -77,6 +77,7 @@ module.exports = React.createClass({
   propTypes: {
     user: React.PropTypes.object,
     url: React.PropTypes.string,
+    navigator: React.PropTypes.object,
   },
   getInitialState: function () {
     return {
@@ -95,7 +96,6 @@ module.exports = React.createClass({
       );
     }, 50);
   },
-
   addChat: function() {
     var chat = {
       uid: this.props.user.id,
@@ -105,11 +105,12 @@ module.exports = React.createClass({
     var ref = new Firebase(this.props.url);
     ref.push().set(chat);
   },
-
+  onChatButtonPress: function () {
+    this.props.navigator.push(routes.newChat);
+  },
   render: function() {
     return (
-
-      <View>      
+      <View>
         <ScrollView
           ref='scrollView'
           keyboardDismissMode='on-drag'
@@ -129,8 +130,9 @@ module.exports = React.createClass({
           </View>
         </View>
       </ScrollView>
-      <StringButton
+      <ChatButton
         user={this.props.user}
+        onPress={this.onChatButtonPress}
       />
       </View>
     );

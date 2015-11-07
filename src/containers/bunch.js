@@ -69,6 +69,7 @@ module.exports = React.createClass({
         <ChatBar
           user={this.props.user}
           url={this.state.url}
+          navigator={this.props.navigator}
         />
       </View>
     );

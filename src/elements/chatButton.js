@@ -45,19 +45,10 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     user: React.PropTypes.object,
+    onPress: React.PropsTypes.func,
   },
-  getInitialState: function () {
-    return {
-      message: null,
-      scrollEnabled: false,
-    };
-  },
-
-
   render: function() {
     return (
-    
-
       <View style={Styles.iconView}>
         <TouchableOpacity onPress={this.props.onPress}>
           <Icon
@@ -68,7 +59,6 @@ module.exports = React.createClass({
           />
         </TouchableOpacity>
       </View>
-   
     );
   }
 
