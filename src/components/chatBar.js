@@ -3,9 +3,11 @@
 var React = require('react-native');
 var Firebase = require('firebase');
 
-//var ChatInput = require('../elements/chatInput');
-var routes = require('./routes');
+var routes = require('../routes');
 var ChatButton = require('../elements/chatButton');
+
+console.log(routes);
+
 
 var {
   Icon,
@@ -96,7 +98,7 @@ module.exports = React.createClass({
       );
     }, 50);
   },
-  addChat: function() {
+  addChatMessage: function() {
     var chat = {
       uid: this.props.user.id,
       text: this.state.message,
@@ -106,7 +108,10 @@ module.exports = React.createClass({
     ref.push().set(chat);
   },
   onChatButtonPress: function () {
-    this.props.navigator.push(routes.newChat);
+    console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+    console.log(routes);
+    console.log(routes.newChat);
+    // this.props.navigator.push(routes.newChat);
   },
   render: function() {
     return (
@@ -125,7 +130,7 @@ module.exports = React.createClass({
               onChangeText={(message) => this.setState({message})}
               value={this.state.message}
               onFocus={this.inputFocused.bind(this, 'chat')}
-              onSubmitEditing={this.addChat}
+              onSubmitEditing={this.addChatMessage}
             />
           </View>
         </View>

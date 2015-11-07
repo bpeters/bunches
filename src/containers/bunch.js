@@ -7,7 +7,6 @@ var Firebase = require('firebase');
 var NavBar = require('../components/navBar');
 var ChatBar = require('../components/chatBar');
 var ChatContainer = require('../components/chatContainer');
-var StringButton = require('../components/stringButton');
 
 var defaultStyles = require('../styles');
 var config = require('../config');
@@ -75,3 +74,21 @@ module.exports = React.createClass({
     );
   }
 });
+
+
+
+// <View style={Styles.body}>
+//         <NavBar
+//           title={this.props.route.bunch ? this.props.route.bunch.name : ''}
+//           menuButton={this.props.menuButton}
+//         />
+//         <ChatContainer
+//           user={this.props.user}
+//           messages={this.state.messages}
+//         />        
+//         <ChatBar
+//           user={this.props.user}
+//           url={this.state.url}
+//           navigator={this.props.navigator}
+//         />
+//       </View>

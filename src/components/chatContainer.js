@@ -81,20 +81,6 @@ var Styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
-  hunter: {
-    flex:1,
-    flexDirection: 'column',
-  
-  },
-
-
-
-
-
-
-
-
-
 
 });
 
@@ -103,14 +89,7 @@ module.exports = React.createClass({
     user: React.PropTypes.object,
     messages: React.PropTypes.array,
   },
- 
-
-
-
-
   getInitialState: function() {
-    // var url = 'https://bunches.firebaseio.com/institution/' + this.props.user.institution + '/class/' + this.props.route.class.classId;
-
     return {
       message: null,
       
@@ -202,7 +181,7 @@ module.exports = React.createClass({
     return (    
 
         <View style={Styles.container}>
-          {this.renderChat()}
+          
         </View>
 
     );

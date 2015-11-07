@@ -3,8 +3,6 @@
 var React = require('react-native');
 
 
-//var ChatInput = require('../elements/chatInput');
-
 var {
   Icon,
 } = require('react-native-icons');
@@ -45,7 +43,8 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     user: React.PropTypes.object,
-    onPress: React.PropsTypes.func,
+    onPress: React.PropTypes.func,
+
   },
   render: function() {
     return (

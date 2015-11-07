@@ -3,12 +3,12 @@ var NewChat = require('./containers/newChat');
 
 module.exports = {
   bunch : {
-    name: 'bunch',
+    name: "bunch",
     component: Bunch,
     hasSideMenu: true,
   },
-   newChat : {
-    name: 'new chat',
+  newChat : {
+    name: "new chat",
     component: NewChat,
     hasSideMenu: true,
   },

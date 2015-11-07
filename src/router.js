@@ -33,6 +33,8 @@ module.exports= React.createClass({
       .get('bunch')
       .value();
 
+      console.log(routes);
+
     var Component = route.component;
 
     if (route.hasSideMenu) {
