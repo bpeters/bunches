@@ -4,9 +4,12 @@ var React = require('react-native');
 var _ = require('lodash');
 var Firebase = require('firebase');
 
-var NavBar = require('../components/navBar');
+var NavBarNoMenu = require('../components/navBarNoMenu');
 var ChatBar = require('../components/chatBar');
-var ChatContainer = require('../components/chatContainer');
+var AddChatContainer = require('../components/addChatContainer');
+
+
+var ChatButton = require('../elements/chatButton');
 
 var defaultStyles = require('../styles');
 var config = require('../config');
@@ -36,17 +39,51 @@ module.exports = React.createClass({
     return {
       messages: [],
       url: null,
+
+      firstChat: null,
+      title: null,
+
+      
     }
   },
 
+  addNewPhoto: function() {
+    console.log('hello');
+  },
+
+  addNewChat: function() {
+    var chat = {
+      "uid" : this.props.user.id,
+      "text" : this.state.firstChat,
+      "title" : this.state.title,
+      "time" : new Date().getTime()
+    }
+    console.log(chat);
+  },
+
+  goBackNav: function() {
+    this.props.navigator.jumpBack();
+  },
 
   render: function() {
     return (
+      
       <View style={Styles.body}>
-        <Text>
-          hello
-        </Text>
+        <NavBarNoMenu
+          title="Add New String"
+          onBackPress={this.goBackNav}
+          onSubmitPress={this.addNewChat}
+        />  
+
+        <AddChatContainer
+          title={this.state.title}
+          firstChat={this.state.firstChat}
+        />     
+       
       </View>
+
+
+
     );
   }
 });

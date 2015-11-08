@@ -11,14 +11,13 @@ var defaultStyles = require('../styles');
 var {
   TouchableOpacity,
   StyleSheet,
+  View
 } = React;
 
 var Styles = StyleSheet.create({
   icon: {
-    top: 5,
-    left: 5,
-    width: 24,
-    height: 24,
+    width: defaultStyles.navBarHeight,
+    height: defaultStyles.navBarHeight,
   },
 });
 
@@ -35,7 +34,7 @@ module.exports = React.createClass({
           color='#ffffff'
           style={Styles.icon}
         />
-      </TouchableOpacity>
+      </TouchableOpacity>     
     );
   }
 });

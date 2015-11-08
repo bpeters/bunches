@@ -2,15 +2,18 @@
 
 var React = require('react-native');
 
-var MenuButton = require('../elements/menuButton');
-
 var defaultStyles = require('../styles');
 
 var {
   Text,
   View,
   StyleSheet,
+  TouchableOpacity,
 } = React;
+
+var {
+  Icon,
+} = require('react-native-icons');
 
 var Styles = StyleSheet.create({
   body: {
@@ -28,55 +31,78 @@ var Styles = StyleSheet.create({
   left: {
     flex: 1,
     alignItems: 'flex-start',
-    height: defaultStyles.navBarHeight,
   },
   center: {
     flex: 4,
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'center',
   },
   right: {
     flex: 1,
     alignItems: 'flex-end',
+
   },
-  title: {    
+  title: {
     fontSize: 20,
     color: defaultStyles.white,
     fontFamily: 'Roboto-Medium',
   },
+  iconView: {
+    width: defaultStyles.navBarHeight,
+    height: defaultStyles.navBarHeight,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }, 
+  icon: {
+    width: defaultStyles.navBarHeight,
+    height: defaultStyles.navBarHeight,
+  },
 });
 
-var NavBar = React.createClass({
+module.exports = React.createClass({
   propTypes: {
     title: React.PropTypes.string,
-    menuButton: React.PropTypes.object,
-  },
-  onHandlePress: function(e) {
-    this.context.menuActions.toggle();
-    this.props.menuButton.onPress(e);
+    onBackPress: React.PropTypes.func,
+    onSubmitPress: React.PropTypes.func,
   },
   render: function() {
     return (
       <View style={Styles.body}>
+
         <View style={Styles.left}>
-          <MenuButton
-            onPress={this.onHandlePress}
-          />
+          <TouchableOpacity onPress={this.props.onBackPress}>
+            <Icon
+              name='fontawesome|times'
+              size={25}
+              color='#ffffff'
+              style={Styles.icon}
+            />
+          </TouchableOpacity>
         </View>
+        
         <View style={Styles.center}>
           <Text style={Styles.title}>
             {this.props.title}
           </Text>
         </View>
+
+
+
         <View style={Styles.right}>
+         <TouchableOpacity onPress={this.props.onSubmitPress}>
+            <Icon
+              name='fontawesome|check'
+              size={25}
+              color='#ffffff'
+              style={Styles.icon}
+            />
+          </TouchableOpacity>
         </View>
+
+
+
       </View>
     );
   }
 });
-
-NavBar.contextTypes = {
-  menuActions: React.PropTypes.object.isRequired
-};
-
-module.exports = NavBar;

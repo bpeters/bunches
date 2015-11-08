@@ -60,7 +60,7 @@ var Styles = StyleSheet.create({
     left: 10,
     fontFamily: 'Roboto-light',
     color: defaultStyles.dark,
-    height: 42,
+    height: 40,
     width: defaultStyles.bodyWidth - 58,
     borderBottomWidth: 0,
     borderWidth: 0,
@@ -106,14 +106,11 @@ module.exports = React.createClass({
     ref.push().set(chat);
   },
   onChatButtonPress: function () {
-    console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
-    console.log(routes);
-    console.log(routes.newChat);
     this.props.navigator.push({
-    name: "new chat",
-    component: NewChat,
-    hasSideMenu: true,
-  });
+      name: "new chat",
+      component: NewChat,
+      hasSideMenu: false,
+    });
   },
   render: function() {
     return (
@@ -133,6 +130,7 @@ module.exports = React.createClass({
               value={this.state.message}
               onFocus={this.inputFocused.bind(this, 'chat')}
               onSubmitEditing={this.addChatMessage}
+              underlineColorAndroid={defaultStyles.light}
             />
           </View>
         </View>

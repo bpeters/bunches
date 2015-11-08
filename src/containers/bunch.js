@@ -38,23 +38,66 @@ module.exports = React.createClass({
       url: null,
     }
   },
-  componentWillReceiveProps:  function(nextProps){
-    if(this.props.route.bunch){
-      var url = config.firebase.url + this.props.route.bunch.id.objectId;
-      var messages = _.cloneDeep(this.state.messages);
-      this.state.messenger = new Firebase(url);
-      this.state.messenger.on('child_added', (snapshot) => {
+
+  cleanChat: function(url) {
+    var a = new Date();
+    var b = a.getFullYear() + '-' + a.getMonth() + '-' + a.getDate();
+    var f = null;
+    var messages = _.cloneDeep(this.state.messages);
+    this.state.messenger = new Firebase(url);
+      this.state.messenger.orderByChild('time').limitToLast(10).on('child_added', (snapshot) => {
         var data = snapshot.val();
-        messages.push(data);
+        var c = new Date(data.time);
+        data.time = c.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true});
+        var d = c.getFullYear() + '-' + c.getMonth() + '-' + c.getDate(); 
+        if(Date.parse(d)<=Date.parse(b)){
+          if(f!=c.toLocaleDateString()){
+            var e = {
+              "breaker": c.toLocaleDateString()
+            };
+            if(Date.parse(d)==Date.parse(b)){
+              e = {
+                "breaker": "Today"
+              }
+            }
+            f = c.toLocaleDateString();
+            messages.push(e);
+          }          
+        }         
+        messages.push(data);        
         this.setState({
           messages: messages,
           url : url
         });
       });
+  },
+
+
+
+  componentWillReceiveProps:  function(nextProps){
+
+    // this.setState({
+    //   route: nextProps.route > this.props.route
+    // });
+    // var isEmpty = this.props.route.length === 0;
+    // if(isEmpty) {
+    //   console.log('empty')
+    // } else {
+    //   console.log('full');
+    // }
+    // console.log(this.state);
+    // console.log(this.props.route.bunch);
+    if(this.props.route.bunch){
+      var url = config.firebase.url + this.props.route.bunch.id.objectId;      
+      this.cleanChat(url);
     }   
   },
 
   render: function() {
+
+
+
+
     return (
       <View style={Styles.body}>
         <NavBar

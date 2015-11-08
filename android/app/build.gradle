@@ -29,6 +29,8 @@ dependencies {
 
     // New
     compile 'com.facebook.react:react-native:0.13.+'
+
+    //compile project(':ReactAndroid')
     compile project(':react-native-icons')
 
     
