@@ -87,10 +87,12 @@ module.exports = React.createClass({
     // }
     // console.log(this.state);
     // console.log(this.props.route.bunch);
-    if(this.props.route.bunch){
-      var url = config.firebase.url + this.props.route.bunch.id.objectId;      
-      this.cleanChat(url);
-    }   
+
+    
+    // if(this.props.route.bunch){
+    //   var url = config.firebase.url + this.props.route.bunch.id.objectId;      
+    //   this.cleanChat(url);
+    // }   
   },
 
   render: function() {

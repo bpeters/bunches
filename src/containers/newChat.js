@@ -39,17 +39,46 @@ module.exports = React.createClass({
     return {
       messages: [],
       url: null,
-
       firstChat: null,
-      title: null,
-
-      
+      title: null,      
     }
   },
 
   addNewPhoto: function() {
     console.log('hello');
   },
+
+
+
+  intializeBunch: function(user) {
+    var query = new Parse.Query('Bunch');
+    query.equalTo('name', 'Global');
+    query.first({
+      success: (bunch) => {
+        ParseReact.Mutation.Create('Bunch2User', {
+          bunch: bunch,
+          user: user,
+          isMain: true,
+        })
+        .dispatch()
+        .then(() => {
+          this.setState({
+            user: user
+          });
+        });
+      },
+      error: (error) => {
+        this.handleParseError(error);
+      }
+    });
+  },
+
+
+
+
+
+
+
 
   addNewChat: function() {
     var chat = {
@@ -65,6 +94,10 @@ module.exports = React.createClass({
     this.props.navigator.jumpBack();
   },
 
+  onChildChanged: function(newState) {
+    this.setState(newState);
+  },
+
   render: function() {
     return (
       
@@ -78,6 +111,7 @@ module.exports = React.createClass({
         <AddChatContainer
           title={this.state.title}
           firstChat={this.state.firstChat}
+          callbackParent={this.onChildChanged}
         />     
        
       </View>

@@ -71,10 +71,15 @@ module.exports = React.createClass({
   },
   getInitialState: function() {
     return {
-      title: "poop",
-      firstChat: "shit",
+      "title": this.props.title,
+      "firstChat": this.props.firstChat,
     };
   },
+  onChanged: function(key) {
+    this.setState(key);
+    this.props.callbackParent(key);
+  },
+
   render: function() {
     return (    
 
@@ -95,7 +100,7 @@ module.exports = React.createClass({
               </Text>
               <TextInput
                 style={Styles.input}
-                onChangeText={(title) => this.setState({title})}
+                onChangeText={(title) => this.onChanged({title})}
                 value={this.state.title}
               />
             </View>
@@ -106,7 +111,7 @@ module.exports = React.createClass({
               </Text>
               <TextInput
                 style={Styles.input}
-                onChangeText={(firstChat) => this.setState({firstChat})}
+                onChangeText={(firstChat) => this.onChanged({firstChat})}
                 value={this.state.firstChat}
                 multiline={false}
                 numberOfLines={1}
