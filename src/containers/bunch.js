@@ -2,14 +2,15 @@
 
 var React = require('react-native');
 var _ = require('lodash');
-var Firebase = require('firebase');
+var Parse = require('parse/react-native');
+var ParseReact = require('parse-react/react-native');
 
 var NavBar = require('../components/navBar');
-var ChatBar = require('../components/chatBar');
-var ChatContainer = require('../components/chatContainer');
+var BunchContainer = require('../components/bunchContainer');
+var NewChat = require('./newChat');
+var ActionButton = require('../elements/actionButton');
 
 var defaultStyles = require('../styles');
-var config = require('../config');
 
 var {
   View,
@@ -23,117 +24,62 @@ var Styles = StyleSheet.create({
   body: {
     backgroundColor: defaultStyles.background,
   },
+  container: {
+    height:defaultStyles.bodyHeight,
+  },
+  actionButton: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+  }
 });
 
 module.exports = React.createClass({
+  mixins: [ParseReact.Mixin],
   propTypes: {
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
     user: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
-  getInitialState: function(){
+  observe: function() {
+    var bunch = _.get(this, 'props.route.bunch');
+
     return {
-      messages: [],
-      url: null,
-    }
+      chats: (new Parse.Query('Chat'))
+        .equalTo('belongsTo', bunch)
+        .equalTo('isDead', false)
+        .include('createdBy')
+        .ascending("expirationDate"),
+    };
   },
-
-  cleanChat: function(url) {
-    var a = new Date();
-    var b = a.getFullYear() + '-' + a.getMonth() + '-' + a.getDate();
-    var f = null;
-    var messages = _.cloneDeep(this.state.messages);
-    this.state.messenger = new Firebase(url);
-      this.state.messenger.orderByChild('time').limitToLast(10).on('child_added', (snapshot) => {
-        var data = snapshot.val();
-        var c = new Date(data.time);
-        data.time = c.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true});
-        var d = c.getFullYear() + '-' + c.getMonth() + '-' + c.getDate(); 
-        if(Date.parse(d)<=Date.parse(b)){
-          if(f!=c.toLocaleDateString()){
-            var e = {
-              "breaker": c.toLocaleDateString()
-            };
-            if(Date.parse(d)==Date.parse(b)){
-              e = {
-                "breaker": "Today"
-              }
-            }
-            f = c.toLocaleDateString();
-            messages.push(e);
-          }          
-        }         
-        messages.push(data);        
-        this.setState({
-          messages: messages,
-          url : url
-        });
-      });
+  onActionButtonPress: function () {
+    this.props.navigator.push({
+      name: "new chat",
+      component: NewChat,
+      hasSideMenu: false,
+      bunch: this.props.route.bunch,
+    });
   },
-
-
-
-  componentWillReceiveProps:  function(nextProps){
-
-    // this.setState({
-    //   route: nextProps.route > this.props.route
-    // });
-    // var isEmpty = this.props.route.length === 0;
-    // if(isEmpty) {
-    //   console.log('empty')
-    // } else {
-    //   console.log('full');
-    // }
-    // console.log(this.state);
-    // console.log(this.props.route.bunch);
-
-    
-    // if(this.props.route.bunch){
-    //   var url = config.firebase.url + this.props.route.bunch.id.objectId;      
-    //   this.cleanChat(url);
-    // }   
-  },
-
   render: function() {
-
-
-
+    var title = _.get(this, 'props.route.bunch.name');
+    var chats = this.data.chats;
 
     return (
       <View style={Styles.body}>
         <NavBar
-          title={this.props.route.bunch ? this.props.route.bunch.name : ''}
+          title={title}
           menuButton={this.props.menuButton}
         />
-        <ChatContainer
+        <BunchContainer
           user={this.props.user}
-          messages={this.state.messages}
-        />        
-        <ChatBar
-          user={this.props.user}
-          url={this.state.url}
           navigator={this.props.navigator}
+          chats={chats}
         />
+        <View style={Styles.actionButton}>
+          {this.props.route.bunch ? <ActionButton onPress={this.onActionButtonPress} /> : null}
+        </View>
       </View>
     );
   }
 });
-
-
-
-// <View style={Styles.body}>
-//         <NavBar
-//           title={this.props.route.bunch ? this.props.route.bunch.name : ''}
-//           menuButton={this.props.menuButton}
-//         />
-//         <ChatContainer
-//           user={this.props.user}
-//           messages={this.state.messages}
-//         />        
-//         <ChatBar
-//           user={this.props.user}
-//           url={this.state.url}
-//           navigator={this.props.navigator}
-//         />
-//       </View>

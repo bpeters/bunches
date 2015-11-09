@@ -11,7 +11,6 @@ var defaultStyles = require('../styles');
 var {
   TouchableOpacity,
   StyleSheet,
-  View
 } = React;
 
 var Styles = StyleSheet.create({
@@ -24,17 +23,18 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     onPress: React.PropTypes.func,
+    icon: React.PropTypes.string,
   },
   render: function() {
     return (
       <TouchableOpacity onPress={this.props.onPress}>
         <Icon
-          name='fontawesome|bars'
+          name={this.props.icon}
           size={24}
           color='#ffffff'
           style={Styles.icon}
         />
-      </TouchableOpacity>     
+      </TouchableOpacity>
     );
   }
 });

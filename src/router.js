@@ -24,7 +24,7 @@ module.exports= React.createClass({
       bunches: (new Parse.Query('Bunch2User'))
         .equalTo('user', this.props.user)
         .equalTo('isMain', true)
-        .include("bunch"),
+        .include('bunch'),
     };
   },
   renderScene: function(route, navigator) {

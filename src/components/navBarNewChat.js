@@ -10,7 +10,12 @@ var {
   Text,
   View,
   StyleSheet,
+  TouchableOpacity,
 } = React;
+
+var {
+  Icon,
+} = require('react-native-icons');
 
 var Styles = StyleSheet.create({
   body: {
@@ -28,40 +33,48 @@ var Styles = StyleSheet.create({
   left: {
     flex: 1,
     alignItems: 'flex-start',
-    height: defaultStyles.navBarHeight,
   },
   center: {
     flex: 4,
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'center',
   },
   right: {
     flex: 1,
     alignItems: 'flex-end',
+
   },
-  title: {    
+  title: {
     fontSize: 20,
     color: defaultStyles.white,
     fontFamily: 'Roboto-Medium',
   },
+  iconView: {
+    width: defaultStyles.navBarHeight,
+    height: defaultStyles.navBarHeight,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }, 
+  icon: {
+    width: defaultStyles.navBarHeight,
+    height: defaultStyles.navBarHeight,
+  },
 });
 
-var NavBar = React.createClass({
+module.exports = React.createClass({
   propTypes: {
     title: React.PropTypes.string,
-    menuButton: React.PropTypes.object,
-  },
-  onHandlePress: function(e) {
-    this.context.menuActions.toggle();
-    this.props.menuButton.onPress(e);
+    onBackPress: React.PropTypes.func,
+    onSubmitPress: React.PropTypes.func,
   },
   render: function() {
     return (
       <View style={Styles.body}>
         <View style={Styles.left}>
           <IconButton
-            onPress={this.onHandlePress}
-            icon='fontawesome|bars'
+            onPress={this.props.onBackPress}
+            icon='fontawesome|times'
           />
         </View>
         <View style={Styles.center}>
@@ -70,14 +83,12 @@ var NavBar = React.createClass({
           </Text>
         </View>
         <View style={Styles.right}>
+          <IconButton
+            onPress={this.props.onSubmitPress}
+            icon='fontawesome|check'
+          />
         </View>
       </View>
     );
   }
 });
-
-NavBar.contextTypes = {
-  menuActions: React.PropTypes.object.isRequired
-};
-
-module.exports = NavBar;

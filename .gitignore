@@ -60,4 +60,4 @@ build/Release
 node_modules
 
 # Configuration file
-src/config.js
+src/config/default.js

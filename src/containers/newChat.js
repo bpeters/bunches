@@ -2,17 +2,16 @@
 
 var React = require('react-native');
 var _ = require('lodash');
+var moment = require('moment');
+var Parse = require('parse/react-native');
+var ParseReact = require('parse-react/react-native');
 var Firebase = require('firebase');
+var config = require('../config/default');
 
-var NavBarNoMenu = require('../components/navBarNoMenu');
-var ChatBar = require('../components/chatBar');
-var AddChatContainer = require('../components/addChatContainer');
-
-
-var ChatButton = require('../elements/chatButton');
+var NewChatContainer = require('../components/newChatContainer');
+var NavBarNewChat = require('../components/navBarNewChat');
 
 var defaultStyles = require('../styles');
-var config = require('../config');
 
 var {
   View,
@@ -37,87 +36,80 @@ module.exports = React.createClass({
   },
   getInitialState: function(){
     return {
-      messages: [],
-      url: null,
-      firstChat: null,
-      title: null,      
+      title: null,
+      message: null,
+      error: null,
     }
   },
-
-  addNewPhoto: function() {
-    console.log('hello');
+  goBackNav: function() {
+    this.props.navigator.pop();
   },
+  addNewChat: function() {
+    var bunch = this.props.route.bunch;
+    var expirationDate = moment().add(bunch.ttl, 'ms').format();
 
+    if (this.state.title) {
+      ParseReact.Mutation.Create('Chat', {
+        name: this.state.title,
+        expirationDate: new Date(expirationDate),
+        belongsTo: bunch,
+        createdBy: this.props.user,
+        isDead: false,
+      })
+      .dispatch()
+      .then((chat) => {
+        
+        var url = config.firebase.url + '/bunch/' + bunch.objectId + '/chat/' + chat.objectId;
 
+        new Firebase(url).push({
+          uid: this.props.user.id,
+          message: this.state.message,
+          time: new Date().getTime(),
+        });
 
-  intializeBunch: function(user) {
-    var query = new Parse.Query('Bunch');
-    query.equalTo('name', 'Global');
-    query.first({
-      success: (bunch) => {
-        ParseReact.Mutation.Create('Bunch2User', {
-          bunch: bunch,
-          user: user,
-          isMain: true,
+        ParseReact.Mutation.Create('Chat2User', {
+          chat: chat,
+          user: this.props.user,
+          text: this.state.message,
         })
         .dispatch()
         .then(() => {
-          this.setState({
-            user: user
-          });
-        });
-      },
-      error: (error) => {
-        this.handleParseError(error);
-      }
-    });
-  },
-
-
-
-
-
-
-
-
-  addNewChat: function() {
-    var chat = {
-      "uid" : this.props.user.id,
-      "text" : this.state.firstChat,
-      "title" : this.state.title,
-      "time" : new Date().getTime()
+          this.props.navigator.pop();
+        })
+      });
+    } else {
+      this.setState({
+        error: 'Missing Title'
+      });
     }
-    console.log(chat);
-  },
 
-  goBackNav: function() {
-    this.props.navigator.jumpBack();
   },
-
-  onChildChanged: function(newState) {
-    this.setState(newState);
+  onTitleChange: function(title) {
+    this.setState({title});
   },
-
+  onMessageChange: function(message) {
+    this.setState({message});
+  },
+  onAddPhoto: function() {
+    console.log('add photo')
+  },
   render: function() {
     return (
-      
       <View style={Styles.body}>
-        <NavBarNoMenu
-          title="Add New String"
+        <NavBarNewChat
+          title="Create New Chat"
           onBackPress={this.goBackNav}
           onSubmitPress={this.addNewChat}
         />  
-
-        <AddChatContainer
+        <NewChatContainer
+          error={this.state.error}
           title={this.state.title}
-          firstChat={this.state.firstChat}
-          callbackParent={this.onChildChanged}
-        />     
-       
+          message={this.state.message}
+          onTitleChange={this.onTitleChange}
+          onMessageChange={this.onMessageChange}
+          onAddPhoto={this.onAddPhoto}
+        />
       </View>
-
-
-
     );
   }
 });

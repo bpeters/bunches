@@ -6,7 +6,7 @@ var ParseReact = require('parse-react/react-native');
 
 var Router = require('./router');
 var Splash = require('./elements/splash');
-var config = require('./config');
+var config = require('./config/default');
 
 Parse.initialize(config.parse.applicationId, config.parse.key);
 

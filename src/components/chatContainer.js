@@ -2,11 +2,7 @@
 
 var React = require('react-native');
 var _ = require('lodash');
-var Firebase = require('firebase');
-
-var {
-  Icon,
-} = require('react-native-icons');
+var moment = require('moment');
 
 var defaultStyles = require('../styles');
 
@@ -21,10 +17,9 @@ var {
   Image,
 } = React;
 
-
 var Styles = StyleSheet.create({
   container: {
-    height:defaultStyles.bodyHeight,
+    height:defaultStyles.bodyHeight - defaultStyles.chatBarHeight - defaultStyles.navBarHeight,
   },
   row: {
     flex:1,
@@ -35,12 +30,11 @@ var Styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
   },
-  
   thumbnail: {
     height: 60,
     width: 60,
     borderRadius: 60,
-    justifyContent: 'center',    
+    justifyContent: 'center',
   },
   info: {
     flex:1,
@@ -94,10 +88,6 @@ var Styles = StyleSheet.create({
     color: defaultStyles.medium,
     fontSize: 15,
   }
-
-
-
-
 });
 
 module.exports = React.createClass({
@@ -114,7 +104,6 @@ module.exports = React.createClass({
     };
   },
   renderChatRow: function(rowData) {
-
     if(rowData.breaker){
       return (
         <View style={Styles.break}>
@@ -130,50 +119,35 @@ module.exports = React.createClass({
 
     } else {
       return (
-        <View style={Styles.row}>        
+        <View style={Styles.row}>
           <View style={Styles.image}>
             <Image
               style={Styles.thumbnail}
-              source={{uri: rowData.thumbnail || 'http://img2.wikia.nocookie.net/__cb20130607025329/creepypasta/images/3/38/Avatar-blank.jpg'}}
+              source={{uri: _.get(rowData, 'user.imageURL') || 'http://img2.wikia.nocookie.net/__cb20130607025329/creepypasta/images/3/38/Avatar-blank.jpg'}}
             />
           </View>
-          <View style={Styles.info}>                
+          <View style={Styles.info}>
             <View style={Styles.user}>
               <Text style={Styles.name}>
-                {rowData.username || 'Anon'}
+                {_.get(rowData, 'user.name') || 'Anon'}
               </Text>
               <View style={Styles.date}>
                 <Text style={Styles.time}>
-                  {rowData.time}
+                  {moment(rowData.time).fromNow()}
                 </Text>
-              </View>              
-            </View>      
+              </View>
+            </View>
             <View style={Styles.chat}>
               <Text style={Styles.chatRowText}>
-                {rowData.text}
+                {rowData.message}
               </Text>
             </View>
           </View>
         </View>
       );
     }
-
-    
   },
-  renderChat: function() {
-    // var item = [{
-    //   "text" : "hello billy, this is my dhjl kljd gldjshg kgdashdg skgsd dgjdgsa jgslkj gsdalkjgdlk dsljgdslk dgslkjgdsk jgjsdalg jgsdlkjdgaslkj gl jdgslkjg dsljgsdlkjdgslajl",
-    //   "thumbnail" : "https://s-media-cache-ak0.pinimg.com/736x/4a/35/bb/4a35bb4d02f4fca2a3bd2826a2432ed3.jpg",
-    //   "time" : 1446930189475,
-    //   "uid" : "111",
-    //   "username" : "The Devil"
-    // }];
-    // var a = new Date(item[0].time);
-    // console.log(a);
-    // var b = a.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true});
-    // console.log(b);
-    // var item = [{'breaker':'Today'}];
-
+  render: function() {
     return (
       <View style={Styles.container}>
         <ListView
@@ -181,13 +155,6 @@ module.exports = React.createClass({
           renderRow={this.renderChatRow}
           automaticallyAdjustContentInsets={false}
         />
-      </View>
-    );
-  },
-  render: function() {
-    return (  
-      <View style={Styles.container}>
-        {this.renderChat()}
       </View>
     );
   }

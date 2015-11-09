@@ -2,7 +2,6 @@
 
 var React = require('react-native');
 
-
 var {
   Icon,
 } = require('react-native-icons');
@@ -17,50 +16,36 @@ var {
 
 var Styles = StyleSheet.create({  
   iconView: {
-    position: 'absolute',
-    width: 70,
-    height: 70,
-    borderRadius: 70,
-    bottom: 50,
-    right: 15,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: defaultStyles.red,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   }, 
   icon: {
-    width: 70,
-    height: 70,
-
-  },
-  iconText: {
-    color: "#fff",
-    fontWeight: "normal",
-    fontSize: 35,
+    width: 24,
+    height: 24,
   },
 });
 
 module.exports = React.createClass({
   propTypes: {
-    user: React.PropTypes.object,
     onPress: React.PropTypes.func,
-
   },
   render: function() {
     return (
-      <View style={Styles.iconView}>
-        <TouchableOpacity onPress={this.props.onPress}>
+      <TouchableOpacity onPress={this.props.onPress}>
+        <View style={Styles.iconView}>
           <Icon
             name='fontawesome|plus'
-            size={25}
+            size={24}
             color='#ffffff'
             style={Styles.icon}
           />
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
     );
   }
-
-
-
 });

@@ -3,8 +3,6 @@
 var React = require('react-native');
 var Firebase = require('firebase');
 
-var routes = require('../routes.js');
-var ChatButton = require('../elements/chatButton');
 var NewChat = require('../containers/newChat');
 
 var {
@@ -12,7 +10,6 @@ var {
 } = require('react-native-icons');
 
 var defaultStyles = require('../styles');
-var config = require('../config');
 
 var {
   View,
@@ -76,7 +73,7 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     user: React.PropTypes.object,
-    url: React.PropTypes.string,
+    messenger: React.PropTypes.object,
     navigator: React.PropTypes.object,
   },
   getInitialState: function () {
@@ -97,19 +94,10 @@ module.exports = React.createClass({
     }, 50);
   },
   addChatMessage: function() {
-    var chat = {
+    this.props.messenger.push({
       uid: this.props.user.id,
-      text: this.state.message,
+      message: this.state.message,
       time: new Date().getTime()
-    }
-    var ref = new Firebase(this.props.url);
-    ref.push().set(chat);
-  },
-  onChatButtonPress: function () {
-    this.props.navigator.push({
-      name: "new chat",
-      component: NewChat,
-      hasSideMenu: false,
     });
   },
   render: function() {
@@ -122,23 +110,19 @@ module.exports = React.createClass({
           contentContainerStyle={Styles.contentContainerStyle}
           scrollEnabled={this.state.scrollEnabled}
         >
-       <View ref='chat' style={Styles.body}>
-          <View style={Styles.wrap}>         
-            <TextInput
-              style={Styles.input}
-              onChangeText={(message) => this.setState({message})}
-              value={this.state.message}
-              onFocus={this.inputFocused.bind(this, 'chat')}
-              onSubmitEditing={this.addChatMessage}
-              underlineColorAndroid={defaultStyles.light}
-            />
+         <View ref='chat' style={Styles.body}>
+            <View style={Styles.wrap}>         
+              <TextInput
+                style={Styles.input}
+                onChangeText={(message) => this.setState({message})}
+                value={this.state.message}
+                onFocus={this.inputFocused.bind(this, 'chat')}
+                onSubmitEditing={this.addChatMessage}
+                underlineColorAndroid={defaultStyles.light}
+              />
+            </View>
           </View>
-        </View>
-      </ScrollView>
-      <ChatButton
-        user={this.props.user}
-        onPress={this.onChatButtonPress}
-      />
+        </ScrollView>
       </View>
     );
   }
