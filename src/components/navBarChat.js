@@ -46,22 +46,18 @@ var Styles = StyleSheet.create({
   },
 });
 
-var NavBar = React.createClass({
+module.exports = React.createClass({
   propTypes: {
     title: React.PropTypes.string,
-    menuButton: React.PropTypes.object,
-  },
-  onHandlePress: function(e) {
-    this.context.menuActions.toggle();
-    this.props.menuButton.onPress(e);
+    onBackPress: React.PropTypes.func,
   },
   render: function() {
     return (
       <View style={Styles.body}>
         <View style={Styles.left}>
           <IconButton
-            onPress={this.onHandlePress}
-            icon='fontawesome|bars'
+            onPress={this.props.onBackPress}
+            icon='fontawesome|arrow-left'
           />
         </View>
         <View style={Styles.center}>
@@ -75,9 +71,3 @@ var NavBar = React.createClass({
     );
   }
 });
-
-NavBar.contextTypes = {
-  menuActions: React.PropTypes.object.isRequired
-};
-
-module.exports = NavBar;

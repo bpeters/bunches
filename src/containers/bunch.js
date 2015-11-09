@@ -1,26 +1,37 @@
 'use strict';
 
 var React = require('react-native');
+var _ = require('lodash');
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
-var _ = require('lodash');
 
 var NavBar = require('../components/navBar');
-var ChatBar = require('../components/chatBar');
+var BunchContainer = require('../components/bunchContainer');
+var NewChat = require('./newChat');
+var ActionButton = require('../elements/actionButton');
 
 var defaultStyles = require('../styles');
 
 var {
   View,
-  TextInput,
-  Text,
   StyleSheet,
+  Platform,
+  Text,
+  ListView,
 } = React;
 
 var Styles = StyleSheet.create({
   body: {
     backgroundColor: defaultStyles.background,
   },
+  container: {
+    height:defaultStyles.bodyHeight,
+  },
+  actionButton: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+  }
 });
 
 module.exports = React.createClass({
@@ -32,29 +43,42 @@ module.exports = React.createClass({
     menuButton: React.PropTypes.object,
   },
   observe: function() {
+    var bunch = _.get(this, 'props.route.bunch');
+
     return {
-      bunches: (new Parse.Query('Bunch2User'))
-        .equalTo('user', this.props.user)
-        .equalTo('isMain', true)
-        .include("bunch"),
+      chats: (new Parse.Query('Chat'))
+        .equalTo('belongsTo', bunch)
+        .equalTo('isDead', false)
+        .include('createdBy')
+        .ascending("expirationDate"),
     };
   },
+  onActionButtonPress: function () {
+    this.props.navigator.push({
+      name: "new chat",
+      component: NewChat,
+      hasSideMenu: false,
+      bunch: this.props.route.bunch,
+    });
+  },
   render: function() {
-
-    var bunch = _.chain(this.data.bunches)
-      .first()
-      .get('bunch')
-      .value();
+    var title = _.get(this, 'props.route.bunch.name');
+    var chats = this.data.chats;
 
     return (
       <View style={Styles.body}>
         <NavBar
-          title={bunch ? bunch.name : ''}
+          title={title}
           menuButton={this.props.menuButton}
         />
-        <ChatBar
+        <BunchContainer
           user={this.props.user}
+          navigator={this.props.navigator}
+          chats={chats}
         />
+        <View style={Styles.actionButton}>
+          {this.props.route.bunch ? <ActionButton onPress={this.onActionButtonPress} /> : null}
+        </View>
       </View>
     );
   }

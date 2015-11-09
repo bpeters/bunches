@@ -3,10 +3,12 @@
 var React = require('react-native');
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
-Parse.initialize("dsgXdFhexcMreakStwdqPqNLY0tUjMzGFKsF6g5H", "T0bfFv1Tt7av6go36WcIWmnmYDqi1ciSHZtDwC0Z");
 
 var Router = require('./router');
 var Splash = require('./elements/splash');
+var config = require('./config/default');
+
+Parse.initialize(config.parse.applicationId, config.parse.key);
 
 module.exports= React.createClass({
   getInitialState: function () {
