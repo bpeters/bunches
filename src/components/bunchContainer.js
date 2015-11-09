@@ -13,6 +13,7 @@ var {
   Text,
   ListView,
   StyleSheet,
+  Image,
 } = React;
 
 var Styles = StyleSheet.create({
@@ -26,7 +27,7 @@ var Styles = StyleSheet.create({
     marginLeft: 16,
   },
   rowHeader: {
-    height: 72,
+    height: 200,
     backgroundColor: defaultStyles.white,
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4,
@@ -38,7 +39,7 @@ var Styles = StyleSheet.create({
     borderRightWidth: 1,
   },
   rowBody: {
-    height: 72,
+    height: 200,
     backgroundColor: defaultStyles.white,
     borderBottomLeftRadius: 4,
     borderBottomRightRadius: 4,
@@ -61,6 +62,10 @@ var Styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Roboto-Regular', 
     color: defaultStyles.medium,
+  },
+  captured: {
+    height: 176,
+    width: defaultStyles.bodyWidth,      
   },
 });
 
@@ -86,20 +91,45 @@ module.exports = React.createClass({
     });
   },
   renderChatRow: function(rowData) {
-    return (
-      <TouchableOpacity onPress={() => this.onPressRow(rowData)}>
-        <View style={Styles.row}>
-          <View style={Styles.rowHeader}>
-            <Text style={Styles.userName}>
-              {rowData.createdBy.name}
-            </Text>
-            <Text style={Styles.chatTitle}>
-              {rowData.name}
-            </Text>
+    if(rowData.image){
+      return (
+        <TouchableOpacity onPress={() => this.onPressRow(rowData)}>
+          <View style={Styles.row}>
+            <View style={Styles.rowHeader}>
+              <Text style={Styles.userName}>
+                {rowData.createdBy.name}
+              </Text>
+              <Text style={Styles.chatTitle}>
+                {rowData.name}
+              </Text>
+              <Image
+                source={{
+                  uri: rowData.image._url,
+                }}
+                style={Styles.captured}
+              />
+            </View>
           </View>
-        </View>
-      </TouchableOpacity>
-    );
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <TouchableOpacity onPress={() => this.onPressRow(rowData)}>
+          <View style={Styles.row}>
+            <View style={Styles.rowHeader}>
+              <Text style={Styles.userName}>
+                {rowData.createdBy.name}
+              </Text>
+              <Text style={Styles.chatTitle}>
+                {rowData.name}
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      );
+    }
+    // console.log(rowData);
+    
   },
   render: function() {
     return (

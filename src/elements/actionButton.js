@@ -39,7 +39,7 @@ module.exports = React.createClass({
       <TouchableOpacity onPress={this.props.onPress}>
         <View style={Styles.iconView}>
           <Icon
-            name='fontawesome|plus'
+            name='ion|plus'
             size={24}
             color='#ffffff'
             style={Styles.icon}

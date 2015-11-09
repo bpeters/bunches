@@ -61,7 +61,7 @@ var NavBar = React.createClass({
         <View style={Styles.left}>
           <IconButton
             onPress={this.onHandlePress}
-            icon='fontawesome|bars'
+            icon='material|menu'
           />
         </View>
         <View style={Styles.center}>

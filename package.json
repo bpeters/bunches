@@ -13,6 +13,7 @@
     "parse": "1.6.8",
     "parse-react": "0.5.0",
     "react": "0.14.2",
+    "react-image": "^0.1.0",
     "react-native": "0.13.2",
     "react-native-icons": "^0.6.1",
     "react-native-invertible-scroll-view": "0.1.2",

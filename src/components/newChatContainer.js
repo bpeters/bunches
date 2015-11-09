@@ -65,7 +65,11 @@ var Styles = StyleSheet.create({
     position: 'absolute',
     top: 148,
     right: 16,
-  }
+  },
+  captured: {
+    height: 176,
+    width: defaultStyles.bodyWidth,      
+  },
 });
 
 module.exports = React.createClass({
@@ -73,6 +77,7 @@ module.exports = React.createClass({
     error: React.PropTypes.string,
     title: React.PropTypes.string,
     chat: React.PropTypes.string,
+    photo: React.PropTypes.string,
     onTitleChange: React.PropTypes.func,
     onMessageChange: React.PropTypes.func,
     onAddPhoto: React.PropTypes.func,
@@ -80,11 +85,40 @@ module.exports = React.createClass({
   render: function() {
     return (
       <View style={Styles.container}>
+
+
+
+
+
         <View style={Styles.image}>
-          <Text style={Styles.imageText}>
+          <Image
+          source={{
+            isStatic: true,
+            uri: 'data:image/jpeg;base64,' + this.props.photo,
+          }}
+          style={Styles.captured}
+          />
+
+        
+
+
+          <Text style={Styles.imageText}>            
             (Optional) Upload Photo
           </Text>
+
+
+
+
         </View>
+
+
+
+
+
+
+
+
+
         <View style={Styles.fields}>
           <View style={Styles.field}>
             <Text style={Styles.title}>
@@ -95,6 +129,7 @@ module.exports = React.createClass({
                 style={Styles.input}
                 onChangeText={(title) => this.props.onTitleChange(title)}
                 value={this.props.title}
+                underlineColorAndroid="none"
               />
             </View>
           </View>
@@ -107,6 +142,7 @@ module.exports = React.createClass({
                 style={Styles.input}
                 onChangeText={(message) => this.props.onMessageChange(message)}
                 value={this.props.message}
+                underlineColorAndroid="none"
               />
             </View>
           </View>
@@ -123,3 +159,5 @@ module.exports = React.createClass({
     );
   }
 });
+
+
