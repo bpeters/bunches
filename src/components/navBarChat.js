@@ -57,7 +57,7 @@ module.exports = React.createClass({
         <View style={Styles.left}>
           <IconButton
             onPress={this.props.onBackPress}
-            icon='fontawesome|arrow-left'
+            icon='ion|ios-arrow-back'
           />
         </View>
         <View style={Styles.center}>

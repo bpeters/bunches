@@ -65,7 +65,7 @@ var Styles = StyleSheet.create({
   },
   captured: {
     height: 176,
-    width: defaultStyles.bodyWidth,      
+         
   },
 });
 

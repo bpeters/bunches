@@ -5,6 +5,7 @@ var _ = require('lodash');
 var Firebase = require('firebase');
 
 var ActionButton = require('../elements/actionButton');
+var PopImage = require('../elements/popImage');
 
 var {
   Icon,
@@ -27,16 +28,9 @@ var Styles = StyleSheet.create({
   container: {
     height: defaultStyles.bodyHeight,
   },
-  image: {
+  imagexxx: {
     height: 176,
     backgroundColor: defaultStyles.green,
-  },
-  imageText: {
-    marginTop: 136,
-    marginLeft: 16,
-    color: defaultStyles.white,
-    fontSize: 16,
-    fontFamily: 'Roboto-Regular',
   },
   fields: {
     left: 16,
@@ -68,7 +62,8 @@ var Styles = StyleSheet.create({
   },
   captured: {
     height: 176,
-    width: defaultStyles.bodyWidth,      
+    width: defaultStyles.bodyWidth,  
+        
   },
 });
 
@@ -81,8 +76,11 @@ module.exports = React.createClass({
     onTitleChange: React.PropTypes.func,
     onMessageChange: React.PropTypes.func,
     onAddPhoto: React.PropTypes.func,
+    onPressImage: React.PropTypes.func,
+    imageText: React.PropTypes.string,
   },
   render: function() {
+
     return (
       <View style={Styles.container}>
 
@@ -90,26 +88,24 @@ module.exports = React.createClass({
 
 
 
-        <View style={Styles.image}>
-          <Image
-          source={{
-            isStatic: true,
-            uri: 'data:image/jpeg;base64,' + this.props.photo,
-          }}
-          style={Styles.captured}
+        
+          
+
+          <PopImage
+            onPress={this.props.onPressImage}
+            photo={this.props.photo}
+            imageText={this.props.imageText}
           />
 
         
 
 
-          <Text style={Styles.imageText}>            
-            (Optional) Upload Photo
-          </Text>
+          
 
 
 
 
-        </View>
+        
 
 
 

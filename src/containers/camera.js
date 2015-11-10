@@ -11,7 +11,6 @@ var config = require('../config/default');
 var NewChatContainer = require('../components/newChatContainer');
 var NavBarNewChat = require('../components/navBarNewChat');
 var AddPhoto = require('../components/addPhoto');
-var EnlargePhoto = require('../components/enlargePhoto');
 
 
 var defaultStyles = require('../styles');
@@ -43,7 +42,6 @@ module.exports = React.createClass({
       message: null,
       photo: null,
       error: null,
-      imageText: "(Optional) Upload Image",
     }
   },
   goBackNav: function() {
@@ -130,10 +128,7 @@ module.exports = React.createClass({
     this.setState({message});
   },
   onPhotoChange: function(photo) {
-    this.setState({
-      photo,
-      imageText: "Click to preview",
-    });
+    this.setState({photo});
   },
   onAddPhoto: function() {
     this.props.navigator.push({
@@ -144,39 +139,17 @@ module.exports = React.createClass({
       onPhotoChange: this.onPhotoChange,
     });
   },
-
-
-  onPressImage: function() {
-    this.props.navigator.push({
-      name: "enlarge photo",
-      component: EnlargePhoto,
-      hasSideMenu: false,
-      bunch: this.props.route.bunch,
-      photo: this.state.photo,
-      onPress: this.goBackNav,
-    });
-  },
-
-
   render: function() {
     return (
       <View style={Styles.body}>
         <NavBarNewChat
-          title="Create New Chat"
+          title="cnvn"
           onBackPress={this.goBackNav}
           onSubmitPress={this.addNewChat}
-        />  
-        <NewChatContainer
-          error={this.state.error}
-          title={this.state.title}
-          message={this.state.message}
-          photo={this.state.photo}
-          imageText={this.state.imageText}
-          onTitleChange={this.onTitleChange}
-          onMessageChange={this.onMessageChange}
-          onAddPhoto={this.onAddPhoto}
-          onPressImage={this.onPressImage}          
-        />
+        /> 
+        <AddPhoto>
+
+        </AddPhoto>
       </View>
     );
   }

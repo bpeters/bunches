@@ -9,6 +9,7 @@ var {
   TouchableHighlight,
 } = React;
 
+var PreviewPhoto = require('../components/previewPhoto');
 var Camera = require('react-native-camera');
 
 var defaultStyles = require('../styles');
@@ -28,6 +29,7 @@ var Styles = StyleSheet.create({
       left: 0,
     },
     captured: {
+
       height: defaultStyles.window.height,
       width: defaultStyles.bodyWidth,
       
@@ -52,7 +54,7 @@ module.exports = React.createClass({
   },
   getInitialState: function() {
     return ({
-      capturedBase64: ''
+      image: ''
     });
   },
 
@@ -63,26 +65,18 @@ module.exports = React.createClass({
         <Camera 
           style={Styles.camera} 
           ref="cam"
-          orientation="ladns"
           >
         </Camera>
-        <Image
-          source={{
-            isStatic: true,
-            uri: 'data:image/jpeg;base64,' + component.state.capturedBase64,
-          }}
 
-          style={Styles.captured}
-          />
         <TouchableHighlight style={Styles.captureButton} onPress={function() {
-          component.refs.cam.capture().then(function(capturedBase64) {
+          component.refs.cam.capture().then(function(image) {
             // console.log(component.props.route.onPhotoChange);
 
-            component.props.route.onPhotoChange(capturedBase64);
+            component.props.route.onPhotoChange('data:image/jpeg;base64,'+image);
             component.props.navigator.pop();
 
-            // component.setState({ capturedBase64 });
-            // setTimeout(() => component.setState({ capturedBase64: '' }), 5000);
+            // component.setState({ image });
+            // setTimeout(() => component.setState({ image: '' }), 5000);
           });
         }}>
           
