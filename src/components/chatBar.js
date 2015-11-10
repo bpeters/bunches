@@ -1,7 +1,10 @@
 'use strict';
 
 var React = require('react-native');
+var _ = require('lodash');
 var Firebase = require('firebase');
+var Parse = require('parse/react-native');
+var ParseReact = require('parse-react/react-native');
 
 var NewChat = require('../containers/newChat');
 
@@ -73,13 +76,13 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     user: React.PropTypes.object,
+    chat: React.PropTypes.object,
     messenger: React.PropTypes.object,
     navigator: React.PropTypes.object,
   },
   getInitialState: function () {
     return {
       message: null,
-      scrollEnabled: false,
     };
   },
   inputFocused: function (refName) {
@@ -94,10 +97,23 @@ module.exports = React.createClass({
     }, 50);
   },
   addChatMessage: function() {
-    this.props.messenger.push({
-      uid: this.props.user.id,
-      message: this.state.message,
-      time: new Date().getTime()
+    if (_.trim(this.state.message)) {
+      this.props.messenger.push({
+        uid: this.props.user.id,
+        message: this.state.message,
+        time: new Date().getTime()
+      });
+
+      ParseReact.Mutation.Create('Chat2User', {
+        chat: this.props.chat,
+        user: this.props.user,
+        text: this.state.message,
+      })
+      .dispatch()
+    }
+
+    this.setState({
+      message: null
     });
   },
   render: function() {
@@ -108,16 +124,17 @@ module.exports = React.createClass({
           keyboardDismissMode='on-drag'
           style={Styles.scroll}
           contentContainerStyle={Styles.contentContainerStyle}
-          scrollEnabled={this.state.scrollEnabled}
+          scrollEnabled={true}
         >
          <View ref='chat' style={Styles.body}>
-            <View style={Styles.wrap}>         
+            <View style={Styles.wrap}>
               <TextInput
                 style={Styles.input}
                 onChangeText={(message) => this.setState({message})}
                 value={this.state.message}
                 onFocus={this.inputFocused.bind(this, 'chat')}
                 onSubmitEditing={this.addChatMessage}
+                blurOnSubmit={false}
                 underlineColorAndroid={defaultStyles.light}
               />
             </View>

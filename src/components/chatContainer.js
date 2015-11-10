@@ -4,6 +4,8 @@ var React = require('react-native');
 var _ = require('lodash');
 var moment = require('moment');
 
+var InvertibleScrollView = require('react-native-invertible-scroll-view');
+
 var defaultStyles = require('../styles');
 
 var {
@@ -115,8 +117,7 @@ module.exports = React.createClass({
           </View>
           <View style={Styles.line}></View>
         </View>
-      )
-
+      );
     } else {
       return (
         <View style={Styles.row}>
@@ -151,9 +152,9 @@ module.exports = React.createClass({
     return (
       <View style={Styles.container}>
         <ListView
+          renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
           dataSource={this.state.dataSource.cloneWithRows(this.props.messages)}
           renderRow={this.renderChatRow}
-          automaticallyAdjustContentInsets={false}
         />
       </View>
     );

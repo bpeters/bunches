@@ -45,11 +45,10 @@ module.exports = React.createClass({
   observe: function() {
     var chat = _.get(this, 'props.route.chat');
 
-    console.log(chat);
-
     return {
       chats: (new Parse.Query('Chat2User'))
         .equalTo('chat', chat)
+        .include('user')
     };
   },
   getInitialState: function() {
@@ -72,73 +71,24 @@ module.exports = React.createClass({
       this.setState({
         messages: messages
       });
+
     });
   },
-  /*
-  cleanChat: function(url) {
-    var a = new Date();
-    var b = a.getFullYear() + '-' + a.getMonth() + '-' + a.getDate();
-    var f = null;
-    var messages = _.cloneDeep(this.state.messages);
-    this.state.messenger = new Firebase(url);
-      this.state.messenger.orderByChild('time').limitToLast(10).on('child_added', (snapshot) => {
-        var data = snapshot.val();
-        var c = new Date(data.time);
-        data.time = c.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true});
-        var d = c.getFullYear() + '-' + c.getMonth() + '-' + c.getDate(); 
-        if(Date.parse(d)<=Date.parse(b)){
-          if(f!=c.toLocaleDateString()){
-            var e = {
-              "breaker": c.toLocaleDateString()
-            };
-            if(Date.parse(d)==Date.parse(b)){
-              e = {
-                "breaker": "Today"
-              }
-            }
-            f = c.toLocaleDateString();
-            messages.push(e);
-          }
-        }
-        messages.push(data);
-        this.setState({
-          messages: messages,
-          url : url
-        });
-      });
-  },
-  componentWillReceiveProps:  function(nextProps){
-
-    this.setState({
-     route: nextProps.route > this.props.route
-    });
-    var isEmpty = this.props.route.length === 0;
-    if(isEmpty) {
-     console.log('empty')
-    } else {
-     console.log('full');
-    }
-    console.log(this.state);
-    console.log(this.props.route.bunch);
-
-
-    if(this.props.route.bunch){
-     var url = config.get('firebase.url') + this.props.route.bunch.id.objectId;
-     this.cleanChat(url);
-    }   
-  }, */
   onBackPress: function () {
     this.props.navigator.pop();
   },
   render: function() {
-
-    var messages = _.cloneDeep(this.state.messages);
-
+    var chat = _.get(this, 'props.route.chat');
     var users = _.pluck(this.data.chats, 'user');
 
-    _.forEach(messages, (message) => {
-      message.user = _.find(users, {'objectId' : message.uid});
-    });
+    var messages = _.chain(this.state.messages)
+      .cloneDeep()
+      .forEach((message) => {
+        message.user = _.find(users, {'objectId' : message.uid});
+      })
+      .sortBy('time')
+      .value()
+      .reverse();
 
     return (
       <View style={Styles.body}>
@@ -156,6 +106,7 @@ module.exports = React.createClass({
         />
         <ChatBar
           user={this.props.user}
+          chat={chat}
           messenger={this.state.messenger}
           navigator={this.props.navigator}
         />
