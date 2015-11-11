@@ -22,22 +22,9 @@ module.exports = React.createClass({
     color: React.PropTypes.string,
     width: React.PropTypes.number,
   },
-  getInitialState: function () {
-    return {
-      now: new Date().getTime()
-    };
-  },
-  updateNow: function () {
-    setTimeout(() => {
-      this.setState({
-        now: new Date().getTime()
-      });
-    }, 10000);
-  },
   render: function() {
-    this.updateNow();
-
-    var percent = (this.props.expiration - this.state.now) / (this.props.expiration - this.props.created);
+    var now = new Date().getTime();
+    var percent = (this.props.expiration - now) / (this.props.expiration - this.props.created);
     var width = percent * this.props.width;
     var color = defaultStyles.green;
 

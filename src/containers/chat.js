@@ -43,9 +43,15 @@ module.exports = React.createClass({
   },
   observe: function() {
     var chat = _.get(this, 'props.route.chat');
+
+    var ParseChat = Parse.Object.extend("Chat");
+    var newChat = new ParseChat();
+
+    newChat.id = chat.objectId;
+
     return {
       chats: (new Parse.Query('Chat2User'))
-        .equalTo('chat', chat)
+        .equalTo('chat', newChat)
         .include('user')
     };
   },

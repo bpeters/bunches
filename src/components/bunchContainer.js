@@ -41,6 +41,17 @@ var Styles = StyleSheet.create({
     borderTopWidth: 1,
     borderLeftWidth: 1,
     borderRightWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    paddingTop: 16,
+    paddingLeft: 16,
+  },
+  info: {
+    flex:1,
+    alignItems: 'stretch',
+    flexDirection: 'column',
+    paddingLeft: 16,
   },
   rowImage: {
     height: 176,
@@ -67,14 +78,12 @@ var Styles = StyleSheet.create({
     borderRightWidth: 1,
   },
   userName: {
-    marginLeft: 16,
-    marginTop: 16,
     fontSize: 16,
     fontFamily: 'Roboto-Regular',
     color: defaultStyles.dark,
   },
   chatTitle: {
-    marginLeft: 16,
+    marginTop: 8,
     fontSize: 14,
     fontFamily: 'Roboto-Regular', 
     color: defaultStyles.medium,
@@ -109,6 +118,9 @@ module.exports = React.createClass({
       hasSideMenu: true,
       chat: rowData,
     });
+  },
+  onAvatarPress: function (rowData) {
+
   },
   onPressImage: function (imageURL) {
     this.props.navigator.push({
@@ -167,12 +179,18 @@ module.exports = React.createClass({
       <TouchableOpacity onPress={() => this.onPressRow(rowData)}>
         <View style={Styles.row}>
           <View style={Styles.rowHeader}>
-            <Text style={Styles.userName}>
-              {rowData.createdBy.name}
-            </Text>
-            <Text style={Styles.chatTitle}>
-              {rowData.name}
-            </Text>
+            <Avatar
+              onPress={() => this.onAvatarPress(rowData)}
+              imageURL={rowData.createdBy.image ? rowData.createdBy.image.url() : null}
+            />
+            <View style={Styles.info}>
+              <Text style={Styles.userName}>
+                {rowData.createdBy.name}
+              </Text>
+              <Text style={Styles.chatTitle}>
+                {rowData.name}
+              </Text>
+            </View>
           </View>
           {mostRecentImage ? this.renderImage(mostRecentImage) : null}
           {mostRecentMessage ? this.renderMessage(mostRecentMessage) : null}

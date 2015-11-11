@@ -52,9 +52,14 @@ module.exports = React.createClass({
     var bunch = this.props.route.bunch;
     var url = config.firebase.url + '/bunch/' + bunch.objectId + '/chat/' + chat.objectId;
 
+    var user = this.props.user.attributes;
+
     if (image || this.state.message) {
       new Firebase(url).push({
         uid: this.props.user.id,
+        name: user.name,
+        username: user.username,
+        userImageURL: user.image ? user.image.url() : null,
         imageURL: image ? image.url() : null,
         message: this.state.message,
         time: new Date().getTime(),

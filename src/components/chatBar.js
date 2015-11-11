@@ -89,8 +89,13 @@ module.exports = React.createClass({
   },
   addChatMessage: function() {
     if (_.trim(this.state.message)) {
+      var user = this.props.user.attributes;
+
       this.props.messenger.push({
         uid: this.props.user.id,
+        name: user.name,
+        username: user.username,
+        userImageURL: user.image ? user.image.url() : null,
         message: this.state.message,
         time: new Date().getTime()
       });
