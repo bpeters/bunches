@@ -5,6 +5,8 @@ var _ = require('lodash');
 var moment = require('moment');
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
+var Firebase = require('firebase');
+var config = require('../config/default');
 
 var NavBar = require('../components/navBar');
 var BunchContainer = require('../components/bunchContainer');
@@ -56,6 +58,33 @@ module.exports = React.createClass({
         .descending("expirationDate"),
     };
   },
+  getInitialState: function() {
+    var bunch = this.props.route.bunch;
+    var url = config.firebase.url + '/bunch/' + bunch.objectId;
+
+    return {
+      messenger: new Firebase(url),
+      bulk: [],
+    };
+  },
+  componentDidMount: function() {
+    this.state.messenger.on('child_added', (snapshot) => {
+      var data = snapshot.val();
+      var bulk = [];
+
+      _.forEach(data, (value, key) => {
+        bulk.push({
+          id: key,
+          messages: value,
+        });
+      });
+
+      this.setState({
+        bulk: bulk
+      });
+
+    });
+  },
   onActionButtonPress: function () {
     this.props.navigator.push({
       name: "new chat",
@@ -66,7 +95,11 @@ module.exports = React.createClass({
   },
   render: function() {
     var title = _.get(this, 'props.route.bunch.name');
-    var chats = this.data.chats;
+    var chats = _.cloneDeep(this.data.chats);
+
+    _.forEach(chats, (chat) => {
+      chat.firebase = _.find(this.state.bulk, {'id' : chat.objectId});
+    });
 
     return (
       <View style={Styles.body}>

@@ -73,12 +73,13 @@ module.exports = React.createClass({
             </Text>
           </View>
           <View style={Styles.right}>
-          </View>          
+          </View>
         </View>
         <Timer
           expiration={this.props.expiration}
           created={this.props.created}
           color={defaultStyles.blue}
+          width={defaultStyles.bodyWidth}
         />
       </View>
     );

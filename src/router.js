@@ -7,7 +7,7 @@ var _ = require('lodash');
 
 var routes = require('./routes');
 var SideMenu = require('./containers/sideMenu');
-
+var Splash = require('./elements/splash');
 
 var {
   View,
@@ -54,11 +54,19 @@ module.exports= React.createClass({
     }
   },
   render: function() {
-    return (
-      <Navigator
-        renderScene={this.renderScene}
-        initialRoute={routes.bunch}
-      />
-    );
+
+    if (!_.isEmpty(this.data.bunches)) {
+      return (
+        <Navigator
+          renderScene={this.renderScene}
+          initialRoute={routes.bunch}
+        />
+      );
+    } else {
+      return (
+        <Splash />
+      );
+    }
+
   }
 });
