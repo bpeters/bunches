@@ -7,10 +7,6 @@ var Firebase = require('firebase');
 var ActionButton = require('../elements/actionButton');
 var PopImage = require('../elements/popImage');
 
-var {
-  Icon,
-} = require('react-native-icons');
-
 var defaultStyles = require('../styles');
 
 var {
@@ -56,11 +52,6 @@ var Styles = StyleSheet.create({
     top: 148,
     right: 16,
   },
-  captured: {
-    height: 176,
-    width: defaultStyles.bodyWidth,  
-        
-  },
 });
 
 module.exports = React.createClass({
@@ -75,7 +66,6 @@ module.exports = React.createClass({
     onPressImage: React.PropTypes.func,
   },
   render: function() {
-
     return (
       <View style={Styles.container}>
         <PopImage

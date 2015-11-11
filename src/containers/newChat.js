@@ -10,9 +10,9 @@ var config = require('../config/default');
 
 var NewChatContainer = require('../components/newChatContainer');
 var NavBarNewChat = require('../components/navBarNewChat');
-var AddPhoto = require('../components/addPhoto');
-var EnlargePhoto = require('../components/enlargePhoto');
-
+var AddPhoto = require('./addPhoto');
+var EnlargePhoto = require('./enlargePhoto');
+var Bunch = require('./bunch');
 
 var defaultStyles = require('../styles');
 
@@ -43,88 +43,68 @@ module.exports = React.createClass({
       message: null,
       photo: null,
       error: null,
-      imageText: "(Optional) Upload Image",
     }
   },
   goBackNav: function() {
     this.props.navigator.pop();
   },
-  addNewChat: function() {
+  saveChatDetails: function (chat, image) {
     var bunch = this.props.route.bunch;
-    var expirationDate = moment().add(bunch.ttl, 'ms').format();
+    var url = config.firebase.url + '/bunch/' + bunch.objectId + '/chat/' + chat.objectId;
 
-    this.props.navigator.pop();
+    if (image || this.state.message) {
+      new Firebase(url).push({
+        uid: this.props.user.id,
+        message: this.state.message,
+        time: new Date().getTime(),
+      });
 
-    if (this.state.photo){
-      var image = new Parse.File('image.jpeg', { base64: this.state.photo.split(',')[1]});
-      image.save().then((object) => {
-        // console.log(object);
-        // debugger;    
-        if (this.state.title) {
-          ParseReact.Mutation.Create('Chat', {
-            name: this.state.title,
-            expirationDate: new Date(expirationDate),
-            belongsTo: bunch,
-            createdBy: this.props.user,
-            isDead: false,
-          })
-          .dispatch()
-          .then((chat) => {            
-            var url = config.firebase.url + '/bunch/' + bunch.objectId + '/chat/' + chat.objectId;
-            new Firebase(url).push({
-              uid: this.props.user.id,
-              message: this.state.message,
-              time: new Date().getTime(),
-            });
-            ParseReact.Mutation.Create('Chat2User', {
-              chat: chat,
-              user: this.props.user,
-              imageURL: object._url.toString(),
-              text: this.state.message,              
-            })
-            .dispatch()
-            .then(() => {
-              // this.props.navigator.pop();
-            })
+      ParseReact.Mutation.Create('Chat2User', {
+        chat: chat,
+        user: this.props.user,
+        image: image,
+        text: this.state.message,
+      })
+      .dispatch();
+    }
+  },
+  addNewChat: function() {
+    var Chat = require('./chat'); //stupid cyclical deps, need to require here.
+
+    if (this.state.title) {
+      var bunch = this.props.route.bunch;
+      var expirationDate = moment().add(bunch.ttl, 'ms').format();
+
+      ParseReact.Mutation.Create('Chat', {
+        name: this.state.title,
+        expirationDate: new Date(expirationDate),
+        belongsTo: bunch,
+        createdBy: this.props.user,
+        isDead: false,
+      })
+      .dispatch()
+      .then((chat) => {
+
+        if (this.state.photo) {
+          var photo = new Parse.File('image.jpeg', { base64: this.state.photo.split(',')[1]});
+          photo.save().then((image) => {
+            this.saveChatDetails(chat, image);
           });
         } else {
-          this.setState({
-            error: 'Missing Title'
-          });
+          this.saveChatDetails(chat);
         }
-      })
+
+        this.props.navigator.replace({
+          name: "chat",
+          component: Chat,
+          hasSideMenu: true,
+          chat: chat,
+        });
+      });
     } else {
-      if (this.state.title) {
-        ParseReact.Mutation.Create('Chat', {
-          name: this.state.title,
-          expirationDate: new Date(expirationDate),
-          belongsTo: bunch,
-          createdBy: this.props.user,
-          isDead: false,
-        })
-        .dispatch()
-        .then((chat) => {
-          var url = config.firebase.url + '/bunch/' + bunch.objectId + '/chat/' + chat.objectId;
-          new Firebase(url).push({
-            uid: this.props.user.id,
-            message: this.state.message,
-            time: new Date().getTime(),
-          });
-          ParseReact.Mutation.Create('Chat2User', {
-            chat: chat,
-            user: this.props.user,
-            text: this.state.message,
-          })
-          .dispatch()
-          .then(() => {
-            this.props.navigator.pop();
-          })
-        });
-      } else {
-        this.setState({
-          error: 'Missing Title'
-        });
-      }
+      this.setState({
+        error: 'Missing Title'
+      });
     }
   },
   onTitleChange: function(title) {
@@ -135,6 +115,7 @@ module.exports = React.createClass({
   },
   onPhotoChange: function(photo) {
     this.setState({photo});
+    this.props.navigator.pop();
   },
   onAddPhoto: function() {
     this.props.navigator.push({
@@ -150,9 +131,7 @@ module.exports = React.createClass({
       name: "enlarge photo",
       component: EnlargePhoto,
       hasSideMenu: false,
-      bunch: this.props.route.bunch,
       photo: this.state.photo,
-      onPress: this.goBackNav,
     });
   },
   render: function() {
@@ -162,7 +141,7 @@ module.exports = React.createClass({
           title="Create New Chat"
           onBackPress={this.goBackNav}
           onSubmitPress={this.addNewChat}
-        />  
+        />
         <NewChatContainer
           error={this.state.error}
           title={this.state.title}
@@ -171,7 +150,7 @@ module.exports = React.createClass({
           onTitleChange={this.onTitleChange}
           onMessageChange={this.onMessageChange}
           onAddPhoto={this.onAddPhoto}
-          onPressImage={this.onPressImage}          
+          onPressImage={this.onPressImage}
         />
       </View>
     );

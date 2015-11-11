@@ -2,7 +2,6 @@
 
 var React = require('react-native');
 
-
 var defaultStyles = require('../styles');
 
 var {
@@ -17,10 +16,10 @@ var Styles = StyleSheet.create({
   imageView: {
     height: 176,
     backgroundColor: defaultStyles.green,
-  }, 
+  },
   image: {
     height: 176,
-  },  
+  },
   imageText: {
     marginTop: 136,
     marginLeft: 16,
@@ -34,10 +33,9 @@ module.exports = React.createClass({
   propTypes: {
     onPress: React.PropTypes.func,
     photo: React.PropTypes.string,
-    imageText: React.PropTypes.string,
   },
   render: function() {
-    if(this.props.photo){
+    if (this.props.photo) {
       return (
         <View>
           <TouchableOpacity onPress={this.props.onPress}>
@@ -46,18 +44,14 @@ module.exports = React.createClass({
                 uri: this.props.photo,
               }}
               style={Styles.image}
-              >
-              <Text style={Styles.imageText}>            
-                Click to preview
-              </Text>
-              </Image>           
+            /> 
           </TouchableOpacity>
         </View>
       );
     } else {
-      return (    
+      return (
         <View style={Styles.imageView}>
-          <Text style={Styles.imageText}>            
+          <Text style={Styles.imageText}>
             (Optional) Add Photo
           </Text>
         </View>
