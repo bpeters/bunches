@@ -74,7 +74,7 @@ module.exports = React.createClass({
         <View style={Styles.left}>
           <IconButton
             onPress={this.props.onBackPress}
-            icon='fontawesome|times'
+            icon='material|close'
           />
         </View>
         <View style={Styles.center}>
@@ -85,7 +85,7 @@ module.exports = React.createClass({
         <View style={Styles.right}>
           <IconButton
             onPress={this.props.onSubmitPress}
-            icon='fontawesome|check'
+            icon='material|check'
           />
         </View>
       </View>

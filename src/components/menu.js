@@ -77,6 +77,9 @@ module.exports= React.createClass({
   onPressRow: function(rowData) {
     console.log(rowData);
   },
+  onTest: function(rowData){
+    console.log('klsjflkjsakljl')
+  },
   renderRow: function(rowData) {
     return (
       <TouchableOpacity onPress={() => this.onPressRow(rowData)}>

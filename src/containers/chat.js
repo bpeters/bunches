@@ -43,7 +43,6 @@ module.exports = React.createClass({
   },
   observe: function() {
     var chat = _.get(this, 'props.route.chat');
-
     return {
       chats: (new Parse.Query('Chat2User'))
         .equalTo('chat', chat)
@@ -98,6 +97,8 @@ module.exports = React.createClass({
         <NavBarChat
           title={this.props.route.chat.name}
           onBackPress={this.onBackPress}
+          expiration={this.props.route.chat.expirationDate}
+          created={this.props.route.chat.createdAt}
         />
         <ScrollView
           ref='scrollView'

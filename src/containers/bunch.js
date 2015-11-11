@@ -30,7 +30,7 @@ var Styles = StyleSheet.create({
   },
   actionButton: {
     position: 'absolute',
-    bottom: 16,
+    bottom: 50,
     right: 16,
   }
 });

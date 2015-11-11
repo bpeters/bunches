@@ -11,7 +11,6 @@ var config = require('../config/default');
 var NewChatContainer = require('../components/newChatContainer');
 var NavBarNewChat = require('../components/navBarNewChat');
 var AddPhoto = require('../components/addPhoto');
-var EnlargePhoto = require('../components/enlargePhoto');
 
 
 var defaultStyles = require('../styles');
@@ -43,7 +42,6 @@ module.exports = React.createClass({
       message: null,
       photo: null,
       error: null,
-      imageText: "(Optional) Upload Image",
     }
   },
   goBackNav: function() {
@@ -53,13 +51,9 @@ module.exports = React.createClass({
     var bunch = this.props.route.bunch;
     var expirationDate = moment().add(bunch.ttl, 'ms').format();
 
-    this.props.navigator.pop();
-
     if (this.state.photo){
-      var image = new Parse.File('image.jpeg', { base64: this.state.photo.split(',')[1]});
-      image.save().then((object) => {
-        // console.log(object);
-        // debugger;    
+      var image = new Parse.File('image.jpeg', { base64: this.state.photo});
+      image.save().then((object) => {    
         if (this.state.title) {
           ParseReact.Mutation.Create('Chat', {
             name: this.state.title,
@@ -84,7 +78,7 @@ module.exports = React.createClass({
             })
             .dispatch()
             .then(() => {
-              // this.props.navigator.pop();
+              this.props.navigator.pop();
             })
           });
         } else {
@@ -145,34 +139,17 @@ module.exports = React.createClass({
       onPhotoChange: this.onPhotoChange,
     });
   },
-  onPressImage: function() {
-    this.props.navigator.push({
-      name: "enlarge photo",
-      component: EnlargePhoto,
-      hasSideMenu: false,
-      bunch: this.props.route.bunch,
-      photo: this.state.photo,
-      onPress: this.goBackNav,
-    });
-  },
   render: function() {
     return (
       <View style={Styles.body}>
         <NavBarNewChat
-          title="Create New Chat"
+          title="cnvn"
           onBackPress={this.goBackNav}
           onSubmitPress={this.addNewChat}
-        />  
-        <NewChatContainer
-          error={this.state.error}
-          title={this.state.title}
-          message={this.state.message}
-          photo={this.state.photo}
-          onTitleChange={this.onTitleChange}
-          onMessageChange={this.onMessageChange}
-          onAddPhoto={this.onAddPhoto}
-          onPressImage={this.onPressImage}          
-        />
+        /> 
+        <AddPhoto>
+
+        </AddPhoto>
       </View>
     );
   }

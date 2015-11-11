@@ -11,6 +11,9 @@ import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 
+// Added for camera
+import com.facebook.react.CompositeReactPackage;
+import com.lwansbrough.ReactCamera.ReactCameraPackage;
 
 
 
@@ -34,6 +37,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
                 .setBundleAssetName("index.android.bundle")
                 .setJSMainModuleName("index.android")
                 .addPackage(new MainReactPackage())
+                .addPackage(new ReactCameraPackage())
                 .addPackage(new ReactNativeIcons()) 
                 .setUseDeveloperSupport(BuildConfig.DEBUG)
                 .setInitialLifecycleState(LifecycleState.RESUMED)

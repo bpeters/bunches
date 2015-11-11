@@ -5,6 +5,7 @@ var _ = require('lodash');
 var Firebase = require('firebase');
 
 var ActionButton = require('../elements/actionButton');
+var PopImage = require('../elements/popImage');
 
 var {
   Icon,
@@ -26,17 +27,6 @@ var {
 var Styles = StyleSheet.create({
   container: {
     height: defaultStyles.bodyHeight,
-  },
-  image: {
-    height: 176,
-    backgroundColor: defaultStyles.green,
-  },
-  imageText: {
-    marginTop: 136,
-    marginLeft: 16,
-    color: defaultStyles.white,
-    fontSize: 16,
-    fontFamily: 'Roboto-Regular',
   },
   fields: {
     left: 16,
@@ -65,7 +55,12 @@ var Styles = StyleSheet.create({
     position: 'absolute',
     top: 148,
     right: 16,
-  }
+  },
+  captured: {
+    height: 176,
+    width: defaultStyles.bodyWidth,  
+        
+  },
 });
 
 module.exports = React.createClass({
@@ -73,18 +68,20 @@ module.exports = React.createClass({
     error: React.PropTypes.string,
     title: React.PropTypes.string,
     chat: React.PropTypes.string,
+    photo: React.PropTypes.string,
     onTitleChange: React.PropTypes.func,
     onMessageChange: React.PropTypes.func,
     onAddPhoto: React.PropTypes.func,
+    onPressImage: React.PropTypes.func,
   },
   render: function() {
+
     return (
       <View style={Styles.container}>
-        <View style={Styles.image}>
-          <Text style={Styles.imageText}>
-            (Optional) Upload Photo
-          </Text>
-        </View>
+        <PopImage
+          onPress={this.props.onPressImage}
+          photo={this.props.photo}
+        />
         <View style={Styles.fields}>
           <View style={Styles.field}>
             <Text style={Styles.title}>
@@ -95,6 +92,7 @@ module.exports = React.createClass({
                 style={Styles.input}
                 onChangeText={(title) => this.props.onTitleChange(title)}
                 value={this.props.title}
+                underlineColorAndroid="none"
               />
             </View>
           </View>
@@ -107,6 +105,7 @@ module.exports = React.createClass({
                 style={Styles.input}
                 onChangeText={(message) => this.props.onMessageChange(message)}
                 value={this.props.message}
+                underlineColorAndroid="none"
               />
             </View>
           </View>
@@ -123,3 +122,5 @@ module.exports = React.createClass({
     );
   }
 });
+
+

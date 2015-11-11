@@ -25,8 +25,8 @@ var Styles = StyleSheet.create({
     alignItems: 'center',
   }, 
   icon: {
-    width: 24,
-    height: 24,
+    width: 56,
+    height: 56,
   },
 });
 
@@ -39,8 +39,8 @@ module.exports = React.createClass({
       <TouchableOpacity onPress={this.props.onPress}>
         <View style={Styles.iconView}>
           <Icon
-            name='fontawesome|plus'
-            size={24}
+            name='material|plus'
+            size={30}
             color='#ffffff'
             style={Styles.icon}
           />

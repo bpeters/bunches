@@ -5,6 +5,8 @@ var _ = require('lodash');
 
 var Chat = require('../containers/chat');
 
+var Timer = require('../elements/timer');
+
 var defaultStyles = require('../styles');
 
 var {
@@ -13,6 +15,7 @@ var {
   Text,
   ListView,
   StyleSheet,
+  Image,
 } = React;
 
 var Styles = StyleSheet.create({
@@ -62,6 +65,9 @@ var Styles = StyleSheet.create({
     fontFamily: 'Roboto-Regular', 
     color: defaultStyles.medium,
   },
+  captured: {
+    height: 176,         
+  },
 });
 
 module.exports = React.createClass({
@@ -97,9 +103,14 @@ module.exports = React.createClass({
               {rowData.name}
             </Text>
           </View>
+          <Timer
+            expiration={rowData.expirationDate}
+            created={rowData.createdAt}
+            color={defaultStyles.white}
+          />
         </View>
       </TouchableOpacity>
-    );
+    );    
   },
   render: function() {
     return (
