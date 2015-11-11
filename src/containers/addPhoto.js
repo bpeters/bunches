@@ -20,6 +20,12 @@ var Camera = require('react-native-camera');
 var defaultStyles = require('../styles');
 
 var Styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+},
   camera: {
     position: 'absolute',
     top: 0,
@@ -61,14 +67,25 @@ module.exports = React.createClass({
     user: React.PropTypes.object,
   },
   getInitialState: function() {
-    return {
-      cameraType: Camera.constants.Type.back
-    };
+    if(Platform.OS='android'){
+      return {
+        cameraType: '',
+      };
+    } else {
+      return {
+        cameraType: Camera.constants.Type.back,
+      };
+    }    
   },
   onPressClose: function() {
     this.props.navigator.pop();
   },
-  onCameraPress: function() {
+  onCameraPressAndroid: function(){
+    this.refs.cam.capture((image) => {
+      this.props.route.onPhotoChange('data:image/jpeg;base64,'+image);
+    });
+  },
+  onCameraPressIOS: function() {
     this.refs.cam.capture({
       target: Camera.constants.CaptureTarget.memory
     }, (err, image) => {
@@ -76,26 +93,58 @@ module.exports = React.createClass({
     });
   },
   render: function() {
-    return (
-      <Camera 
-        style={Styles.camera}
-        ref="cam"
-        type={this.state.cameraType}
-      >
-        <TouchableOpacity style={Styles.capture} onPress={this.onCameraPress}>
-          <View style={Styles.captureButton} />
-        </TouchableOpacity>
-        <View style={Styles.iconView}>
-          <TouchableOpacity onPress={this.onPressClose}>
-            <Icon
-              name='material|close'
-              size={30}
-              color='#ffffff'
-              style={Styles.icon}
-            />
+
+    if(Platform.OS='android'){
+      var component = this;
+      return (
+        <View style={Styles.container}>
+          <Camera 
+            style={Styles.camera} 
+            ref="cam"
+          >
+          </Camera>
+
+          <TouchableOpacity style={Styles.capture} onPress={this.onCameraPressAndroid} >
+            <View style={Styles.captureButton} />
           </TouchableOpacity>
+          <View style={Styles.iconView}>
+            <TouchableOpacity onPress={this.onPressClose}>
+              <Icon
+                name='material|close'
+                size={30}
+                color='#ffffff'
+                style={Styles.icon}
+              />
+              </TouchableOpacity>  
+            </View>
         </View>
-      </Camera>
-    );
+      );
+      
+
+    } else {
+
+      return (
+        <Camera 
+          style={Styles.camera}
+          ref="cam"
+          type={this.state.cameraType}
+        >
+          <TouchableOpacity style={Styles.capture} onPress={this.onCameraPressIOS}>
+            <View style={Styles.captureButton} />
+          </TouchableOpacity>
+          <View style={Styles.iconView}>
+            <TouchableOpacity onPress={this.onPressClose}>
+              <Icon
+                name='material|close'
+                size={30}
+                color='#ffffff'
+                style={Styles.icon}
+              />
+            </TouchableOpacity>
+          </View>
+        </Camera>
+      );
+
+    }
   }
 });

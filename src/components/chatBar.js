@@ -31,11 +31,8 @@ var Styles = StyleSheet.create({
       height: -1
     },
   },
-  list: {
-    height: defaultStyles.bodyHeight
-  },
   wrap: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     left: 6,
     top: 6,
     backgroundColor: defaultStyles.light,
