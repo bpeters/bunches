@@ -2,6 +2,7 @@
 
 var React = require('react-native');
 var _ = require('lodash');
+var moment = require('moment');
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
 
@@ -44,13 +45,15 @@ module.exports = React.createClass({
   },
   observe: function() {
     var bunch = _.get(this, 'props.route.bunch');
+    var now = moment().toDate();
 
     return {
       chats: (new Parse.Query('Chat'))
         .equalTo('belongsTo', bunch)
         .equalTo('isDead', false)
+        .greaterThan("expirationDate", now)
         .include('createdBy')
-        .ascending("expirationDate"),
+        .descending("expirationDate"),
     };
   },
   onActionButtonPress: function () {
