@@ -51,7 +51,7 @@ var Styles = StyleSheet.create({
   },
   input : {
     left: 10,
-    fontFamily: 'Roboto-light',
+    fontFamily: 'Roboto-Light',
     color: defaultStyles.dark,
     height: 40,
     width: defaultStyles.bodyWidth - 58,

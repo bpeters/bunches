@@ -22,22 +22,21 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height:defaultStyles.bodyHeight - defaultStyles.chatBarHeight - defaultStyles.navBarHeight - 200,
+    height:defaultStyles.bodyHeight - defaultStyles.chatBarHeight - defaultStyles.navBarHeight,
   },
   row: {
     flex:1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    marginTop:10,
-    paddingLeft: 10,
-    paddingRight: 10,
+    marginBottom: 16,
+    paddingLeft: 16,
   },
   info: {
     flex:1,
     alignItems: 'stretch',
     flexDirection: 'column',
-    paddingLeft: 10,
+    paddingLeft: 16,
   },
   user: {
     flex:1,
@@ -47,19 +46,26 @@ var Styles = StyleSheet.create({
   name: {
     fontWeight: 'bold',
     color: defaultStyles.dark,
+    fontFamily: 'Roboto-Regular',
   },
   date: {
     flex:1,
     alignItems:'flex-start',
-    paddingLeft: 10,
+    paddingLeft: 8,
   },
   time: {
     color: defaultStyles.medium,
+    fontFamily: 'Roboto-Regular',
   },
   chat: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
+    paddingTop: 8,
+  },
+  chatText: {
+    color: defaultStyles.dark,
+    fontFamily: 'Roboto-Light',
   },
   break: {
     flex: 1,
@@ -129,12 +135,12 @@ module.exports = React.createClass({
               </Text>
               <View style={Styles.date}>
                 <Text style={Styles.time}>
-                  {moment(rowData.time).fromNow()}
+                  {moment(rowData.time).format("h:mm a")}
                 </Text>
               </View>
             </View>
             <View style={Styles.chat}>
-              <Text style={Styles.chatRowText}>
+              <Text style={Styles.chatText}>
                 {rowData.message}
               </Text>
             </View>
