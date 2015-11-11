@@ -4,6 +4,7 @@ var React = require('react-native');
 var _ = require('lodash');
 var moment = require('moment');
 
+var Avatar = require('../elements/avatar');
 var InvertibleScrollView = require('react-native-invertible-scroll-view');
 
 var defaultStyles = require('../styles');
@@ -21,50 +22,56 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height:defaultStyles.bodyHeight - defaultStyles.chatBarHeight - defaultStyles.navBarHeight,
+    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight - defaultStyles.navBarHeight,
+    backgroundColor: defaultStyles.white,
   },
   row: {
     flex:1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    marginTop:10,
-    paddingLeft: 10,
-    paddingRight: 10,
-  },
-  thumbnail: {
-    height: 60,
-    width: 60,
-    borderRadius: 60,
-    justifyContent: 'center',
+    marginBottom: 16,
+    paddingLeft: 16,
   },
   info: {
     flex:1,
     alignItems: 'stretch',
     flexDirection: 'column',
-    paddingLeft: 10,
+    paddingLeft: 16,
   },
   user: {
-    flex:1,    
+    flex:1,
     justifyContent: 'flex-start',
     flexDirection: 'row',
   },
   name: {
     fontWeight: 'bold',
     color: defaultStyles.dark,
+    fontFamily: 'Roboto-Regular',
+    fontSize: 14,
   },
   date: {
     flex:1,
     alignItems:'flex-start',
-    paddingLeft: 10,
+    paddingLeft: 8,
   },
   time: {
     color: defaultStyles.medium,
+    fontFamily: 'Roboto-Regular',
+    fontSize: 14,
   },
   chat: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
+    paddingTop: 8,
+    paddingRight: 16,
+  },
+  chatText: {
+    color: defaultStyles.dark,
+    fontFamily: 'Roboto-Light',
+    fontSize: 14,
+    lineHeight: 18,
   },
   break: {
     flex: 1,
@@ -78,7 +85,6 @@ var Styles = StyleSheet.create({
     height: 1,
     backgroundColor: defaultStyles.medium,
     flex:1,
-
   },
   breakView: {
     alignItems: 'center',
@@ -99,11 +105,14 @@ module.exports = React.createClass({
   },
   getInitialState: function() {
     return {
-      message: null,      
+      message: null,
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2
       }),
     };
+  },
+  onAvatarPress: function (rowData) {
+    console.log(rowData);
   },
   renderChatRow: function(rowData) {
     if(rowData.breaker){
@@ -121,12 +130,10 @@ module.exports = React.createClass({
     } else {
       return (
         <View style={Styles.row}>
-          <View style={Styles.image}>
-            <Image
-              style={Styles.thumbnail}
-              source={{uri: _.get(rowData, 'user.imageURL') || 'http://img2.wikia.nocookie.net/__cb20130607025329/creepypasta/images/3/38/Avatar-blank.jpg'}}
-            />
-          </View>
+          <Avatar
+            onPress={() => this.onAvatarPress(rowData)}
+            imageURL={_.get(rowData, 'user.imageURL')}
+          />
           <View style={Styles.info}>
             <View style={Styles.user}>
               <Text style={Styles.name}>
@@ -134,12 +141,12 @@ module.exports = React.createClass({
               </Text>
               <View style={Styles.date}>
                 <Text style={Styles.time}>
-                  {moment(rowData.time).fromNow()}
+                  {moment(rowData.time).format("h:mm a")}
                 </Text>
               </View>
             </View>
             <View style={Styles.chat}>
-              <Text style={Styles.chatRowText}>
+              <Text style={Styles.chatText}>
                 {rowData.message}
               </Text>
             </View>
