@@ -3,6 +3,7 @@
 var React = require('react-native');
 
 var IconButton = require('../elements/iconButton');
+var Timer = require('../elements/timer');
 
 var defaultStyles = require('../styles');
 
@@ -44,30 +45,43 @@ var Styles = StyleSheet.create({
     color: defaultStyles.white,
     fontFamily: 'Roboto-Medium',
   },
+  timer: {
+    flex:1,
+  },
 });
 
 module.exports = React.createClass({
   propTypes: {
     title: React.PropTypes.string,
     onBackPress: React.PropTypes.func,
+    expiration: React.PropTypes.instanceOf(Date),
+    created: React.PropTypes.instanceOf(Date),
   },
   render: function() {
     return (
-      <View style={Styles.body}>
-        <View style={Styles.left}>
-          <IconButton
-            onPress={this.props.onBackPress}
-            icon='ion|ios-arrow-back'
-          />
+      <View style={Styles.timer}>
+        <View style={Styles.body}>
+          <View style={Styles.left}>
+            <IconButton
+              onPress={this.props.onBackPress}
+              icon='material|arrow-left'
+            />
+          </View>
+          <View style={Styles.center}>
+            <Text style={Styles.title}>
+              {this.props.title}
+            </Text>
+          </View>
+          <View style={Styles.right}>
+          </View>          
         </View>
-        <View style={Styles.center}>
-          <Text style={Styles.title}>
-            {this.props.title}
-          </Text>
-        </View>
-        <View style={Styles.right}>
-        </View>
+        <Timer
+          expiration={this.props.expiration}
+          created={this.props.created}
+          color={defaultStyles.blue}
+        />
       </View>
     );
   }
 });
+

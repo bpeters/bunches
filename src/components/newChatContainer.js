@@ -28,10 +28,6 @@ var Styles = StyleSheet.create({
   container: {
     height: defaultStyles.bodyHeight,
   },
-  imagexxx: {
-    height: 176,
-    backgroundColor: defaultStyles.green,
-  },
   fields: {
     left: 16,
   },
@@ -77,44 +73,15 @@ module.exports = React.createClass({
     onMessageChange: React.PropTypes.func,
     onAddPhoto: React.PropTypes.func,
     onPressImage: React.PropTypes.func,
-    imageText: React.PropTypes.string,
   },
   render: function() {
 
     return (
       <View style={Styles.container}>
-
-
-
-
-
-        
-          
-
-          <PopImage
-            onPress={this.props.onPressImage}
-            photo={this.props.photo}
-            imageText={this.props.imageText}
-          />
-
-        
-
-
-          
-
-
-
-
-        
-
-
-
-
-
-
-
-
-
+        <PopImage
+          onPress={this.props.onPressImage}
+          photo={this.props.photo}
+        />
         <View style={Styles.fields}>
           <View style={Styles.field}>
             <Text style={Styles.title}>

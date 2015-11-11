@@ -5,6 +5,8 @@ var _ = require('lodash');
 
 var Chat = require('../containers/chat');
 
+var Timer = require('../elements/timer');
+
 var defaultStyles = require('../styles');
 
 var {
@@ -27,7 +29,7 @@ var Styles = StyleSheet.create({
     marginLeft: 16,
   },
   rowHeader: {
-    height: 200,
+    height: 72,
     backgroundColor: defaultStyles.white,
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4,
@@ -39,7 +41,7 @@ var Styles = StyleSheet.create({
     borderRightWidth: 1,
   },
   rowBody: {
-    height: 200,
+    height: 72,
     backgroundColor: defaultStyles.white,
     borderBottomLeftRadius: 4,
     borderBottomRightRadius: 4,
@@ -64,8 +66,7 @@ var Styles = StyleSheet.create({
     color: defaultStyles.medium,
   },
   captured: {
-    height: 176,
-         
+    height: 176,         
   },
 });
 
@@ -91,45 +92,25 @@ module.exports = React.createClass({
     });
   },
   renderChatRow: function(rowData) {
-    if(rowData.image){
-      return (
-        <TouchableOpacity onPress={() => this.onPressRow(rowData)}>
-          <View style={Styles.row}>
-            <View style={Styles.rowHeader}>
-              <Text style={Styles.userName}>
-                {rowData.createdBy.name}
-              </Text>
-              <Text style={Styles.chatTitle}>
-                {rowData.name}
-              </Text>
-              <Image
-                source={{
-                  uri: rowData.image._url,
-                }}
-                style={Styles.captured}
-              />
-            </View>
+    return (
+      <TouchableOpacity onPress={() => this.onPressRow(rowData)}>
+        <View style={Styles.row}>
+          <View style={Styles.rowHeader}>
+            <Text style={Styles.userName}>
+              {rowData.createdBy.name}
+            </Text>
+            <Text style={Styles.chatTitle}>
+              {rowData.name}
+            </Text>
           </View>
-        </TouchableOpacity>
-      );
-    } else {
-      return (
-        <TouchableOpacity onPress={() => this.onPressRow(rowData)}>
-          <View style={Styles.row}>
-            <View style={Styles.rowHeader}>
-              <Text style={Styles.userName}>
-                {rowData.createdBy.name}
-              </Text>
-              <Text style={Styles.chatTitle}>
-                {rowData.name}
-              </Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-      );
-    }
-    // console.log(rowData);
-    
+          <Timer
+            expiration={rowData.expirationDate}
+            created={rowData.createdAt}
+            color={defaultStyles.white}
+          />
+        </View>
+      </TouchableOpacity>
+    );    
   },
   render: function() {
     return (

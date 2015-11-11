@@ -16,12 +16,10 @@ var {
 var Styles = StyleSheet.create({  
   imageView: {
     height: 176,
-    backgroundColor: "cyan"
+    backgroundColor: defaultStyles.green,
   }, 
   image: {
-
     height: 176,
-    backgroundColor: "cyan"
   },  
   imageText: {
     marginTop: 136,
@@ -30,10 +28,6 @@ var Styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Roboto-Regular',
   },
-  backgroundImage: {
-    flex: 1,
-    resizeMode: 'cover', // or 'stretch'
-  }
 });
 
 module.exports = React.createClass({
@@ -43,23 +37,31 @@ module.exports = React.createClass({
     imageText: React.PropTypes.string,
   },
   render: function() {
-    return (
-      <View>
-        <TouchableOpacity onPress={this.props.onPress}>
-          <Image
-            source={{
-              uri: this.props.photo,
-            }}
-            style={Styles.image}
-            />
-            <Text style={Styles.imageText}>            
-              {this.props.imageText}
-            </Text>
-            
-            
-            
-        </TouchableOpacity>
-      </View>
-    );
+    if(this.props.photo){
+      return (
+        <View>
+          <TouchableOpacity onPress={this.props.onPress}>
+            <Image
+              source={{
+                uri: this.props.photo,
+              }}
+              style={Styles.image}
+              >
+              <Text style={Styles.imageText}>            
+                Click to preview
+              </Text>
+              </Image>           
+          </TouchableOpacity>
+        </View>
+      );
+    } else {
+      return (    
+        <View style={Styles.imageView}>
+          <Text style={Styles.imageText}>            
+            (Optional) Add Photo
+          </Text>
+        </View>
+      );
+    }   
   }
 });

@@ -6,8 +6,12 @@ var {
   Text,
   View,
   Image,
-  TouchableHighlight,
+  TouchableOpacity,
 } = React;
+
+var {
+  Icon,
+} = require('react-native-icons');
 
 var PreviewPhoto = require('../components/previewPhoto');
 var Camera = require('react-native-camera');
@@ -46,6 +50,17 @@ var Styles = StyleSheet.create({
       backgroundColor: defaultStyles.red,      
       opacity: 0.7,
     },
+    iconView: {
+    position:'absolute',
+    top: 20,
+    right: 20,
+    width: 30,
+    height: 30, 
+  }, 
+  icon: {
+    width: 30,
+    height: 30,
+  },
 });
 
 module.exports = React.createClass({
@@ -68,21 +83,27 @@ module.exports = React.createClass({
           >
         </Camera>
 
-        <TouchableHighlight style={Styles.captureButton} onPress={function() {
+        <TouchableOpacity style={Styles.captureButton} onPress={function() {
           component.refs.cam.capture().then(function(image) {
-            // console.log(component.props.route.onPhotoChange);
-
-            component.props.route.onPhotoChange('data:image/jpeg;base64,'+image);
             component.props.navigator.pop();
-
-            // component.setState({ image });
-            // setTimeout(() => component.setState({ image: '' }), 5000);
+            component.props.route.onPhotoChange('data:image/jpeg;base64,'+image);
+            
           });
-        }}>
+        }} />
           
-        <Text></Text>
+       
 
-        </TouchableHighlight>
+
+        <View style={Styles.iconView}>
+          <TouchableOpacity>
+            <Icon
+              name='material|close'
+              size={30}
+              color='#ffffff'
+              style={Styles.icon}
+            />
+            </TouchableOpacity>  
+          </View>
       </View>
     );
   }

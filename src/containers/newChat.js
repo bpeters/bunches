@@ -53,9 +53,13 @@ module.exports = React.createClass({
     var bunch = this.props.route.bunch;
     var expirationDate = moment().add(bunch.ttl, 'ms').format();
 
+    this.props.navigator.pop();
+
     if (this.state.photo){
-      var image = new Parse.File('image.jpeg', { base64: this.state.photo});
-      image.save().then((object) => {    
+      var image = new Parse.File('image.jpeg', { base64: this.state.photo.split(',')[1]});
+      image.save().then((object) => {
+        // console.log(object);
+        // debugger;    
         if (this.state.title) {
           ParseReact.Mutation.Create('Chat', {
             name: this.state.title,
@@ -80,7 +84,7 @@ module.exports = React.createClass({
             })
             .dispatch()
             .then(() => {
-              this.props.navigator.pop();
+              // this.props.navigator.pop();
             })
           });
         } else {
@@ -130,10 +134,7 @@ module.exports = React.createClass({
     this.setState({message});
   },
   onPhotoChange: function(photo) {
-    this.setState({
-      photo,
-      imageText: "Click to preview",
-    });
+    this.setState({photo});
   },
   onAddPhoto: function() {
     this.props.navigator.push({
@@ -144,8 +145,6 @@ module.exports = React.createClass({
       onPhotoChange: this.onPhotoChange,
     });
   },
-
-
   onPressImage: function() {
     this.props.navigator.push({
       name: "enlarge photo",
@@ -156,8 +155,6 @@ module.exports = React.createClass({
       onPress: this.goBackNav,
     });
   },
-
-
   render: function() {
     return (
       <View style={Styles.body}>
@@ -171,7 +168,6 @@ module.exports = React.createClass({
           title={this.state.title}
           message={this.state.message}
           photo={this.state.photo}
-          imageText={this.state.imageText}
           onTitleChange={this.onTitleChange}
           onMessageChange={this.onMessageChange}
           onAddPhoto={this.onAddPhoto}

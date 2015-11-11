@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "Bunches": {
+      "applicationId": "dsgXdFhexcMreakStwdqPqNLY0tUjMzGFKsF6g5H"
+    },
+    "_default": {
+      "link": "Bunches"
+    }
+  }
+}
