@@ -17,21 +17,20 @@ var defaultStyles = require('../styles');
 
 var {
   View,
-  StyleSheet,
   Platform,
   Text,
   ListView,
+  ScrollView,
+  StyleSheet,
 } = React;
 
 var Styles = StyleSheet.create({
   body: {
     backgroundColor: defaultStyles.background,
   },
-  actionButton: {
-    position: 'absolute',
-    bottom: 16,
-    right: 16,
-  }
+  scroll: {
+    flex: 1,
+  },
 });
 
 module.exports = React.createClass({
@@ -100,16 +99,25 @@ module.exports = React.createClass({
           title={this.props.route.chat.name}
           onBackPress={this.onBackPress}
         />
-        <ChatContainer
-          user={this.props.user}
-          messages={messages}
-        />
-        <ChatBar
-          user={this.props.user}
-          chat={chat}
-          messenger={this.state.messenger}
-          navigator={this.props.navigator}
-        />
+        <ScrollView
+          ref='scrollView'
+          keyboardDismissMode='on-drag'
+          style={Styles.scroll}
+          contentContainerStyle={Styles.contentContainerStyle}
+          scrollEnabled={false}
+        >
+          <ChatContainer
+            user={this.props.user}
+            messages={messages}
+          />
+          <ChatBar
+            scrollView={this.refs.scrollView}
+            user={this.props.user}
+            chat={chat}
+            messenger={this.state.messenger}
+            navigator={this.props.navigator}
+          />
+        </ScrollView>
       </View>
     );
   }

@@ -16,19 +16,12 @@ var defaultStyles = require('../styles');
 
 var {
   View,
-  ScrollView,
   TextInput,
   StyleSheet, 
   TouchableHighlight,
 } = React;
 
 var Styles = StyleSheet.create({
-  scroll: {
-    flex: 1,
-  },
-  contentContainerStyle : {
-    flex: 1,
-  },
   body: {
     flex: 1,
     flexDirection: 'row',
@@ -79,6 +72,7 @@ module.exports = React.createClass({
     chat: React.PropTypes.object,
     messenger: React.PropTypes.object,
     navigator: React.PropTypes.object,
+    scrollView: React.PropTypes.object,
   },
   getInitialState: function () {
     return {
@@ -87,13 +81,20 @@ module.exports = React.createClass({
   },
   inputFocused: function (refName) {
     setTimeout(() => {
-      var scrollResponder = this.refs.scrollView.getScrollResponder();
+      var scrollResponder = this.props.scrollView.getScrollResponder();
 
       scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
         React.findNodeHandle(this.refs[refName]),
-        56,
+        110,
         true
       );
+    }, 50);
+  },
+  inputBlured: function (refName) {
+    setTimeout(() => {
+      var scrollResponder = this.props.scrollView.getScrollResponder();
+
+      scrollResponder.scrollTo(0, 0);
     }, 50);
   },
   addChatMessage: function() {
@@ -118,28 +119,20 @@ module.exports = React.createClass({
   },
   render: function() {
     return (
-      <View>
-        <ScrollView
-          ref='scrollView'
-          keyboardDismissMode='on-drag'
-          style={Styles.scroll}
-          contentContainerStyle={Styles.contentContainerStyle}
-          scrollEnabled={true}
-        >
-         <View ref='chat' style={Styles.body}>
-            <View style={Styles.wrap}>
-              <TextInput
-                style={Styles.input}
-                onChangeText={(message) => this.setState({message})}
-                value={this.state.message}
-                onFocus={this.inputFocused.bind(this, 'chat')}
-                onSubmitEditing={this.addChatMessage}
-                blurOnSubmit={false}
-                underlineColorAndroid={defaultStyles.light}
-              />
-            </View>
-          </View>
-        </ScrollView>
+      <View ref='chat' style={Styles.body}>
+        <View style={Styles.wrap}>
+          <TextInput
+            style={Styles.input}
+            onChangeText={(message) => this.setState({message})}
+            value={this.state.message}
+            onFocus={this.inputFocused.bind(this, 'chat')}
+            onBlur={this.inputBlured.bind(this, 'chat')}
+            onSubmitEditing={this.addChatMessage}
+            blurOnSubmit={false}
+            enablesReturnKeyAutomatically={true}
+            underlineColorAndroid={defaultStyles.light}
+          />
+        </View>
       </View>
     );
   }

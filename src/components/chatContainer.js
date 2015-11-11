@@ -4,6 +4,7 @@ var React = require('react-native');
 var _ = require('lodash');
 var moment = require('moment');
 
+var Avatar = require('../elements/avatar');
 var InvertibleScrollView = require('react-native-invertible-scroll-view');
 
 var defaultStyles = require('../styles');
@@ -21,7 +22,7 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height:defaultStyles.bodyHeight - defaultStyles.chatBarHeight - defaultStyles.navBarHeight,
+    height:defaultStyles.bodyHeight - defaultStyles.chatBarHeight - defaultStyles.navBarHeight - 200,
   },
   row: {
     flex:1,
@@ -32,12 +33,6 @@ var Styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
   },
-  thumbnail: {
-    height: 60,
-    width: 60,
-    borderRadius: 60,
-    justifyContent: 'center',
-  },
   info: {
     flex:1,
     alignItems: 'stretch',
@@ -45,7 +40,7 @@ var Styles = StyleSheet.create({
     paddingLeft: 10,
   },
   user: {
-    flex:1,    
+    flex:1,
     justifyContent: 'flex-start',
     flexDirection: 'row',
   },
@@ -78,7 +73,6 @@ var Styles = StyleSheet.create({
     height: 1,
     backgroundColor: defaultStyles.medium,
     flex:1,
-
   },
   breakView: {
     alignItems: 'center',
@@ -99,11 +93,14 @@ module.exports = React.createClass({
   },
   getInitialState: function() {
     return {
-      message: null,      
+      message: null,
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2
       }),
     };
+  },
+  onAvatarPress: function (rowData) {
+    console.log(rowData);
   },
   renderChatRow: function(rowData) {
     if(rowData.breaker){
@@ -121,12 +118,10 @@ module.exports = React.createClass({
     } else {
       return (
         <View style={Styles.row}>
-          <View style={Styles.image}>
-            <Image
-              style={Styles.thumbnail}
-              source={{uri: _.get(rowData, 'user.imageURL') || 'http://img2.wikia.nocookie.net/__cb20130607025329/creepypasta/images/3/38/Avatar-blank.jpg'}}
-            />
-          </View>
+          <Avatar
+            onPress={() => this.onAvatarPress(rowData)}
+            imageURL={_.get(rowData, 'user.imageURL')}
+          />
           <View style={Styles.info}>
             <View style={Styles.user}>
               <Text style={Styles.name}>
