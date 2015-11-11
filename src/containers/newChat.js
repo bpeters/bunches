@@ -55,6 +55,7 @@ module.exports = React.createClass({
     if (image || this.state.message) {
       new Firebase(url).push({
         uid: this.props.user.id,
+        imageURL: image ? image.url() : null,
         message: this.state.message,
         time: new Date().getTime(),
       });

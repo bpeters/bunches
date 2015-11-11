@@ -5,6 +5,8 @@ var _ = require('lodash');
 var moment = require('moment');
 
 var Avatar = require('../elements/avatar');
+var PopImage = require('../elements/popImage');
+var EnlargePhoto = require('../containers/enlargePhoto');
 var InvertibleScrollView = require('react-native-invertible-scroll-view');
 
 var defaultStyles = require('../styles');
@@ -95,6 +97,10 @@ var Styles = StyleSheet.create({
   breakText: {
     color: defaultStyles.medium,
     fontSize: 15,
+  },
+  imageWrap: {
+    paddingTop: 16,
+    width: defaultStyles.bodyWidth - 16 - 40 - 16 - 16,
   }
 });
 
@@ -113,6 +119,33 @@ module.exports = React.createClass({
   },
   onAvatarPress: function (rowData) {
     console.log(rowData);
+  },
+  onPressImage: function (imageURL) {
+    this.props.navigator.push({
+      name: "enlarge photo",
+      component: EnlargePhoto,
+      hasSideMenu: false,
+      photo: imageURL,
+    });
+  },
+  renderImage: function (imageURL) {
+    return (
+      <View style={Styles.imageWrap}>
+        <PopImage
+          onPress={() => {this.onPressImage(imageURL)}}
+          photo={imageURL}
+        />
+      </View>
+    );
+  },
+  renderMessage: function (message) {
+    return (
+      <View style={Styles.chat}>
+        <Text style={Styles.chatText}>
+          {message}
+        </Text>
+      </View>
+    );
   },
   renderChatRow: function(rowData) {
     if(rowData.breaker){
@@ -145,11 +178,8 @@ module.exports = React.createClass({
                 </Text>
               </View>
             </View>
-            <View style={Styles.chat}>
-              <Text style={Styles.chatText}>
-                {rowData.message}
-              </Text>
-            </View>
+            {rowData.message ? this.renderMessage(rowData.message) : null}
+            {rowData.imageURL ? this.renderImage(rowData.imageURL) : null}
           </View>
         </View>
       );

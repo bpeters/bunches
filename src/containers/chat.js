@@ -110,6 +110,7 @@ module.exports = React.createClass({
           <ChatContainer
             user={this.props.user}
             messages={messages}
+            navigator={this.props.navigator}
           />
           <ChatBar
             scrollView={this.refs.scrollView}
