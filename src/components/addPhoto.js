@@ -80,19 +80,15 @@ module.exports = React.createClass({
         <Camera 
           style={Styles.camera} 
           ref="cam"
-          >
+        >
         </Camera>
 
-        <TouchableOpacity style={Styles.captureButton} onPress={function() {
-          component.refs.cam.capture().then(function(image) {
+        <TouchableOpacity style={Styles.captureButton} onPress={() => {
+          component.refs.cam.capture((image) => {
             component.props.navigator.pop();
             component.props.route.onPhotoChange('data:image/jpeg;base64,'+image);
-            
           });
         }} />
-          
-       
-
 
         <View style={Styles.iconView}>
           <TouchableOpacity>

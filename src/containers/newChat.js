@@ -103,7 +103,7 @@ module.exports = React.createClass({
           isDead: false,
         })
         .dispatch()
-        .then((chat) => {            
+        .then((chat) => {
           var url = config.firebase.url + '/bunch/' + bunch.objectId + '/chat/' + chat.objectId;
           new Firebase(url).push({
             uid: this.props.user.id,
@@ -113,7 +113,7 @@ module.exports = React.createClass({
           ParseReact.Mutation.Create('Chat2User', {
             chat: chat,
             user: this.props.user,
-            text: this.state.message,              
+            text: this.state.message,
           })
           .dispatch()
           .then(() => {

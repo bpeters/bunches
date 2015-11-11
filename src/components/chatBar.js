@@ -8,10 +8,6 @@ var ParseReact = require('parse-react/react-native');
 
 var NewChat = require('../containers/newChat');
 
-var {
-  Icon,
-} = require('react-native-icons');
-
 var defaultStyles = require('../styles');
 
 var {
@@ -40,11 +36,11 @@ var Styles = StyleSheet.create({
   },
   wrap: {
     flexDirection: 'row',
-    left: 16,
-    top: 16,
+    left: 6,
+    top: 6,
     backgroundColor: defaultStyles.light,
-    width: defaultStyles.bodyWidth - 32,
-    height: 44,
+    width: defaultStyles.bodyWidth - 12,
+    height: 40,
     borderColor: defaultStyles.white,
     borderWidth: 1,
     borderRadius: 2,
@@ -53,16 +49,10 @@ var Styles = StyleSheet.create({
     left: 10,
     fontFamily: 'Roboto-Light',
     color: defaultStyles.dark,
-    height: 40,
-    width: defaultStyles.bodyWidth - 58,
+    height: 36,
+    width: defaultStyles.bodyWidth - 38,
     borderBottomWidth: 0,
     borderWidth: 0,
-  },
-  icon: {
-    top: 5,
-    left: 3,
-    width: 30,
-    height: 30,
   },
 });
 

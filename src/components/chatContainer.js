@@ -22,7 +22,8 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height:defaultStyles.bodyHeight - defaultStyles.chatBarHeight - defaultStyles.navBarHeight,
+    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight - defaultStyles.navBarHeight,
+    backgroundColor: defaultStyles.white,
   },
   row: {
     flex:1,
@@ -47,6 +48,7 @@ var Styles = StyleSheet.create({
     fontWeight: 'bold',
     color: defaultStyles.dark,
     fontFamily: 'Roboto-Regular',
+    fontSize: 14,
   },
   date: {
     flex:1,
@@ -56,16 +58,20 @@ var Styles = StyleSheet.create({
   time: {
     color: defaultStyles.medium,
     fontFamily: 'Roboto-Regular',
+    fontSize: 14,
   },
   chat: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
     paddingTop: 8,
+    paddingRight: 16,
   },
   chatText: {
     color: defaultStyles.dark,
     fontFamily: 'Roboto-Light',
+    fontSize: 14,
+    lineHeight: 18,
   },
   break: {
     flex: 1,
