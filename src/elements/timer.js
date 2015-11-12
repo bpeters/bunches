@@ -30,7 +30,8 @@ module.exports = React.createClass({
 
     if (percent <= 0.5) {
       color = defaultStyles.yellow;
-    } else if (percent <= 0.25) {
+    } 
+    if (percent <= 0.25) {
       color = defaultStyles.red;
     }
 

@@ -8,8 +8,13 @@ var Avatar = require('../elements/avatar');
 var PopImage = require('../elements/popImage');
 var EnlargePhoto = require('../containers/enlargePhoto');
 var Timer = require('../elements/timer');
+var Counter = require('../elements/counter');
 
 var defaultStyles = require('../styles');
+
+var {
+  Icon,
+} = require('react-native-icons');
 
 var {
   View,
@@ -29,9 +34,10 @@ var Styles = StyleSheet.create({
     width: defaultStyles.bodyWidth - 32,
     marginTop: 16,
     marginLeft: 16,
+
   },
   rowHeader: {
-    height: 72,
+
     backgroundColor: defaultStyles.white,
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4,
@@ -41,18 +47,25 @@ var Styles = StyleSheet.create({
     borderTopWidth: 1,
     borderLeftWidth: 1,
     borderRightWidth: 1,
-    flexDirection: 'row',
+    flex:1,
+    flexDirection:'row',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     paddingTop: 16,
     paddingLeft: 16,
   },
-  info: {
-    flex:1,
-    alignItems: 'stretch',
-    flexDirection: 'column',
-    paddingLeft: 16,
-  },
+ 
+
+
+
+
+
+
+
+
+
+
+
   rowImage: {
     height: 176,
     backgroundColor: defaultStyles.white,
@@ -78,12 +91,12 @@ var Styles = StyleSheet.create({
     borderRightWidth: 1,
   },
   userName: {
+    flex:2.5,
     fontSize: 16,
     fontFamily: 'Roboto-Regular',
     color: defaultStyles.dark,
   },
   chatTitle: {
-    marginTop: 8,
     fontSize: 14,
     fontFamily: 'Roboto-Regular', 
     color: defaultStyles.medium,
@@ -95,7 +108,53 @@ var Styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Roboto-Light',
     color: defaultStyles.dark,
+  },
+
+
+
+
+
+
+
+
+
+  counts: {
+    flex:1,
+    flexDirection:'row',
+    justifyContent:'flex-end',
+    alignItems:'flex-start',
+    alignSelf:'stretch',
+    paddingBottom:10,
+  },
+  info: {
+    flex:1,
+    alignItems: 'stretch',
+    flexDirection: 'row',
+    paddingLeft: 16,
+  },
+  infoBar: {
+    flex:1,
+    alignItems: 'stretch',
+    flexDirection: 'column',
+  },
+  content: {
+    flex:1,
+    flexDirection:'row',
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 });
 
 module.exports = React.createClass({
@@ -150,7 +209,9 @@ module.exports = React.createClass({
     );
   },
   renderChatRow: function(rowData) {
+    
     var messages = [];
+    var users = [];
     var mostRecentImage;
     var mostRecentMessage;
 
@@ -164,6 +225,8 @@ module.exports = React.createClass({
         mostRecentMessage = value.message;
       }
 
+      users.push(value.uid);      
+
       messages.push({
         id: key,
         imageURL: value.imageURL,
@@ -171,10 +234,12 @@ module.exports = React.createClass({
         uid: value.uid,
         message: value.message
       });
-    });
+    });    
 
     rowData.messages = messages;
 
+    rowData.users = _.uniq(users);
+    
     return (
       <TouchableOpacity onPress={() => this.onPressRow(rowData)}>
         <View style={Styles.row}>
@@ -184,12 +249,21 @@ module.exports = React.createClass({
               imageURL={rowData.createdBy.image ? rowData.createdBy.image.url() : null}
             />
             <View style={Styles.info}>
-              <Text style={Styles.userName}>
-                {rowData.createdBy.name}
-              </Text>
-              <Text style={Styles.chatTitle}>
-                {rowData.name}
-              </Text>
+              <View style={Styles.infoBar}>
+                <Text style={Styles.userName}>
+                  {rowData.createdBy.name}
+                </Text>
+                <Text style={Styles.chatTitle}>
+                  {rowData.name}
+                </Text>                             
+              </View>    
+              <View style={Styles.counts}>              
+                <Counter
+                  users={rowData.users.length}
+                  messages={rowData.messages.length}
+                  color='full'
+                />
+              </View>
             </View>
           </View>
           {mostRecentImage ? this.renderImage(mostRecentImage) : null}

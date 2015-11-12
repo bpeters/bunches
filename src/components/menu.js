@@ -5,6 +5,8 @@ var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
 var _ = require('lodash');
 
+var Bunch = require('../containers/bunch');
+
 var defaultStyles = require('../styles');
 
 var {
@@ -76,9 +78,12 @@ module.exports= React.createClass({
   },
   onPressRow: function(rowData) {
     console.log(rowData);
-  },
-  onTest: function(rowData){
-    console.log('klsjflkjsakljl')
+    this.props.navigator.push({
+      name: "bunch",
+      component: Bunch,
+      hasSideMenu: true,
+      bunch: rowData,
+    });
   },
   renderRow: function(rowData) {
     return (
@@ -103,7 +108,7 @@ module.exports= React.createClass({
     );
   },
   render: function() {
-    var dataBlob = {}
+    var dataBlob = {};
 
     dataBlob['Bunches'] = _.pluck(this.data.bunches, 'bunch');
 
