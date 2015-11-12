@@ -5,6 +5,7 @@ var React = require('react-native');
 var IconButton = require('../elements/iconButton');
 
 var defaultStyles = require('../styles');
+var Counter = require('../elements/counter');
 
 var {
   Text,
@@ -50,10 +51,22 @@ var NavBar = React.createClass({
   propTypes: {
     title: React.PropTypes.string,
     menuButton: React.PropTypes.object,
+    userCount: React.PropTypes.number,
+    msgCount: React.PropTypes.number,
   },
   onHandlePress: function(e) {
     this.context.menuActions.toggle();
     this.props.menuButton.onPress(e);
+  },
+  renderCounter: function() {
+    console.log('nope');
+    return (
+      <Counter
+        users={this.props.userCount}
+        messages={this.props.msgCount}
+        color='white'
+      /> 
+    )
   },
   render: function() {
     return (
@@ -70,6 +83,7 @@ var NavBar = React.createClass({
           </Text>
         </View>
         <View style={Styles.right}>
+        {this.props.userCount && this.props.msgCount ? this.renderCounter() : null}
         </View>
       </View>
     );
