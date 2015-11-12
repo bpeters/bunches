@@ -82,8 +82,15 @@ module.exports = React.createClass({
     this.props.navigator.pop();
   },
   render: function() {
+    var userIds = [];
     var chat = _.get(this, 'props.route.chat');
     var users = _.pluck(this.data.chats, 'user');
+    
+
+    _.forEach(users,function(user){
+      userIds.push(user.objectId);
+    });
+    var userCount = _.uniq(userIds).length;
 
     var messages = _.chain(this.state.messages)
       .cloneDeep()
@@ -105,6 +112,8 @@ module.exports = React.createClass({
           onBackPress={this.onBackPress}
           expiration={this.props.route.chat.expirationDate}
           created={this.props.route.chat.createdAt}
+          userCount={userCount}
+          msgCount={messages.length}
         />
         <ScrollView
           ref='scrollView'

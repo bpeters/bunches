@@ -4,6 +4,7 @@ var React = require('react-native');
 
 var IconButton = require('../elements/iconButton');
 var Timer = require('../elements/timer');
+var Counter = require('../elements/counter');
 
 var defaultStyles = require('../styles');
 
@@ -56,6 +57,8 @@ module.exports = React.createClass({
     onBackPress: React.PropTypes.func,
     expiration: React.PropTypes.instanceOf(Date),
     created: React.PropTypes.instanceOf(Date),
+    userCount: React.PropTypes.number,
+    msgCount: React.PropTypes.number,
   },
   render: function() {
     return (
@@ -72,7 +75,13 @@ module.exports = React.createClass({
               {this.props.title}
             </Text>
           </View>
+
           <View style={Styles.right}>
+            <Counter
+              users={this.props.userCount}
+              messages={this.props.msgCount}
+              color='white'
+            /> 
           </View>
         </View>
         <Timer
