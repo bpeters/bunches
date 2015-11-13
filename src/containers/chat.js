@@ -106,14 +106,14 @@ module.exports = React.createClass({
         <NavBar
           title={this.props.route.chat.belongsTo.name}
           menuButton={this.props.menuButton}
+          userCount={userCount}
+          msgCount={messages.length}
         />
         <NavBarChat
           title={this.props.route.chat.name}
           onBackPress={this.onBackPress}
           expiration={this.props.route.chat.expirationDate}
           created={this.props.route.chat.createdAt}
-          userCount={userCount}
-          msgCount={messages.length}
         />
         <ScrollView
           ref='scrollView'
