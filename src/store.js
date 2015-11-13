@@ -5,6 +5,7 @@ var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
 var Firebase = require('firebase');
 var _ = require('lodash');
+var moment = require('moment');
 
 var config = require('./config/default');
 
@@ -16,46 +17,21 @@ module.exports = {
   store: {
     bunch: null,
     chats: [],
+    messages: [],
   },
   initStore: function () {
-    var query = new Parse.Query('Bunch2User');
-    query.equalTo('user',  this.props.user);
-    query.equalTo('isMain', true);
-    query.include('bunch');
+    this.queryMainBunch(this.props.user)
+      .then((result) => {
+        this.store.bunch = result.get('bunch');
 
-    query.first().then((result) => {
-      var bunch = result.get('bunch');
-      var url = config.firebase.url + '/bunch/' + bunch.id;
-      this.store.bunch = bunch;
+        return this.queryChats(this.store.bunch)
+      })
+      .then((result) => {
+        this.store.chats = result;
 
-      new Firebase(url).on('child_added', (snapshot) => {
-        var data = snapshot.val();
-        console.log('Firechild Added', data);
-
-        _.forEach(data, (value, key) => {
-          this.setItem(bunch.id, key);
-
-          var messages = [];
-
-          _.forEach(value, (v, k) => {
-            this.setItem(key, k);
-            messages.push(v);
-          });
-
-          this.store.chats.push({
-            id: key,
-            messages: messages
-          })
-        });
-
-        this.setState({
-          bunch: this.store.bunch,
-          chats: this.store.chats,
-        });
-      });
-
-    }, (err) => {
-      this.handleParseError(err);
+        this.listenToFirebase();
+      }, (err) => {
+        this.handleParseError(err);
     });
   },
   handleParseError: function (err) {
@@ -93,5 +69,68 @@ module.exports = {
       .catch((err) => {
         console.log(err);
       });
+  },
+  listenToFirebase: function () {
+    var url = config.firebase.url + '/bunch/' + this.store.bunch.id;
+
+    new Firebase(url).on('value', (snapshot) => {
+      var data = snapshot.val().chat;
+
+      console.log('Firebase', data);
+
+      _.forEach(data, (value, key) => {
+
+        if (_.find(this.store.chats, {'id' : key})) {
+          var chat = _.find(this.store.messages, {'id' : key});
+
+          var messages = _.get(chat, 'messages') || [];
+
+          _.forEach(value, (v, k) => {
+
+            if (!_.find(messages, {'key' : k})) {
+              v.key = k;
+
+              this.setItem(key, k);
+              messages.push(v);
+            }
+
+          });
+
+          if (!chat) {
+            this.setItem(this.store.bunch.id, key);
+
+            this.store.messages.push({
+              id: key,
+              messages: messages
+            });
+          }
+        }
+
+      });
+
+      this.setState({
+        messages: this.store.messages,
+      });
+    });
+  },
+  queryMainBunch: function (user) {
+    var query = (new Parse.Query('Bunch2User'))
+      .equalTo('user',  user)
+      .equalTo('isMain', true)
+      .include('bunch');
+
+    return query.first();
+  },
+  queryChats: function (bunch) {
+    var now = moment().toDate();
+
+    var query = (new Parse.Query('Chat'))
+      .equalTo('belongsTo', bunch)
+      .equalTo('isDead', false)
+      .greaterThan("expirationDate", now)
+      .include('createdBy')
+      .descending('expirationDate')
+
+    return query.find();
   },
 }

@@ -20,16 +20,14 @@ module.exports= React.createClass({
     user: React.PropTypes.object,
   },
   getInitialState: function () {
-    return {
-      bunch: null,
-      chats: [],
-    };
+    return this.store;
   },
   componentDidMount: function () {
     this.initStore();
   },
   renderScene: function(route, navigator) {
     route.bunch = this.state.bunch;
+    route.chats = this.state.chats;
 
     var Component = route.component;
 
@@ -55,6 +53,7 @@ module.exports= React.createClass({
 
     console.log('Bunch State', this.state.bunch);
     console.log('Chats State', this.state.chats);
+    console.log('Messages State', this.state.messages);
 
     if (!_.isEmpty(this.state.bunch)) {
       return (
