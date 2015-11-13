@@ -72,6 +72,8 @@ module.exports = React.createClass({
       var data = snapshot.val();
       var bulk = [];
 
+      console.log(data);
+
       _.forEach(data, (value, key) => {
         bulk.push({
           id: key,

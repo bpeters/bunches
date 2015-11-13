@@ -4,8 +4,7 @@ var React = require('react-native');
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
 var _ = require('lodash');
-
-var Bunch = require('../containers/bunch');
+var moment = require('moment');
 
 var defaultStyles = require('../styles');
 
@@ -69,25 +68,28 @@ module.exports= React.createClass({
     };
   },
   observe: function() {
+    var now = moment().toDate();
+
     return {
       bunches: (new Parse.Query('Bunch2User'))
         .equalTo('user', this.props.user)
         .ascending('name')
-        .include("bunch")
+        .include("bunch"),
+      chatsCreated: (new Parse.Query('Chat'))
+        .equalTo('createdBy', this.props.user)
+        .equalTo('isDead', false)
+        .greaterThan("expirationDate", now),
+      chatsIn: (new Parse.Query('Chat2User'))
+        .equalTo('user', this.props.user)
+        .include('chat')
     };
   },
   onPressRow: function(rowData) {
     console.log(rowData);
-    this.props.navigator.push({
-      name: "bunch",
-      component: Bunch,
-      hasSideMenu: true,
-      bunch: rowData,
-    });
   },
   renderRow: function(rowData) {
     return (
-      <TouchableOpacity onPress={() => this.onPressRow(rowData)}>
+      <TouchableOpacity onPress={() => {this.onPressRow(rowData)}}>
         <View>
           <View style={Styles.row}>
             <Text style={Styles.rowText}>
@@ -108,9 +110,20 @@ module.exports= React.createClass({
     );
   },
   render: function() {
-    var dataBlob = {};
+    var dataBlob = {}
+
+    var chatsCreatedIds = _.pluck(this.data.chatsCreated, 'objectId');
 
     dataBlob['Bunches'] = _.pluck(this.data.bunches, 'bunch');
+    dataBlob['Chats Started'] = this.data.chatsCreated;
+    
+    /*dataBlob['Chats In'] = _.chain(this.data.chatsIn)
+      .filter((chats) => {
+        return !_.indexOf(chatsCreatedIds, chats.chat.objectId);
+      })
+      .pluck('chat')*/
+
+    console.log(this.data.chatsIn);
 
     return (
       <View style={Styles.body}>
