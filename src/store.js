@@ -133,4 +133,11 @@ module.exports = {
 
     return query.find();
   },
+  queryUserChats: function (chat) {
+    var query = (new Parse.Query('Chat2User'))
+      .equalTo('chat', chat)
+      .include('user')
+
+    return query.find();
+  },
 }

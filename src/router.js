@@ -26,9 +26,6 @@ module.exports= React.createClass({
     this.initStore();
   },
   renderScene: function(route, navigator) {
-    route.bunch = this.state.bunch;
-    route.chats = this.state.chats;
-
     var Component = route.component;
 
     if (route.hasSideMenu) {
@@ -37,6 +34,11 @@ module.exports= React.createClass({
           navigator={navigator}
           route={route}
           user={this.props.user}
+          store={{
+            bunch: this.state.bunch,
+            chats: this.state.chats,
+            messages: this.state.messages,
+          }}
         />
       );
     } else {
@@ -45,6 +47,7 @@ module.exports= React.createClass({
           navigator={navigator}
           route={route}
           user={this.props.user}
+          store={this.state}
         />
       );
     }
@@ -60,7 +63,7 @@ module.exports= React.createClass({
         <Navigator
           renderScene={this.renderScene}
           initialRoute={{
-            name: "bunch",
+            name: 'bunch',
             component: Bunch,
             hasSideMenu: true,
           }}

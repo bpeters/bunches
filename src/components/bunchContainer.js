@@ -13,10 +13,6 @@ var Counter = require('../elements/counter');
 var defaultStyles = require('../styles');
 
 var {
-  Icon,
-} = require('react-native-icons');
-
-var {
   View,
   TouchableOpacity,
   Text,
@@ -34,10 +30,8 @@ var Styles = StyleSheet.create({
     width: defaultStyles.bodyWidth - 32,
     marginTop: 16,
     marginLeft: 16,
-
   },
   rowHeader: {
-
     backgroundColor: defaultStyles.white,
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4,
@@ -54,18 +48,6 @@ var Styles = StyleSheet.create({
     paddingTop: 16,
     paddingLeft: 16,
   },
- 
-
-
-
-
-
-
-
-
-
-
-
   rowImage: {
     height: 176,
     backgroundColor: defaultStyles.white,
@@ -109,15 +91,6 @@ var Styles = StyleSheet.create({
     fontFamily: 'Roboto-Light',
     color: defaultStyles.dark,
   },
-
-
-
-
-
-
-
-
-
   counts: {
     flex:1,
     flexDirection:'row',
@@ -141,27 +114,13 @@ var Styles = StyleSheet.create({
     flex:1,
     flexDirection:'row',
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 });
 
 module.exports = React.createClass({
   propTypes: {
     user: React.PropTypes.object,
     navigator: React.PropTypes.object,
-    chats: React.PropTypes.array,
+    store: React.PropTypes.object,
   },
   getInitialState: function() {
     return {
@@ -172,10 +131,10 @@ module.exports = React.createClass({
   },
   onPressRow: function (rowData) {
     this.props.navigator.push({
-      name: "chat",
+      name: 'chat',
       component: Chat,
       hasSideMenu: true,
-      chat: rowData,
+      chat: rowData
     });
   },
   onAvatarPress: function (rowData) {
@@ -183,7 +142,7 @@ module.exports = React.createClass({
   },
   onPressImage: function (imageURL) {
     this.props.navigator.push({
-      name: "enlarge photo",
+      name: 'enlarge photo',
       component: EnlargePhoto,
       hasSideMenu: false,
       photo: imageURL,
@@ -209,57 +168,54 @@ module.exports = React.createClass({
     );
   },
   renderChatRow: function(rowData) {
-    
-    var messages = [];
-    var users = [];
+
+    var chat = _.find(this.props.store.chats, {'id' : rowData.id});
+
+    var userCount = _.chain(rowData.messages)
+      .pluck('uid')
+      .uniq()
+      .value()
+      .length;
+
     var mostRecentImage;
     var mostRecentMessage;
 
-    _.forOwn(_.get(rowData, 'firebase.messages'), (value, key) => {
+    _.forEach(rowData.messages, (message) => {
 
-      if (value.imageURL) {
-        mostRecentImage = value.imageURL;
+      if (message.imageURL) {
+        mostRecentImage = message.imageURL;
       }
 
-      if (value.message) {
-        mostRecentMessage = value.message;
+      if (message.message) {
+        mostRecentMessage = message.message;
       }
 
-      users.push(value.uid);      
+    });
 
-      messages.push({
-        id: key,
-        imageURL: value.imageURL,
-        time: value.time,
-        uid: value.uid,
-        message: value.message
-      });
-    });    
+    rowData.chat = chat;
 
-    rowData.messages = messages;
+    var user = rowData.chat.get('createdBy');
 
-    rowData.users = _.uniq(users);
-    
     return (
       <TouchableOpacity onPress={() => this.onPressRow(rowData)}>
         <View style={Styles.row}>
           <View style={Styles.rowHeader}>
             <Avatar
               onPress={() => this.onAvatarPress(rowData)}
-              imageURL={rowData.createdBy.image ? rowData.createdBy.image.url() : null}
+              imageURL={user.attributes.image ? user.attributes.image.url() : null}
             />
             <View style={Styles.info}>
               <View style={Styles.infoBar}>
                 <Text style={Styles.userName}>
-                  {rowData.createdBy.name}
+                  {user.attributes.name}
                 </Text>
                 <Text style={Styles.chatTitle}>
-                  {rowData.name}
-                </Text>                             
-              </View>    
-              <View style={Styles.counts}>              
+                  {rowData.chat.attributes.name}
+                </Text>
+              </View>
+              <View style={Styles.counts}>
                 <Counter
-                  users={rowData.users.length}
+                  users={userCount}
                   messages={rowData.messages.length}
                   color='full'
                 />
@@ -269,8 +225,8 @@ module.exports = React.createClass({
           {mostRecentImage ? this.renderImage(mostRecentImage) : null}
           {mostRecentMessage ? this.renderMessage(mostRecentMessage) : null}
           <Timer
-            expiration={rowData.expirationDate}
-            created={rowData.createdAt}
+            expiration={rowData.chat.attributes.expirationDate}
+            created={rowData.chat.createdAt}
             color={defaultStyles.white}
             width={defaultStyles.bodyWidth - 32}
           />
@@ -282,7 +238,7 @@ module.exports = React.createClass({
     return (
       <View style={Styles.container}>
         <ListView
-          dataSource={this.state.dataSource.cloneWithRows(this.props.chats)}
+          dataSource={this.state.dataSource.cloneWithRows(this.props.store.messages)}
           renderRow={this.renderChatRow}
           automaticallyAdjustContentInsets={false}
         />

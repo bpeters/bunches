@@ -165,12 +165,12 @@ module.exports = React.createClass({
         <View style={Styles.row}>
           <Avatar
             onPress={() => this.onAvatarPress(rowData)}
-            imageURL={rowData.userImageURL || _.get(rowData, 'user.imageURL')}
+            imageURL={rowData.userImageURL}
           />
           <View style={Styles.info}>
             <View style={Styles.user}>
               <Text style={Styles.name}>
-                {rowData.name || _.get(rowData, 'user.name') || 'Anon'}
+                {rowData.name || 'Anon'}
               </Text>
               <View style={Styles.date}>
                 <Text style={Styles.time}>

@@ -38,74 +38,38 @@ var Styles = StyleSheet.create({
 });
 
 module.exports = React.createClass({
-  mixins: [ParseReact.Mixin],
   propTypes: {
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
     user: React.PropTypes.object,
+    store: React.PropTypes.object,
     menuButton: React.PropTypes.object,
-  },
-  observe: function() {
-    var bunch = _.get(this, 'props.route.bunch');
-    var now = moment().toDate();
-
-    return {
-      chats: (new Parse.Query('Chat'))
-        .equalTo('belongsTo', bunch)
-        .equalTo('isDead', false)
-        .greaterThan("expirationDate", now)
-        .include('createdBy')
-        .descending("expirationDate"),
-    };
-  },
-  getInitialState: function() {
-    var bunch = this.props.route.bunch;
-    var url = config.firebase.url + '/bunch/' + bunch.objectId;
-
-    return {
-      messenger: new Firebase(url),
-      bulk: [],
-    };
-  },
-  componentDidMount: function() {
-    this.state.messenger.on('child_added', (snapshot) => {
-      var data = snapshot.val();
-      var bulk = [];
-
-      _.forEach(data, (value, key) => {
-        bulk.push({
-          id: key,
-          messages: value,
-        });
-      });
-
-      this.setState({
-        bulk: bulk
-      });
-
-    });
   },
   onActionButtonPress: function () {
     this.props.navigator.push({
-      name: "new chat",
+      name: 'new chat',
       component: NewChat,
       hasSideMenu: false,
-      bunch: this.props.route.bunch,
+      bunch: this.props.store.bunch,
     });
   },
   render: function() {
-    console.log(this.props.route.bunch);
-
-    var title = _.get(this, 'props.route.bunch.name');
-    var chats = _.cloneDeep(this.data.chats);
-
-    _.forEach(chats, (chat) => {
-      chat.firebase = _.find(this.state.bulk, {'id' : chat.objectId});
-    });
+    var title = this.props.store.bunch.attributes.name;
 
     return (
       <View style={Styles.body}>
-
+        <NavBar
+          title={title}
+          menuButton={this.props.menuButton}
+        />
+        <BunchContainer
+          user={this.props.user}
+          navigator={this.props.navigator}
+          store={this.props.store}
+        />
+        <View style={Styles.actionButton}>
+          <ActionButton onPress={this.onActionButtonPress} />
+        </View>
       </View>
     );
   }

@@ -110,6 +110,8 @@ module.exports = React.createClass({
     });
   },
   render: function() {
+    console.log(this);
+
     return (
       <View ref='chat' style={Styles.body}>
         <View style={Styles.wrap}>

@@ -2,10 +2,6 @@
 
 var React = require('react-native');
 var _ = require('lodash');
-var Parse = require('parse/react-native');
-var ParseReact = require('parse-react/react-native');
-var Firebase = require('firebase');
-var config = require('../config/default');
 
 var NavBar = require('../components/navBar');
 var NavBarChat = require('../components/navBarChat');
@@ -34,86 +30,48 @@ var Styles = StyleSheet.create({
 });
 
 module.exports = React.createClass({
-  mixins: [ParseReact.Mixin],
   propTypes: {
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
     user: React.PropTypes.object,
+    store: React.PropTypes.object,
     menuButton: React.PropTypes.object,
-  },
-  observe: function() {
-    var chat = _.get(this, 'props.route.chat');
-
-    var ParseChat = Parse.Object.extend("Chat");
-    var newChat = new ParseChat();
-
-    newChat.id = chat.objectId;
-
-    return {
-      chats: (new Parse.Query('Chat2User'))
-        .equalTo('chat', newChat)
-        .include('user')
-    };
-  },
-  getInitialState: function() {
-    var chat = this.props.route.chat;
-    var url = config.firebase.url + '/bunch/' + chat.belongsTo.objectId + '/chat/' + chat.objectId;
-
-    return {
-      messenger: new Firebase(url),
-      messages: [],
-    };
-  },
-  componentDidMount: function() {
-    var messages = _.cloneDeep(this.state.messages);
-
-    this.state.messenger.on('child_added', (snapshot) => {
-      var data = snapshot.val();
-
-      messages.push(data);
-
-      this.setState({
-        messages: messages
-      });
-
-    });
   },
   onBackPress: function () {
     this.props.navigator.pop();
   },
   render: function() {
-    var userIds = [];
-    var chat = _.get(this, 'props.route.chat');
-    var users = _.pluck(this.data.chats, 'user');
-    
+    var chat = this.props.route.chat.chat;
 
-    _.forEach(users,function(user){
-      userIds.push(user.objectId);
-    });
-    var userCount = _.uniq(userIds).length;
+    console.log(this.props.route.chat);
 
-    var messages = _.chain(this.state.messages)
+    var messages = _.chain(this.props.route.chat.messages)
       .cloneDeep()
-      .forEach((message) => {
-        message.user = _.find(users, {'objectId' : message.uid});
-      })
       .sortBy('time')
       .value()
       .reverse();
 
+    var userCount = _.chain(messages)
+      .pluck('uid')
+      .uniq()
+      .value()
+      .length;
+
+    var title = this.props.store.bunch.attributes.name;
+
     return (
       <View style={Styles.body}>
         <NavBar
-          title={this.props.route.chat.belongsTo.name}
+          title={title}
           menuButton={this.props.menuButton}
           userCount={userCount}
           msgCount={messages.length}
         />
         <NavBarChat
-          title={this.props.route.chat.name}
+          title={chat.attributes.name}
           onBackPress={this.onBackPress}
-          expiration={this.props.route.chat.expirationDate}
-          created={this.props.route.chat.createdAt}
+          expiration={chat.attributes.expirationDate}
+          created={chat.createdAt}
         />
         <ScrollView
           ref='scrollView'
@@ -131,7 +89,6 @@ module.exports = React.createClass({
             scrollView={this.refs.scrollView}
             user={this.props.user}
             chat={chat}
-            messenger={this.state.messenger}
             navigator={this.props.navigator}
           />
         </ScrollView>
