@@ -72,8 +72,6 @@ module.exports = React.createClass({
       var data = snapshot.val();
       var bulk = [];
 
-      console.log(data);
-
       _.forEach(data, (value, key) => {
         bulk.push({
           id: key,
@@ -96,6 +94,8 @@ module.exports = React.createClass({
     });
   },
   render: function() {
+    console.log(this.props.route.bunch);
+
     var title = _.get(this, 'props.route.bunch.name');
     var chats = _.cloneDeep(this.data.chats);
 
@@ -105,18 +105,7 @@ module.exports = React.createClass({
 
     return (
       <View style={Styles.body}>
-        <NavBar
-          title={title}
-          menuButton={this.props.menuButton}
-        />
-        <BunchContainer
-          user={this.props.user}
-          navigator={this.props.navigator}
-          chats={chats}
-        />
-        <View style={Styles.actionButton}>
-          {this.props.route.bunch ? <ActionButton onPress={this.onActionButtonPress} /> : null}
-        </View>
+
       </View>
     );
   }

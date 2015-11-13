@@ -1,11 +1,11 @@
 'use strict';
 
 var React = require('react-native');
-var Parse = require('parse/react-native');
-var ParseReact = require('parse-react/react-native');
 var _ = require('lodash');
 
-var routes = require('./routes');
+var Store = require('./store');
+
+var Bunch = require('./containers/bunch');
 var SideMenu = require('./containers/sideMenu');
 var Splash = require('./elements/splash');
 
@@ -15,23 +15,21 @@ var {
 } = React;
 
 module.exports= React.createClass({
-  mixins: [ParseReact.Mixin],
+  mixins: [Store],
   propTypes: {
     user: React.PropTypes.object,
   },
-  observe: function() {
+  getInitialState: function () {
     return {
-      bunches: (new Parse.Query('Bunch2User'))
-        .equalTo('user', this.props.user)
-        .equalTo('isMain', true)
-        .include('bunch'),
+      bunch: null,
+      chats: [],
     };
   },
+  componentDidMount: function () {
+    this.initStore();
+  },
   renderScene: function(route, navigator) {
-    route.bunch = _.chain(this.data.bunches)
-      .first()
-      .get('bunch')
-      .value();
+    route.bunch = this.state.bunch;
 
     var Component = route.component;
 
@@ -55,11 +53,18 @@ module.exports= React.createClass({
   },
   render: function() {
 
-    if (!_.isEmpty(this.data.bunches)) {
+    console.log('Bunch State', this.state.bunch);
+    console.log('Chats State', this.state.chats);
+
+    if (!_.isEmpty(this.state.bunch)) {
       return (
         <Navigator
           renderScene={this.renderScene}
-          initialRoute={routes.bunch}
+          initialRoute={{
+            name: "bunch",
+            component: Bunch,
+            hasSideMenu: true,
+          }}
         />
       );
     } else {
