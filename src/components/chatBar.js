@@ -2,9 +2,6 @@
 
 var React = require('react-native');
 var _ = require('lodash');
-var Firebase = require('firebase');
-var Parse = require('parse/react-native');
-var ParseReact = require('parse-react/react-native');
 
 var NewChat = require('../containers/newChat');
 
@@ -57,9 +54,10 @@ module.exports = React.createClass({
   propTypes: {
     user: React.PropTypes.object,
     chat: React.PropTypes.object,
-    messenger: React.PropTypes.object,
     navigator: React.PropTypes.object,
     scrollView: React.PropTypes.object,
+    bunch: React.PropTypes.object,
+    createMessage: React.PropTypes.func,
   },
   getInitialState: function () {
     return {
@@ -86,23 +84,9 @@ module.exports = React.createClass({
   },
   addChatMessage: function() {
     if (_.trim(this.state.message)) {
-      var user = this.props.user.attributes;
-
-      this.props.messenger.push({
-        uid: this.props.user.id,
-        name: user.name,
-        username: user.username,
-        userImageURL: user.image ? user.image.url() : null,
-        message: this.state.message,
-        time: new Date().getTime()
+      this.props.createMessage(this.props.chat, {
+        message: this.state.message
       });
-
-      ParseReact.Mutation.Create('Chat2User', {
-        chat: this.props.chat,
-        user: this.props.user,
-        text: this.state.message,
-      })
-      .dispatch()
     }
 
     this.setState({

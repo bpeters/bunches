@@ -1,8 +1,6 @@
 'use strict';
 
 var React = require('react-native');
-var Parse = require('parse/react-native');
-var ParseReact = require('parse-react/react-native');
 var _ = require('lodash');
 var moment = require('moment');
 
@@ -54,10 +52,10 @@ var Styles = StyleSheet.create({
 });
 
 module.exports= React.createClass({
-  mixins: [ParseReact.Mixin],
   propTypes: {
     navigator: React.PropTypes.object,
     user: React.PropTypes.object,
+    store: React.PropTypes.object,
   },
   getInitialState: function() {
     return {
@@ -67,33 +65,34 @@ module.exports= React.createClass({
       }),
     };
   },
-  observe: function() {
-    var now = moment().toDate();
-
-    return {
-      bunches: (new Parse.Query('Bunch2User'))
-        .equalTo('user', this.props.user)
-        .ascending('name')
-        .include("bunch"),
-      chatsCreated: (new Parse.Query('Chat'))
-        .equalTo('createdBy', this.props.user)
-        .equalTo('isDead', false)
-        .greaterThan("expirationDate", now),
-      chatsIn: (new Parse.Query('Chat2User'))
-        .equalTo('user', this.props.user)
-        .include('chat')
-    };
-  },
   onPressRow: function(rowData) {
-    console.log(rowData);
+    var Bunch = require('../containers/bunch');
+    var Chat = require('../containers/chat');
+
+    if (rowData.className === 'Bunch') {
+      this.props.navigator.replace({
+        name: 'bunch',
+        component: Bunch,
+        hasSideMenu: true,
+      });
+    } else {
+      this.props.navigator.push({
+        name: 'chat',
+        component: Chat,
+        hasSideMenu: true,
+        chatId: rowData.id,
+      });
+    }
   },
   renderRow: function(rowData) {
+    var name = rowData.attributes.name;
+
     return (
       <TouchableOpacity onPress={() => {this.onPressRow(rowData)}}>
         <View>
           <View style={Styles.row}>
             <Text style={Styles.rowText}>
-              {rowData.name}
+              {name}
             </Text>
           </View>
         </View>
@@ -112,18 +111,14 @@ module.exports= React.createClass({
   render: function() {
     var dataBlob = {}
 
-    var chatsCreatedIds = _.pluck(this.data.chatsCreated, 'objectId');
+    dataBlob['Bunches'] = [this.props.store.bunch];
 
-    dataBlob['Bunches'] = _.pluck(this.data.bunches, 'bunch');
-    dataBlob['Chats Started'] = this.data.chatsCreated;
-    
-    /*dataBlob['Chats In'] = _.chain(this.data.chatsIn)
-      .filter((chats) => {
-        return !_.indexOf(chatsCreatedIds, chats.chat.objectId);
+    dataBlob['Chats'] = _.chain(this.props.store.userChats)
+      .map((chat) => {
+        return chat.get('chat');
       })
-      .pluck('chat')*/
-
-    console.log(this.data.chatsIn);
+      .uniq()
+      .value();
 
     return (
       <View style={Styles.body}>

@@ -1,11 +1,11 @@
 'use strict';
 
 var React = require('react-native');
-var Parse = require('parse/react-native');
-var ParseReact = require('parse-react/react-native');
 var _ = require('lodash');
 
-var routes = require('./routes');
+var Store = require('./store');
+
+var Bunch = require('./containers/bunch');
 var SideMenu = require('./containers/sideMenu');
 var Splash = require('./elements/splash');
 
@@ -15,25 +15,24 @@ var {
 } = React;
 
 module.exports= React.createClass({
-  mixins: [ParseReact.Mixin],
+  mixins: [Store],
   propTypes: {
     user: React.PropTypes.object,
   },
-  observe: function() {
-    return {
-      bunches: (new Parse.Query('Bunch2User'))
-        .equalTo('user', this.props.user)
-        .equalTo('isMain', true)
-        .include('bunch'),
-    };
+  getInitialState: function () {
+    return this.store;
+  },
+  componentDidMount: function () {
+    this.initStore();
   },
   renderScene: function(route, navigator) {
-    route.bunch = _.chain(this.data.bunches)
-      .first()
-      .get('bunch')
-      .value();
-
     var Component = route.component;
+
+    var actions = {
+      createMessage: this.createMessage,
+      createChat: this.createChat,
+      clearNewChat: this.clearNewChat,
+    };
 
     if (route.hasSideMenu) {
       return (
@@ -41,6 +40,8 @@ module.exports= React.createClass({
           navigator={navigator}
           route={route}
           user={this.props.user}
+          store={this.state}
+          actions={actions}
         />
       );
     } else {
@@ -49,17 +50,27 @@ module.exports= React.createClass({
           navigator={navigator}
           route={route}
           user={this.props.user}
+          store={this.state}
+          actions={actions}
         />
       );
     }
   },
   render: function() {
 
-    if (!_.isEmpty(this.data.bunches)) {
+    console.log('Bunch State', this.state.bunch);
+    console.log('Chats State', this.state.chats);
+    console.log('Messages State', this.state.messages);
+
+    if (!_.isEmpty(this.state.bunch)) {
       return (
         <Navigator
           renderScene={this.renderScene}
-          initialRoute={routes.bunch}
+          initialRoute={{
+            name: 'bunch',
+            component: Bunch,
+            hasSideMenu: true,
+          }}
         />
       );
     } else {
