@@ -147,6 +147,15 @@ module.exports = React.createClass({
       </View>
     );
   },
+  renderNew: function (message) {
+    return (
+      <View style={Styles.chat}>
+        <Text style={Styles.chatText}>
+          Started Chat
+        </Text>
+      </View>
+    );
+  },
   renderChatRow: function(rowData) {
     if(rowData.breaker){
       return (
@@ -178,7 +187,7 @@ module.exports = React.createClass({
                 </Text>
               </View>
             </View>
-            {rowData.message ? this.renderMessage(rowData.message) : null}
+            {rowData.message ? this.renderMessage(rowData.message) : this.renderNew()}
             {rowData.imageURL ? this.renderImage(rowData.imageURL) : null}
           </View>
         </View>

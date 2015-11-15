@@ -157,7 +157,7 @@ module.exports = {
       this.store.newChatId = chat.objectId;
 
       if (photo) {
-        var photo64 = new Parse.File('image.jpeg', { base64: this.state.photo.split(',')[1]});
+        var photo64 = new Parse.File('image.jpeg', { base64: photo.split(',')[1]});
         photo64.save().then((image) => {
           this.saveChatDetails(chat, {
             image: image,
