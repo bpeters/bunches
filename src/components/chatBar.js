@@ -84,7 +84,9 @@ module.exports = React.createClass({
   },
   addChatMessage: function() {
     if (_.trim(this.state.message)) {
-      this.props.createMessage(this.props.chat, this.state.message);
+      this.props.createMessage(this.props.chat, {
+        message: this.state.message
+      });
     }
 
     this.setState({

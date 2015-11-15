@@ -17,6 +17,7 @@ module.exports = {
   store: {
     bunch: null,
     chats: [],
+    userChats: [],
     messages: [],
     newChatId: null,
   },
@@ -31,6 +32,7 @@ module.exports = {
         this.store.chats = result;
 
         this.listenToFirebase();
+        this.refreshUserChats();
       }, (err) => {
         this.handleParseError(err);
     });
@@ -40,6 +42,18 @@ module.exports = {
       .then((result) => {
         this.store.chats = result;
 
+        return;
+      }, (err) => {
+        this.handleParseError(err);
+    });
+  },
+  refreshUserChats: function () {
+    return this.queryUserChats()
+      .then((result) => {
+        this.store.userChats = result;
+        this.setState({
+          userChats: this.store.userChats
+        });
         return;
       }, (err) => {
         this.handleParseError(err);
@@ -159,22 +173,22 @@ module.exports = {
       if (photo) {
         var photo64 = new Parse.File('image.jpeg', { base64: photo.split(',')[1]});
         photo64.save().then((image) => {
-          this.saveChatDetails(chat, {
+          this.createMessage(chat, {
             image: image,
             message: message,
           });
         });
       } else {
-        this.saveChatDetails(chat, {
+        this.createMessage(chat, {
           message: message
         });
       }
 
     });
   },
-  saveChatDetails: function (chat, options) {
+  createMessage: function (chat, options) {
     var bunch = this.store.bunch;
-    var url = config.firebase.url + '/bunch/' + bunch.id + '/chat/' + chat.objectId;
+    var url = config.firebase.url + '/bunch/' + bunch.id + '/chat/' + (chat.objectId || chat.id);
     var messenger = new Firebase(url);
     var user = this.props.user.attributes;
 
@@ -187,6 +201,8 @@ module.exports = {
     .dispatch()
     .then((chat) => {
 
+      this.refreshUserChats();
+
       messenger.push({
         uid: this.props.user.id,
         name: user.name,
@@ -197,21 +213,6 @@ module.exports = {
         time: new Date().getTime(),
       });
 
-    });
-  },
-  createMessage: function (chat, message) {
-
-    var url = config.firebase.url + '/bunch/' + this.store.bunch.id + '/chat/' + chat.id;
-    var messenger = new Firebase(url);
-    var user = this.props.user.attributes;
-
-    messenger.push({
-      uid: this.props.user.id,
-      name: user.name,
-      username: user.username,
-      userImageURL: user.image ? user.image.url() : null,
-      message: message,
-      time: new Date().getTime()
     });
   },
   clearNewChat: function () {
@@ -243,8 +244,9 @@ module.exports = {
   },
   queryUserChats: function (chat) {
     var query = (new Parse.Query('Chat2User'))
-      .equalTo('chat', chat)
+      .equalTo('user', this.props.user)
       .include('user')
+      .include('chat')
 
     return query.find();
   },
