@@ -66,7 +66,23 @@ module.exports= React.createClass({
     };
   },
   onPressRow: function(rowData) {
-    console.log(rowData);
+    var Bunch = require('../containers/bunch');
+    var Chat = require('../containers/chat');
+
+    if (rowData.className === 'Bunch') {
+      this.props.navigator.replace({
+        name: 'bunch',
+        component: Bunch,
+        hasSideMenu: true,
+      });
+    } else {
+      this.props.navigator.push({
+        name: 'chat',
+        component: Chat,
+        hasSideMenu: true,
+        chatId: rowData.id,
+      });
+    }
   },
   renderRow: function(rowData) {
     var name = rowData.attributes.name;
