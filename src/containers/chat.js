@@ -35,17 +35,27 @@ module.exports = React.createClass({
     route: React.PropTypes.object,
     user: React.PropTypes.object,
     store: React.PropTypes.object,
+    actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
+  },
+  componentDidMount: function () {
+    this.props.actions.clearNewChat();
   },
   onBackPress: function () {
     this.props.navigator.pop();
   },
   render: function() {
-    var chat = this.props.route.chat.chat;
 
-    console.log(this.props.route.chat);
+    var chatId = this.props.route.chatId;
 
-    var messages = _.chain(this.props.route.chat.messages)
+    var chat = _.chain(this.props.store.messages)
+      .find({'id' : chatId})
+      .result('chat')
+      .value();
+
+    var messages = _.chain(this.props.store.messages)
+      .find({'id' : chatId})
+      .result('messages')
       .cloneDeep()
       .sortBy('time')
       .value()
@@ -90,6 +100,8 @@ module.exports = React.createClass({
             user={this.props.user}
             chat={chat}
             navigator={this.props.navigator}
+            bunch={this.props.store.bunch}
+            createMessage={this.props.actions.createMessage}
           />
         </ScrollView>
       </View>

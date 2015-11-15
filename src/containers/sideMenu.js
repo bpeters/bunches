@@ -29,6 +29,7 @@ module.exports= React.createClass({
     route: React.PropTypes.object,
     user: React.PropTypes.object,
     store: React.PropTypes.object,
+    actions: React.PropTypes.object,
   },
   getInitialState: function() {
     return {
@@ -63,6 +64,7 @@ module.exports= React.createClass({
             route={this.props.route}
             user={this.props.user}
             store={this.props.store}
+            actions={this.props.actions}
             menuButton={{
               onPress: this.handleOpenWithTouchToClose
             }}

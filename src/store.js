@@ -18,6 +18,7 @@ module.exports = {
     bunch: null,
     chats: [],
     messages: [],
+    newChatId: null,
   },
   initStore: function () {
     this.queryMainBunch(this.props.user)
@@ -30,6 +31,16 @@ module.exports = {
         this.store.chats = result;
 
         this.listenToFirebase();
+      }, (err) => {
+        this.handleParseError(err);
+    });
+  },
+  refreshChats: function () {
+    return this.queryChats(this.store.bunch)
+      .then((result) => {
+        this.store.chats = result;
+
+        return;
       }, (err) => {
         this.handleParseError(err);
     });
@@ -78,39 +89,136 @@ module.exports = {
 
       console.log('Firebase', data);
 
-      _.forEach(data, (value, key) => {
+      this.refreshChats()
+        .then(() => {
 
-        if (_.find(this.store.chats, {'id' : key})) {
-          var chat = _.find(this.store.messages, {'id' : key});
+          _.forEach(data, (value, key) => {
 
-          var messages = _.get(chat, 'messages') || [];
+            if (_.find(this.store.chats, {'id' : key})) {
+              var chat = _.find(this.store.messages, {'id' : key});
 
-          _.forEach(value, (v, k) => {
+              var messages = _.get(chat, 'messages') || [];
 
-            if (!_.find(messages, {'key' : k})) {
-              v.key = k;
+              _.forEach(value, (v, k) => {
 
-              this.setItem(key, k);
-              messages.push(v);
+                if (!_.find(messages, {'key' : k})) {
+                  v.key = k;
+
+                  this.setItem(key, k);
+                  messages.push(v);
+                }
+
+              });
+
+              if (!chat) {
+                this.setItem(this.store.bunch.id, key);
+
+                this.store.messages.push({
+                  id: key,
+                  chat: _.find(this.store.chats, {'id' : key}),
+                  messages: messages,
+                });
+              }
             }
 
           });
 
-          if (!chat) {
-            this.setItem(this.store.bunch.id, key);
+          this.store.messages = _.chain(this.store.messages)
+            .sortBy((message) => {
+              return message.chat.attributes.expirationDate;
+            })
+            .value()
+            .reverse();
 
-            this.store.messages.push({
-              id: key,
-              messages: messages
-            });
-          }
-        }
+          this.setState({
+            messages: this.store.messages,
+            chats: this.store.chats,
+            bunch: this.store.bunch,
+            newChatId: this.store.newChatId,
+          });
 
+        });
+    });
+  },
+  createChat: function (title, message, photo) {
+    var bunch = this.store.bunch;
+    var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
+
+    ParseReact.Mutation.Create('Chat', {
+      name: title,
+      expirationDate: new Date(expirationDate),
+      belongsTo: bunch,
+      createdBy: this.props.user,
+      isDead: false,
+    })
+    .dispatch()
+    .then((chat) => {
+
+      this.store.newChatId = chat.objectId;
+
+      if (photo) {
+        var photo64 = new Parse.File('image.jpeg', { base64: this.state.photo.split(',')[1]});
+        photo64.save().then((image) => {
+          this.saveChatDetails(chat, {
+            image: image,
+            message: message,
+          });
+        });
+      } else {
+        this.saveChatDetails(chat, {
+          message: message
+        });
+      }
+
+    });
+  },
+  saveChatDetails: function (chat, options) {
+    var bunch = this.store.bunch;
+    var url = config.firebase.url + '/bunch/' + bunch.id + '/chat/' + chat.objectId;
+    var messenger = new Firebase(url);
+    var user = this.props.user.attributes;
+
+    ParseReact.Mutation.Create('Chat2User', {
+      chat: chat,
+      user: this.props.user,
+      image: options.image,
+      text: options.message,
+    })
+    .dispatch()
+    .then((chat) => {
+
+      messenger.push({
+        uid: this.props.user.id,
+        name: user.name,
+        username: user.username,
+        userImageURL: user.image ? user.image.url() : null,
+        imageURL: options.image ? options.image.url() : null,
+        message: options.message,
+        time: new Date().getTime(),
       });
 
-      this.setState({
-        messages: this.store.messages,
-      });
+    });
+  },
+  createMessage: function (chat, message) {
+
+    var url = config.firebase.url + '/bunch/' + this.store.bunch.id + '/chat/' + chat.id;
+    var messenger = new Firebase(url);
+    var user = this.props.user.attributes;
+
+    messenger.push({
+      uid: this.props.user.id,
+      name: user.name,
+      username: user.username,
+      userImageURL: user.image ? user.image.url() : null,
+      message: message,
+      time: new Date().getTime()
+    });
+  },
+  clearNewChat: function () {
+    this.store.newChatId = null;
+
+    this.setState({
+      newChatId: this.store.newChatId
     });
   },
   queryMainBunch: function (user) {

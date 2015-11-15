@@ -28,17 +28,20 @@ module.exports= React.createClass({
   renderScene: function(route, navigator) {
     var Component = route.component;
 
+    var actions = {
+      createMessage: this.createMessage,
+      createChat: this.createChat,
+      clearNewChat: this.clearNewChat,
+    };
+
     if (route.hasSideMenu) {
       return (
         <SideMenu
           navigator={navigator}
           route={route}
           user={this.props.user}
-          store={{
-            bunch: this.state.bunch,
-            chats: this.state.chats,
-            messages: this.state.messages,
-          }}
+          store={this.state}
+          actions={actions}
         />
       );
     } else {
@@ -48,6 +51,7 @@ module.exports= React.createClass({
           route={route}
           user={this.props.user}
           store={this.state}
+          actions={actions}
         />
       );
     }

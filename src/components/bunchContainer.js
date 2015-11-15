@@ -134,7 +134,7 @@ module.exports = React.createClass({
       name: 'chat',
       component: Chat,
       hasSideMenu: true,
-      chat: rowData
+      chatId: rowData.chat.id
     });
   },
   onAvatarPress: function (rowData) {
@@ -169,8 +169,6 @@ module.exports = React.createClass({
   },
   renderChatRow: function(rowData) {
 
-    var chat = _.find(this.props.store.chats, {'id' : rowData.id});
-
     var userCount = _.chain(rowData.messages)
       .pluck('uid')
       .uniq()
@@ -191,8 +189,6 @@ module.exports = React.createClass({
       }
 
     });
-
-    rowData.chat = chat;
 
     var user = rowData.chat.get('createdBy');
 
