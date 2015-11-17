@@ -38,11 +38,34 @@ module.exports = React.createClass({
     actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
+  getInitialState: function () {
+    return {
+      ready: false,
+    };
+  },
   componentDidMount: function () {
     this.props.actions.clearNewChat();
+    console.log(this.refs);
+    this.setState({
+      ready: true,
+    });
   },
   onBackPress: function () {
     this.props.navigator.pop();
+  },
+  renderChatBar: function (chat) {
+    if (this.state.ready) {
+      return (
+        <ChatBar
+          scrollView={this.refs.scrollView}
+          user={this.props.user}
+          chat={chat}
+          navigator={this.props.navigator}
+          bunch={this.props.store.bunch}
+          createMessage={this.props.actions.createMessage}
+        />
+      );
+    }
   },
   render: function() {
 
@@ -95,14 +118,7 @@ module.exports = React.createClass({
             messages={messages}
             navigator={this.props.navigator}
           />
-          <ChatBar
-            scrollView={this.refs.scrollView}
-            user={this.props.user}
-            chat={chat}
-            navigator={this.props.navigator}
-            bunch={this.props.store.bunch}
-            createMessage={this.props.actions.createMessage}
-          />
+          {this.renderChatBar(chat)}
         </ScrollView>
       </View>
     );

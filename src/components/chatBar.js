@@ -66,9 +66,7 @@ module.exports = React.createClass({
   },
   inputFocused: function (refName) {
     setTimeout(() => {
-      var scrollResponder = this.props.scrollView.getScrollResponder();
-
-      scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+      this.props.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
         React.findNodeHandle(this.refs[refName]),
         110,
         true
@@ -77,9 +75,7 @@ module.exports = React.createClass({
   },
   inputBlured: function (refName) {
     setTimeout(() => {
-      var scrollResponder = this.props.scrollView.getScrollResponder();
-
-      scrollResponder.scrollTo(0, 0);
+      this.props.scrollView.getScrollResponder().scrollTo(0, 0);
     }, 50);
   },
   addChatMessage: function() {
@@ -94,6 +90,8 @@ module.exports = React.createClass({
     });
   },
   render: function() {
+    console.log(this.props.scrollResponder);
+
     return (
       <View ref='chat' style={Styles.body}>
         <View style={Styles.wrap}>
