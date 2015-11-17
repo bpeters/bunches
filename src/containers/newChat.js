@@ -20,12 +20,13 @@ var {
   Platform,
 } = React;
 
-if(Platform.OS='android'){
-  var AddPhoto = require('./addPhotoAndroid');
-} else {
-  var AddPhoto = require('./addPhotoIOS')
-}
+var AddPhoto;
 
+if (Platform.OS === 'android') {
+  AddPhoto = require('./addPhotoAndroid');
+} else {
+  AddPhoto = require('./addPhotoIOS')
+}
 
 var Styles = StyleSheet.create({
   body: {

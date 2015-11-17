@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react-native');
+
 var {
   StyleSheet,
   Text,
@@ -12,11 +13,9 @@ var {
   Platform,
 } = React;
 
-var {
-  Icon,
-} = require('react-native-icons');
-
 var Camera = require('react-native-camera');
+
+var IconButton = require('../elements/iconButton');
 
 var defaultStyles = require('../styles');
 
@@ -56,10 +55,6 @@ var Styles = StyleSheet.create({
     width: 30,
     height: 30,
   },
-  icon: {
-    width: 30,
-    height: 30,
-  },
 });
 
 module.exports = React.createClass({
@@ -71,18 +66,11 @@ module.exports = React.createClass({
   getInitialState: function() {
     return {
       cameraType: Camera.constants.Type.back,
-    };    
+    };
   },
   onPressClose: function() {
     this.props.navigator.pop();
   },
-  onCameraSwitch: function(){   
-    var state = this.state;
-    state.cameraType = state.cameraType === Camera.constants.Type.back
-      ? Camera.constants.Type.front : Camera.constants.Type.back;
-    this.setState(state);
-  },
-
   onCameraPress: function() {
     this.refs.cam.capture({
       target: Camera.constants.CaptureTarget.memory
@@ -94,21 +82,18 @@ module.exports = React.createClass({
     return (
       <Camera 
         style={Styles.camera}
-        ref="cam"
+        ref='cam'
         type={this.state.cameraType}
       >
         <TouchableOpacity style={Styles.capture} onPress={this.onCameraPress} >
           <View style={Styles.captureButton} />
         </TouchableOpacity>
         <View style={Styles.iconView}>
-          <TouchableOpacity onPress={this.onPressClose}>
-            <Icon
-              name='material|close'
-              size={30}
-              color='#ffffff'
-              style={Styles.icon}
-            />
-          </TouchableOpacity>
+          <IconButton
+            onPress={this.onPressClose}
+            icon='material|close'
+            size={30}
+          />
         </View>
       </Camera>
     );

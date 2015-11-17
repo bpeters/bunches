@@ -13,24 +13,26 @@ var {
   StyleSheet,
 } = React;
 
-var Styles = StyleSheet.create({
-  icon: {
-    width: defaultStyles.navBarHeight,
-    height: defaultStyles.navBarHeight,
-  },
-});
-
 module.exports = React.createClass({
   propTypes: {
     onPress: React.PropTypes.func,
     icon: React.PropTypes.string,
+    size: React.PropTypes.number,
   },
   render: function() {
+
+    var Styles = StyleSheet.create({
+      icon: {
+        width: this.props.size || defaultStyles.navBarHeight,
+        height: this.props.size || defaultStyles.navBarHeight,
+      },
+    });
+
     return (
       <TouchableOpacity onPress={this.props.onPress}>
         <Icon
           name={this.props.icon}
-          size={24}
+          size={this.props.size || 24}
           color='#ffffff'
           style={Styles.icon}
         />

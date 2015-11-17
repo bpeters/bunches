@@ -69,7 +69,7 @@ module.exports = React.createClass({
     return (
       <View style={Styles.container}>
         <PopImage
-          onPress={this.onPressImage}
+          onPress={this.props.onPressImage}
           photo={this.props.photo}
         />
         <View style={Styles.fields}>

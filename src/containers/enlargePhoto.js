@@ -9,9 +9,7 @@ var {
   TouchableOpacity,
 } = React;
 
-var {
-  Icon,
-} = require('react-native-icons');
+var IconButton = require('../elements/iconButton');
 
 var defaultStyles = require('../styles');
 
@@ -30,10 +28,6 @@ var Styles = StyleSheet.create({
     right: 20,
     width: 30,
     height: 30, 
-  }, 
-  icon: {
-    width: 30,
-    height: 30,
   },
 });
 
@@ -47,6 +41,7 @@ module.exports = React.createClass({
     this.props.navigator.pop();
   },
   render: function() {
+    console.log(this.props.route.photo);
     return (
       <View style={Styles.parent}>
         <TouchableHighlight onPress={this.onPress} style={Styles.parent}>
@@ -58,14 +53,11 @@ module.exports = React.createClass({
           />
         </TouchableHighlight>
         <View style={Styles.iconView}>
-          <TouchableOpacity onPress={this.onPress}>
-            <Icon
-              name='material|close'
-              size={30}
-              color='#ffffff'
-              style={Styles.icon}
-            />
-         </TouchableOpacity>
+          <IconButton
+            onPress={this.onPress}
+            icon='material|close'
+            size={30}
+          />
         </View>
       </View>
     );
