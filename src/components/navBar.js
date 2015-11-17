@@ -40,7 +40,7 @@ var Styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-end',
   },
-  title: {    
+  title: {
     fontSize: 20,
     color: defaultStyles.white,
     fontFamily: 'Roboto-Medium',
@@ -59,7 +59,6 @@ var NavBar = React.createClass({
     this.props.menuButton.onPress(e);
   },
   renderCounter: function() {
-    console.log('nope');
     return (
       <Counter
         users={this.props.userCount}

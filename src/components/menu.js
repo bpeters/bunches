@@ -1,11 +1,8 @@
 'use strict';
 
 var React = require('react-native');
-var Parse = require('parse/react-native');
-var ParseReact = require('parse-react/react-native');
 var _ = require('lodash');
-
-var Bunch = require('../containers/bunch');
+var moment = require('moment');
 
 var defaultStyles = require('../styles');
 
@@ -55,10 +52,10 @@ var Styles = StyleSheet.create({
 });
 
 module.exports= React.createClass({
-  mixins: [ParseReact.Mixin],
   propTypes: {
     navigator: React.PropTypes.object,
     user: React.PropTypes.object,
+    store: React.PropTypes.object,
   },
   getInitialState: function() {
     return {
@@ -68,30 +65,34 @@ module.exports= React.createClass({
       }),
     };
   },
-  observe: function() {
-    return {
-      bunches: (new Parse.Query('Bunch2User'))
-        .equalTo('user', this.props.user)
-        .ascending('name')
-        .include("bunch")
-    };
-  },
   onPressRow: function(rowData) {
-    console.log(rowData);
-    this.props.navigator.push({
-      name: "bunch",
-      component: Bunch,
-      hasSideMenu: true,
-      bunch: rowData,
-    });
+    var Bunch = require('../containers/bunch');
+    var Chat = require('../containers/chat');
+
+    if (rowData.className === 'Bunch') {
+      this.props.navigator.replace({
+        name: 'bunch',
+        component: Bunch,
+        hasSideMenu: true,
+      });
+    } else {
+      this.props.navigator.push({
+        name: 'chat',
+        component: Chat,
+        hasSideMenu: true,
+        chatId: rowData.id,
+      });
+    }
   },
   renderRow: function(rowData) {
+    var name = rowData.attributes.name;
+
     return (
-      <TouchableOpacity onPress={() => this.onPressRow(rowData)}>
+      <TouchableOpacity onPress={() => {this.onPressRow(rowData)}}>
         <View>
           <View style={Styles.row}>
             <Text style={Styles.rowText}>
-              {rowData.name}
+              {name}
             </Text>
           </View>
         </View>
@@ -108,9 +109,18 @@ module.exports= React.createClass({
     );
   },
   render: function() {
-    var dataBlob = {};
+    var dataBlob = {}
 
-    dataBlob['Bunches'] = _.pluck(this.data.bunches, 'bunch');
+    dataBlob['Bunches'] = [this.props.store.bunch];
+
+    dataBlob['Chats'] = _.chain(this.props.store.userChats)
+      .map((chat) => {
+        return chat.get('chat');
+      })
+      .uniq((chat) => {
+        return chat.id
+      })
+      .value();
 
     return (
       <View style={Styles.body}>

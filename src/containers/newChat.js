@@ -3,10 +3,6 @@
 var React = require('react-native');
 var _ = require('lodash');
 var moment = require('moment');
-var Parse = require('parse/react-native');
-var ParseReact = require('parse-react/react-native');
-var Firebase = require('firebase');
-var config = require('../config/default');
 
 var NewChatContainer = require('../components/newChatContainer');
 var NavBarNewChat = require('../components/navBarNewChat');
@@ -35,6 +31,8 @@ module.exports = React.createClass({
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
     user: React.PropTypes.object,
+    store: React.PropTypes.object,
+    actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
   getInitialState: function(){
@@ -45,68 +43,24 @@ module.exports = React.createClass({
       error: null,
     }
   },
+  componentWillReceiveProps: function (nextProps) {
+    var Chat = require('./chat');
+
+    if (nextProps.store.newChatId) {
+      this.props.navigator.replace({
+        name: 'chat',
+        component: Chat,
+        hasSideMenu: true,
+        chatId: nextProps.store.newChatId,
+      });
+    }
+  },
   goBackNav: function() {
     this.props.navigator.pop();
   },
-  saveChatDetails: function (chat, image) {
-    var bunch = this.props.route.bunch;
-    var url = config.firebase.url + '/bunch/' + bunch.objectId + '/chat/' + chat.objectId;
-
-    var user = this.props.user.attributes;
-
-    if (image || this.state.message) {
-      new Firebase(url).push({
-        uid: this.props.user.id,
-        name: user.name,
-        username: user.username,
-        userImageURL: user.image ? user.image.url() : null,
-        imageURL: image ? image.url() : null,
-        message: this.state.message,
-        time: new Date().getTime(),
-      });
-
-      ParseReact.Mutation.Create('Chat2User', {
-        chat: chat,
-        user: this.props.user,
-        image: image,
-        text: this.state.message,
-      })
-      .dispatch();
-    }
-  },
   addNewChat: function() {
-    var Chat = require('./chat'); //stupid cyclical deps, need to require here.
-
     if (this.state.title) {
-      var bunch = this.props.route.bunch;
-      var expirationDate = moment().add(bunch.ttl, 'ms').format();
-
-      ParseReact.Mutation.Create('Chat', {
-        name: this.state.title,
-        expirationDate: new Date(expirationDate),
-        belongsTo: bunch,
-        createdBy: this.props.user,
-        isDead: false,
-      })
-      .dispatch()
-      .then((chat) => {
-
-        if (this.state.photo) {
-          var photo = new Parse.File('image.jpeg', { base64: this.state.photo.split(',')[1]});
-          photo.save().then((image) => {
-            this.saveChatDetails(chat, image);
-          });
-        } else {
-          this.saveChatDetails(chat);
-        }
-
-        this.props.navigator.replace({
-          name: "chat",
-          component: Chat,
-          hasSideMenu: true,
-          chat: chat,
-        });
-      });
+      this.props.actions.createChat(this.state.title, this.state.message, this.state.photo);
     } else {
       this.setState({
         error: 'Missing Title'

@@ -21,12 +21,6 @@ var Camera = require('react-native-camera');
 var defaultStyles = require('../styles');
 
 var Styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-},
   camera: {
     position: 'absolute',
     top: 0,
@@ -36,7 +30,7 @@ var Styles = StyleSheet.create({
   },
   capture: {
     position: 'absolute',
-    left: defaultStyles.bodyWidth/2 - 40,
+    left: defaultStyles.bodyWidth / 2 - 40,
     bottom: 30, 
   },
   captureButton: {
@@ -93,7 +87,7 @@ module.exports = React.createClass({
     user: React.PropTypes.object,
   },
   getInitialState: function() {
-    if(Platform.OS='android'){
+    if (Platform.OS === 'android') {
       return {
         cameraType: Camera.constants.Type.back,
         capturedBase64:'',
@@ -102,14 +96,14 @@ module.exports = React.createClass({
       return {
         cameraType: Camera.constants.Type.back,
       };
-    }    
+    }
   },
   onPressClose: function() {
     this.props.navigator.pop();
   },
   onCameraPressAndroid: function(){
     this.refs.cam.capture((image) => {
-      this.props.route.onPhotoChange('data:image/jpeg;base64,'+image);
+      this.props.route.onPhotoChange('data:image/jpeg;base64,' + image);
     });
   },
   onCameraSwitch: function(){   
@@ -189,38 +183,29 @@ module.exports = React.createClass({
             }}>
                 <Text style={{textAlign: 'center'}}>Capture Video</Text>
             </TouchableOpacity>
-
-
-
-
         </View>
       );
-      
-
-    } else {
-
-      return (
-        <Camera 
-          style={Styles.camera}
-          ref="cam"
-          type={this.state.cameraType}
-        >
-          <TouchableOpacity style={Styles.capture} onPress={this.onCameraPressIOS}>
-            <View style={Styles.captureButton} />
+  } else {
+    return (
+      <Camera 
+        style={Styles.camera}
+        ref="cam"
+        type={this.state.cameraType}
+      >
+        <TouchableOpacity style={Styles.capture} onPress={this.onCameraPressIOS} >
+          <View style={Styles.captureButton} />
+        </TouchableOpacity>
+        <View style={Styles.iconView}>
+          <TouchableOpacity onPress={this.onPressClose}>
+            <Icon
+              name='material|close'
+              size={30}
+              color='#ffffff'
+              style={Styles.icon}
+            />
           </TouchableOpacity>
-          <View style={Styles.iconView}>
-            <TouchableOpacity onPress={this.onPressClose}>
-              <Icon
-                name='material|close'
-                size={30}
-                color='#ffffff'
-                style={Styles.icon}
-              />
-            </TouchableOpacity>
-          </View>
-        </Camera>
-      );
-
-    }
+        </View>
+      </Camera>
+    );
   }
 });
