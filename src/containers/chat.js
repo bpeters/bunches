@@ -45,7 +45,7 @@ module.exports = React.createClass({
   },
   componentDidMount: function () {
     this.props.actions.clearNewChat();
-    console.log(this.refs);
+
     this.setState({
       ready: true,
     });
@@ -68,6 +68,8 @@ module.exports = React.createClass({
     }
   },
   render: function() {
+
+    console.log(this.props.route.newChat);
 
     var chatId = this.props.route.chatId;
 
