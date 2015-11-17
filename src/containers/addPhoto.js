@@ -7,6 +7,7 @@ var {
   View,
   Image,
   TouchableOpacity,
+  TouchableHighlight,
   CameraRoll,
   Platform,
 } = React;
@@ -48,10 +49,35 @@ var Styles = StyleSheet.create({
     width: 30,
     height: 30,
   },
+  iconViewSwitch: {
+    position:'absolute',
+    top: 20,
+    left: 20,
+    width: 30,
+    height: 30,
+  },
+
   icon: {
     width: 30,
     height: 30,
   },
+
+
+
+  captured: {
+        width: 200,
+        height: 400
+    },
+    videoButton: {
+        position: 'absolute',
+        height: 50,
+        left: 50, top: 120, right: 50,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 20,
+    },
+
+
+
 });
 
 module.exports = React.createClass({
@@ -63,7 +89,8 @@ module.exports = React.createClass({
   getInitialState: function() {
     if (Platform.OS === 'android') {
       return {
-        cameraType: '',
+        cameraType: Camera.constants.Type.back,
+        capturedBase64:'',
       };
     } else {
       return {
@@ -79,6 +106,21 @@ module.exports = React.createClass({
       this.props.route.onPhotoChange('data:image/jpeg;base64,' + image);
     });
   },
+  onCameraSwitch: function(){   
+    var state = this.state;
+    state.cameraType = state.cameraType === Camera.constants.Type.back
+      ? Camera.constants.Type.front : Camera.constants.Type.back;
+    this.setState(state);
+  },
+
+
+  onVideoRecord: function(){
+    this.refs.cam.captureVideo((image) => {
+      console.log(image);
+      // this.props.route.onPhotoChange(image);
+    });
+  },
+
   onCameraPressIOS: function() {
     this.refs.cam.capture({
       target: Camera.constants.CaptureTarget.memory
@@ -87,22 +129,70 @@ module.exports = React.createClass({
     });
   },
   render: function() {
+    if(Platform.OS='android'){
+      var component = this;
+      return (
+        <View style={Styles.container}>
+          <Camera 
+            style={Styles.camera} 
+            ref="cam"
+            type={this.state.cameraType}
+            captureTarget={Camera.constants.CaptureTarget.memory}
+          >
+          </Camera>
 
-    var onCapture;
 
-    if (Platform.OS === 'android') {
-      onCapture = this.onCameraPressAndroid;
-    } else {
-      onCapture = this.onCameraPressIOS;
-    }
+          <TouchableOpacity 
+            style={Styles.capture} 
+            delayOnPressIn={1000}
+            onPressIn={this.onVideoRecord}
+            onPressOut={this.onVideoRecord}
+            >
+            <View style={Styles.captureButton} />
+          </TouchableOpacity>
 
+
+          <View style={Styles.iconViewSwitch}>
+            <TouchableOpacity onPress={this.onCameraSwitch}>
+              <Icon
+                name='material|camera-switch'
+                size={30}
+                color='#ffffff'
+                style={Styles.icon}
+              />
+            </TouchableOpacity>  
+          </View>
+          <View style={Styles.iconView}>
+            <TouchableOpacity onPress={this.onPressClose}>
+              <Icon
+                name='material|close'
+                size={30}
+                color='#ffffff'
+                style={Styles.icon}
+              />
+            </TouchableOpacity>  
+          </View>
+
+
+          <TouchableOpacity style={Styles.videoButton} onPress={function() {
+                component.refs.cam.captureVideo().then(function(capturedBase64) {
+                    console.log(capturedBase64);
+                    // component.setState({ capturedBase64 });
+                    // setTimeout(() => component.setState({ capturedBase64: '' }), 5000);
+                });
+            }}>
+                <Text style={{textAlign: 'center'}}>Capture Video</Text>
+            </TouchableOpacity>
+        </View>
+      );
+  } else {
     return (
       <Camera 
         style={Styles.camera}
         ref="cam"
         type={this.state.cameraType}
       >
-        <TouchableOpacity style={Styles.capture} onPress={onCapture} >
+        <TouchableOpacity style={Styles.capture} onPress={this.onCameraPressIOS} >
           <View style={Styles.captureButton} />
         </TouchableOpacity>
         <View style={Styles.iconView}>
