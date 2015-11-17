@@ -117,7 +117,9 @@ module.exports= React.createClass({
       .map((chat) => {
         return chat.get('chat');
       })
-      .uniq()
+      .uniq((chat) => {
+        return chat.id
+      })
       .value();
 
     return (
