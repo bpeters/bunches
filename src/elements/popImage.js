@@ -56,6 +56,6 @@ module.exports = React.createClass({
           </Text>
         </View>
       );
-    }   
+    }
   }
 });

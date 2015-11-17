@@ -6,7 +6,6 @@ var moment = require('moment');
 
 var NewChatContainer = require('../components/newChatContainer');
 var NavBarNewChat = require('../components/navBarNewChat');
-var AddPhoto = require('./addPhoto');
 var EnlargePhoto = require('./enlargePhoto');
 var Bunch = require('./bunch');
 
@@ -18,7 +17,16 @@ var {
   Platform,
   Text,
   ListView,
+  Platform,
 } = React;
+
+var AddPhoto;
+
+if (Platform.OS === 'android') {
+  AddPhoto = require('./addPhotoAndroid');
+} else {
+  AddPhoto = require('./addPhotoIOS')
+}
 
 var Styles = StyleSheet.create({
   body: {
