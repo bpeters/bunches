@@ -20,7 +20,7 @@ var {
   Platform,
 } = React;
 
-if(Platform.OS='android'){
+if(Platform.OS==='android'){
   var AddPhoto = require('./addPhotoAndroid');
 } else {
   var AddPhoto = require('./addPhotoIOS')
