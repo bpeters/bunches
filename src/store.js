@@ -148,7 +148,6 @@ module.exports = {
             messages: this.store.messages,
             chats: this.store.chats,
             bunch: this.store.bunch,
-            newChatId: this.store.newChatId,
           });
 
         });
@@ -171,7 +170,11 @@ module.exports = {
       this.store.newChat = chat;
 
       this.setState({
-        newChat: chat
+        newChat: {
+          attributes: chat,
+          message: message,
+          photo: photo,
+        }
       });
 
       if (photo) {
