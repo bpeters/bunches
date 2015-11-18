@@ -12,6 +12,7 @@ var {
   View,
   TouchableOpacity,
   StyleSheet,
+  Animated,
 } = React;
 
 var Styles = StyleSheet.create({
@@ -57,22 +58,46 @@ module.exports = React.createClass({
     show: React.PropTypes.bool,
     camera: React.PropTypes.bool,
   },
+  getInitialState: function () {
+    return {
+      offset: new Animated.Value(76)
+    };
+  },
+  componentDidMount: function () {
+    this.state.offset.setValue(10);
+
+    Animated.spring(
+      this.state.offset,
+      {
+        toValue: 0,
+        friction: 1,
+      }
+    ).start(); 
+  },
   render: function() {
     var icon = (this.props.camera ? 'material|camera' : (this.props.show ? 'material|more-vert' : 'material|more'));
 
     return (
-      <View style={this.props.camera ? Styles.cameraActionButton : Styles.actionButton}>
-        <TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
-          <View style={Styles.iconView}>
-            <Icon
-              name={icon}
-              size={30}
-              color='#ffffff'
-              style={Styles.icon}
-            />
-          </View>
-        </TouchableOpacity>
-      </View>
+      <Animated.View
+        style={{
+          transform: [
+            {translateY: this.state.offset},
+          ]
+        }}
+      >
+        <View style={this.props.camera ? Styles.cameraActionButton : Styles.actionButton}>
+          <TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
+            <View style={Styles.iconView}>
+              <Icon
+                name={icon}
+                size={30}
+                color='#ffffff'
+                style={Styles.icon}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
     );
   }
 });
