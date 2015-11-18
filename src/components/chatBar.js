@@ -12,9 +12,13 @@ var {
   TextInput,
   StyleSheet, 
   TouchableHighlight,
+  ScrollView
 } = React;
 
 var Styles = StyleSheet.create({
+  scroll: {
+    flex: 1,
+  },
   body: {
     flex: 1,
     flexDirection: 'row',
@@ -54,10 +58,10 @@ module.exports = React.createClass({
   propTypes: {
     user: React.PropTypes.object,
     chat: React.PropTypes.object,
-    navigator: React.PropTypes.object,
-    scrollView: React.PropTypes.object,
     bunch: React.PropTypes.object,
     createMessage: React.PropTypes.func,
+    createChat: React.PropTypes.func,
+    height: React.PropTypes.number,
   },
   getInitialState: function () {
     return {
@@ -66,23 +70,30 @@ module.exports = React.createClass({
   },
   inputFocused: function (refName) {
     setTimeout(() => {
-      this.props.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
+      this.refs.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
         React.findNodeHandle(this.refs[refName]),
-        110,
+        this.props.height,
         true
       );
     }, 50);
   },
   inputBlured: function (refName) {
     setTimeout(() => {
-      this.props.scrollView.getScrollResponder().scrollTo(0, 0);
+      this.refs.scrollView.getScrollResponder().scrollTo(0, 0);
     }, 50);
   },
   addChatMessage: function() {
     if (_.trim(this.state.message)) {
-      this.props.createMessage(this.props.chat, {
-        message: this.state.message
-      });
+
+      if (this.props.createMessage) {
+        this.props.createMessage(this.props.chat, {
+          message: this.state.message
+        });
+      } else if (this.props.createChat) {
+        this.props.createChat(this.props.bunch, {
+          message: this.state.message
+        });
+      }
     }
 
     this.setState({
@@ -91,21 +102,29 @@ module.exports = React.createClass({
   },
   render: function() {
     return (
-      <View ref='chat' style={Styles.body}>
-        <View style={Styles.wrap}>
-          <TextInput
-            style={Styles.input}
-            onChangeText={(message) => this.setState({message})}
-            value={this.state.message}
-            onFocus={this.inputFocused.bind(this, 'chat')}
-            onBlur={this.inputBlured.bind(this, 'chat')}
-            onSubmitEditing={this.addChatMessage}
-            blurOnSubmit={false}
-            enablesReturnKeyAutomatically={true}
-            underlineColorAndroid={defaultStyles.light}
-          />
+      <ScrollView
+        ref='scrollView'
+        keyboardDismissMode='on-drag'
+        style={Styles.scroll}
+        scrollEnabled={false}
+      >
+        {this.props.children}
+        <View ref='chat' style={Styles.body}>
+          <View style={Styles.wrap}>
+            <TextInput
+              style={Styles.input}
+              onChangeText={(message) => this.setState({message})}
+              value={this.state.message}
+              onFocus={this.inputFocused.bind(this, 'chat')}
+              onBlur={this.inputBlured.bind(this, 'chat')}
+              onSubmitEditing={this.addChatMessage}
+              blurOnSubmit={false}
+              enablesReturnKeyAutomatically={true}
+              underlineColorAndroid={defaultStyles.light}
+            />
+          </View>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 });
