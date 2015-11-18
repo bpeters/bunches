@@ -146,10 +146,17 @@ module.exports = React.createClass({
             <TextInput
               style={Styles.input}
               onChangeText={(message) => this.setState({message})}
+              onSubmitEditing={() => {
+                if (_.trim(this.state.message)) {
+                  this.addChatMessage();
+                }
+              }}
               value={this.state.message}
               onFocus={this.inputFocused.bind(this, 'chat')}
               onBlur={this.inputBlured.bind(this, 'chat')}
               underlineColorAndroid={defaultStyles.light}
+              clearButtonMode='while-editing'
+              returnKeyType='send'
             />
             {_.trim(this.state.message) ? this.renderSend() : this.renderNotSend()}
           </View>
