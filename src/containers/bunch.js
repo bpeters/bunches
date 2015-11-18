@@ -3,16 +3,13 @@
 var React = require('react-native');
 var _ = require('lodash');
 var moment = require('moment');
-var Parse = require('parse/react-native');
-var ParseReact = require('parse-react/react-native');
-var Firebase = require('firebase');
-var config = require('../config/default');
 
 var NavBar = require('../components/navBar');
 var BunchContainer = require('../components/bunchContainer');
 var NewChat = require('./newChat');
 var ActionButton = require('../elements/actionButton');
 var ChatBar = require('../components/chatBar');
+var Chat = require('./chat');
 
 var defaultStyles = require('../styles');
 
@@ -24,6 +21,14 @@ var {
   ListView,
   ScrollView,
 } = React;
+
+var AddPhoto;
+
+if (Platform.OS === 'android') {
+  AddPhoto = require('./addPhotoAndroid');
+} else {
+  AddPhoto = require('./addPhotoIOS')
+}
 
 var Styles = StyleSheet.create({
   body: {
@@ -40,6 +45,7 @@ module.exports = React.createClass({
     route: React.PropTypes.object,
     user: React.PropTypes.object,
     store: React.PropTypes.object,
+    actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
   getInitialState: function () {
@@ -53,7 +59,38 @@ module.exports = React.createClass({
     });
   },
   onCameraActionButtonPress: function () {
-    
+    this.setState({
+      showActions: false
+    });
+
+    this.props.navigator.push({
+      name: "add photo",
+      component: AddPhoto,
+      hasSideMenu: false,
+      bunch: this.props.store.bunch,
+    });
+  },
+  createChat: function (title, message) {
+    this.setState({
+      showActions: false,
+    });
+
+    this.props.actions.createChat(title, message);
+
+    var bunch = this.props.store.bunch;
+    var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
+
+    this.props.navigator.push({
+      name: 'chat',
+      component: Chat,
+      hasSideMenu: true,
+      newChat: {
+        name: title,
+        expirationDate: expirationDate,
+        createdAt: Date.now(),
+        message: message,
+      },
+    });
   },
   renderCameraAction: function () {
     return (
@@ -63,16 +100,14 @@ module.exports = React.createClass({
       />
     );
   },
-  render: function() {
+  render: function () {
     var title = this.props.store.bunch.attributes.name;
 
     return (
       <View style={Styles.body}>
         <ChatBar
-          scrollView={this.refs.scrollView}
           user={this.props.user}
-          bunch={this.props.store.bunch}
-          createChat={this.props.actions.createChat}
+          createChat={this.createChat}
           height={0}
         >
           <BunchContainer

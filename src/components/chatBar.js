@@ -11,8 +11,9 @@ var {
   View,
   TextInput,
   StyleSheet, 
-  TouchableHighlight,
-  ScrollView
+  TouchableOpacity,
+  ScrollView,
+  Text,
 } = React;
 
 var Styles = StyleSheet.create({
@@ -33,24 +34,44 @@ var Styles = StyleSheet.create({
     },
   },
   wrap: {
-    flexDirection: 'column',
+    flexDirection: 'row',
     left: 6,
     top: 6,
-    backgroundColor: defaultStyles.light,
     width: defaultStyles.bodyWidth - 12,
-    height: 40,
+    height: defaultStyles.chatBarHeight - 12,
     borderColor: defaultStyles.white,
     borderWidth: 1,
     borderRadius: 2,
+    backgroundColor: defaultStyles.background,
   },
   input : {
-    left: 10,
+    alignItems: 'flex-start',
     fontFamily: 'Roboto-Light',
     color: defaultStyles.dark,
-    height: 36,
-    width: defaultStyles.bodyWidth - 38,
+    paddingLeft: 12,
+    width: defaultStyles.bodyWidth - 12 - 76,
+    height: defaultStyles.chatBarHeight - 12 - 2,
     borderBottomWidth: 0,
     borderWidth: 0,
+    backgroundColor: defaultStyles.white,
+  },
+  send: {
+    width: 74,
+    fontSize: 16,
+    paddingLeft: 18,
+    paddingTop: 12,
+    alignItems: 'flex-end',
+    fontFamily: 'Roboto-Bold',
+    color: defaultStyles.dark,
+  },
+  notSend: {
+    width: 74,
+    fontSize: 16,
+    paddingLeft: 18,
+    paddingTop: 12,
+    alignItems: 'flex-end',
+    fontFamily: 'Roboto-Bold',
+    color: defaultStyles.medium,
   },
 });
 
@@ -58,7 +79,6 @@ module.exports = React.createClass({
   propTypes: {
     user: React.PropTypes.object,
     chat: React.PropTypes.object,
-    bunch: React.PropTypes.object,
     createMessage: React.PropTypes.func,
     createChat: React.PropTypes.func,
     height: React.PropTypes.number,
@@ -83,22 +103,34 @@ module.exports = React.createClass({
     }, 50);
   },
   addChatMessage: function() {
-    if (_.trim(this.state.message)) {
 
-      if (this.props.createMessage) {
-        this.props.createMessage(this.props.chat, {
-          message: this.state.message
-        });
-      } else if (this.props.createChat) {
-        this.props.createChat(this.props.bunch, {
-          message: this.state.message
-        });
-      }
+    if (this.props.createMessage) {
+      this.props.createMessage(this.props.chat, {
+        message: this.state.message
+      });
+    } else if (this.props.createChat) {
+      this.props.createChat(this.state.message, this.state.message);
     }
 
     this.setState({
       message: null
     });
+  },
+  renderSend: function () {
+    return (
+      <TouchableOpacity onPress={this.addChatMessage}>
+        <Text style={Styles.send}>
+          Send
+        </Text>
+      </TouchableOpacity>
+    );
+  },
+  renderNotSend: function () {
+    return (
+      <Text style={Styles.notSend}>
+        Send
+      </Text>
+    );
   },
   render: function() {
     return (
@@ -117,11 +149,9 @@ module.exports = React.createClass({
               value={this.state.message}
               onFocus={this.inputFocused.bind(this, 'chat')}
               onBlur={this.inputBlured.bind(this, 'chat')}
-              onSubmitEditing={this.addChatMessage}
-              blurOnSubmit={false}
-              enablesReturnKeyAutomatically={true}
               underlineColorAndroid={defaultStyles.light}
             />
+            {_.trim(this.state.message) ? this.renderSend() : this.renderNotSend()}
           </View>
         </View>
       </ScrollView>

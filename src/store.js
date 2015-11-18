@@ -101,8 +101,6 @@ module.exports = {
     new Firebase(url).on('value', (snapshot) => {
       var data = snapshot.val().chat;
 
-      console.log('Firebase', data);
-
       this.refreshChats()
         .then(() => {
 
@@ -170,15 +168,11 @@ module.exports = {
       this.store.newChat = chat;
 
       this.setState({
-        newChat: {
-          attributes: chat,
-          message: message,
-          photo: photo,
-        }
+        newChat: chat
       });
 
       if (photo) {
-        var photo64 = new Parse.File('image.jpeg', { base64: photo.split(',')[1]});
+        var photo64 = new Parse.File('image.jpeg', { base64: photo});
         photo64.save().then((image) => {
           this.createMessage(chat, {
             image: image,

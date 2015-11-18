@@ -6,6 +6,7 @@ var _ = require('lodash');
 var Store = require('./store');
 
 var Bunch = require('./containers/bunch');
+var Chat = require('./containers/chat');
 var SideMenu = require('./containers/sideMenu');
 var Splash = require('./elements/splash');
 
@@ -57,11 +58,6 @@ module.exports= React.createClass({
     }
   },
   render: function() {
-
-    console.log('Bunch State', this.state.bunch);
-    console.log('Chats State', this.state.chats);
-    console.log('Messages State', this.state.messages);
-
     if (!_.isEmpty(this.state.bunch)) {
       return (
         <Navigator

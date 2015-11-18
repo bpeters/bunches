@@ -34,23 +34,19 @@ module.exports = React.createClass({
     actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
-  componentDidMount: function () {
-    this.props.actions.clearNewChat();
-  },
   onBackPress: function () {
     this.props.navigator.pop();
   },
   render: function() {
 
-    var chatId = this.props.route.chatId;
+    var chatId = this.props.route.chatId || _.get(this.props.store.newChat, 'objectId');
 
-    var chat = (
-      _.chain(this.props.store.messages)
-        .find({'id' : chatId})
-        .result('chat')
-        .get('attributes')
-        .value() || this.props.route.newChat.attributes
-    );
+    var chat = _.chain(this.props.store.messages)
+      .find({'id' : chatId})
+      .result('chat')
+      .value();
+
+    var chatAttributes = _.get(chat, 'attributes') || this.props.route.newChat;
 
     var messages = _.chain(this.props.store.messages)
       .find({'id' : chatId})
@@ -88,10 +84,10 @@ module.exports = React.createClass({
               msgCount={messages.length}
             />
             <NavBarChat
-              title={chat.name}
+              title={chatAttributes.name}
               onBackPress={this.onBackPress}
-              expiration={chat.expirationDate}
-              created={chat.createdAt}
+              expiration={chatAttributes.expirationDate}
+              created={chatAttributes.createdAt}
             />
           </ChatContainer>
         </ChatBar>
