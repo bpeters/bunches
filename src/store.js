@@ -15,6 +15,7 @@ var {
 
 module.exports = {
   store: {
+    user: null,
     bunch: null,
     chats: [],
     userChats: [],
@@ -191,11 +192,11 @@ module.exports = {
     var bunch = this.store.bunch;
     var url = config.firebase.url + '/bunch/' + bunch.id + '/chat/' + (chat.objectId || chat.id);
     var messenger = new Firebase(url);
-    var user = this.props.user.attributes;
+    var user = this.props.user;
 
     ParseReact.Mutation.Create('Chat2User', {
       chat: chat,
-      user: this.props.user,
+      user: user,
       image: options.image,
       text: options.message,
     })
@@ -205,7 +206,7 @@ module.exports = {
       this.refreshUserChats();
 
       messenger.push({
-        uid: this.props.user.id,
+        uid: user.id,
         name: user.name,
         username: user.username,
         userImageURL: user.image ? user.image.url() : null,
@@ -222,6 +223,48 @@ module.exports = {
     this.setState({
       newChat: this.store.newChat
     });
+  },
+  createUser: function () {
+    var user = new Parse.User();
+    var random = (Math.floor(Math.random() * 10000000000) + 1).toString();
+
+    user.set('username', random);
+    user.set('password', random);
+    user.set('email', random + '@bunches.io');
+    user.set('name', 'User ' + random);
+
+    user.signUp(null, {
+      success: (user) => {
+        var query = new Parse.Query('Bunch');
+        query.equalTo('name', 'Global');
+
+        query.first({
+          success: (bunch) => {
+            ParseReact.Mutation.Create('Bunch2User', {
+              bunch: bunch,
+              user: user,
+              isMain: true,
+            })
+            .dispatch()
+            .then(() => {
+              this.setState({
+                user: user,
+                bunch: bunch,
+              });
+            });
+          },
+          error: (error) => {
+            this.handleParseError(error);
+          }
+        });
+      },
+      error: (user, error) => {
+        this.handleParseError(error);
+      }
+    });
+  },
+  logoutUser: function () {
+    Parse.User.logOut();
   },
   queryMainBunch: function (user) {
     var query = (new Parse.Query('Bunch2User'))

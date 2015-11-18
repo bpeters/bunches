@@ -58,6 +58,7 @@ module.exports= React.createClass({
           <Menu
             navigator={this.props.navigator}
             user={this.props.user}
+            actions={this.props.actions}
             store={this.props.store}
           />
         }

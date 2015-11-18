@@ -3,8 +3,6 @@
 var React = require('react-native');
 var _ = require('lodash');
 
-var NewChat = require('../containers/newChat');
-
 var defaultStyles = require('../styles');
 
 var {

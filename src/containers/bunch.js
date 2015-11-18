@@ -6,7 +6,6 @@ var moment = require('moment');
 
 var NavBar = require('../components/navBar');
 var BunchContainer = require('../components/bunchContainer');
-var NewChat = require('./newChat');
 var ActionButton = require('../elements/actionButton');
 var ChatBar = require('../components/chatBar');
 var Chat = require('./chat');
@@ -101,7 +100,7 @@ module.exports = React.createClass({
     );
   },
   render: function () {
-    var title = this.props.store.bunch.attributes.name;
+    var title = _.get(this.props.store.bunch, 'attributes.name');
 
     return (
       <View style={Styles.body}>

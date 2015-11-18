@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 var Store = require('./store');
 
+var Landing = require('./containers/landing');
 var Bunch = require('./containers/bunch');
 var Chat = require('./containers/chat');
 var SideMenu = require('./containers/sideMenu');
@@ -33,6 +34,7 @@ module.exports= React.createClass({
       createMessage: this.createMessage,
       createChat: this.createChat,
       clearNewChat: this.clearNewChat,
+      logoutUser: this.logoutUser,
     };
 
     if (route.hasSideMenu) {
@@ -58,22 +60,26 @@ module.exports= React.createClass({
     }
   },
   render: function() {
-    if (!_.isEmpty(this.state.bunch)) {
-      return (
-        <Navigator
-          renderScene={this.renderScene}
-          initialRoute={{
-            name: 'bunch',
-            component: Bunch,
-            hasSideMenu: true,
-          }}
-        />
-      );
+    var route;
+
+    if (this.props.user) {
+      route = {
+        name: 'bunch',
+        component: Bunch,
+        hasSideMenu: true,
+      };
     } else {
-      return (
-        <Splash />
-      );
+      route = {
+        name: 'landing',
+        component: Landing,
+      };
     }
 
+    return (
+      <Navigator
+        renderScene={this.renderScene}
+        initialRoute={route}
+      />
+    );
   }
 });

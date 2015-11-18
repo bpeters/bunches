@@ -38,7 +38,7 @@ module.exports = React.createClass({
     if (this.props.photo) {
       return (
         <View>
-          <TouchableOpacity onPress={this.props.onPress}>
+          <TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
             <Image
               source={{
                 uri: this.props.photo,

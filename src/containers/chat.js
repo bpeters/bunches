@@ -6,7 +6,6 @@ var _ = require('lodash');
 var NavBar = require('../components/navBar');
 var NavBarChat = require('../components/navBarChat');
 var ChatContainer = require('../components/chatContainer');
-var NewChat = require('./newChat');
 var ChatBar = require('../components/chatBar');
 
 var defaultStyles = require('../styles');

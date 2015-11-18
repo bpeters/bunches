@@ -4,6 +4,9 @@ var React = require('react-native');
 var _ = require('lodash');
 var moment = require('moment');
 
+var Landing = require('../containers/landing');
+var Settings = require('../containers/settings');
+
 var defaultStyles = require('../styles');
 
 var {
@@ -55,6 +58,7 @@ module.exports= React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     user: React.PropTypes.object,
+    actions: React.PropTypes.object,
     store: React.PropTypes.object,
   },
   getInitialState: function() {
@@ -65,7 +69,7 @@ module.exports= React.createClass({
       }),
     };
   },
-  onPressRow: function(rowData) {
+  onPressRow: function (rowData) {
     var Bunch = require('../containers/bunch');
     var Chat = require('../containers/chat');
 
@@ -85,10 +89,16 @@ module.exports= React.createClass({
     }
   },
   renderRow: function(rowData) {
-    var name = rowData.attributes.name;
+    var name = _.get(rowData, 'attributes.name') || _.get(rowData, 'name');
 
     return (
-      <TouchableOpacity onPress={() => {this.onPressRow(rowData)}}>
+      <TouchableOpacity onPress={() => {
+        if (rowData.onPress) {
+          rowData.onPress();
+        } else {
+          this.onPressRow(rowData);
+        }
+      }}>
         <View>
           <View style={Styles.row}>
             <Text style={Styles.rowText}>
@@ -121,6 +131,30 @@ module.exports= React.createClass({
         return chat.id
       })
       .value();
+
+    dataBlob['Account'] = [
+      {
+        name: 'Settings',
+        onPress: () => {
+          this.props.navigator.push({
+            name: 'settings',
+            component: Settings,
+            hasSideMenu: true,
+          });
+        }
+      },
+      {
+        name: 'Log Out',
+        onPress: () => {
+          this.props.action.logoutUser();
+
+          this.props.navigator.push({
+            name: 'landing',
+            component: Landing
+          });
+        }
+      },
+    ];
 
     return (
       <View style={Styles.body}>
