@@ -21,6 +21,12 @@ var Styles = StyleSheet.create({
     bottom: 76,
     right: 16,
   },
+  cameraActionButton: {
+    position: 'absolute',
+    backgroundColor: 'transparent',
+    bottom: 76 + 56 + 16,
+    right: 16,
+  },
   iconView: {
     width: 56,
     height: 56,
@@ -49,14 +55,17 @@ module.exports = React.createClass({
   propTypes: {
     onPress: React.PropTypes.func,
     show: React.PropTypes.bool,
+    camera: React.PropTypes.bool,
   },
   render: function() {
+    var icon = (this.props.camera ? 'material|camera' : (this.props.show ? 'material|more-vert' : 'material|more'));
+
     return (
-      <View style={Styles.actionButton}>
+      <View style={this.props.camera ? Styles.cameraActionButton : Styles.actionButton}>
         <TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
           <View style={Styles.iconView}>
             <Icon
-              name={this.props.show ? 'material|more-vert' : 'material|more'}
+              name={icon}
               size={30}
               color='#ffffff'
               style={Styles.icon}

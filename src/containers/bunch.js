@@ -52,6 +52,17 @@ module.exports = React.createClass({
       showActions: !this.state.showActions
     });
   },
+  onCameraActionButtonPress: function () {
+    
+  },
+  renderCameraAction: function () {
+    return (
+      <ActionButton
+        onPress={this.onCameraActionButtonPress}
+        camera={true}
+      />
+    );
+  },
   render: function() {
     var title = this.props.store.bunch.attributes.name;
 
@@ -80,6 +91,7 @@ module.exports = React.createClass({
           onPress={this.onActionButtonPress}
           show={this.state.showActions}
         />
+        {this.state.showActions ? this.renderCameraAction() : null}
       </View>
     );
   }
