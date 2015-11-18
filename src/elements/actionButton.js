@@ -14,7 +14,13 @@ var {
   StyleSheet,
 } = React;
 
-var Styles = StyleSheet.create({  
+var Styles = StyleSheet.create({
+  actionButton: {
+    position: 'absolute',
+    backgroundColor: 'transparent',
+    bottom: 76,
+    right: 16,
+  },
   iconView: {
     width: 56,
     height: 56,
@@ -23,6 +29,13 @@ var Styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: defaultStyles.dark,
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    shadowOffset: {
+      width: 0,
+      height: 0
+    },
   }, 
   icon: {
     borderRadius: 28,
@@ -35,19 +48,22 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     onPress: React.PropTypes.func,
+    show: React.PropTypes.bool,
   },
   render: function() {
     return (
-      <TouchableOpacity onPress={this.props.onPress}>
-        <View style={Styles.iconView}>
-          <Icon
-            name='material|plus'
-            size={30}
-            color='#ffffff'
-            style={Styles.icon}
-          />
-        </View>
-      </TouchableOpacity>
+      <View style={Styles.actionButton}>
+        <TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
+          <View style={Styles.iconView}>
+            <Icon
+              name={this.props.show ? 'material|more-vert' : 'material|more'}
+              size={30}
+              color='#ffffff'
+              style={Styles.icon}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
     );
   }
 });

@@ -24,6 +24,11 @@ var {
 var Styles = StyleSheet.create({
   container: {
     height: defaultStyles.bodyHeight,
+    paddingTop: defaultStyles.navBarHeight,
+    paddingBottom: 16,
+  },
+  containerWithBar: {
+    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
     paddingBottom: 16,
   },
   row: {
@@ -121,6 +126,7 @@ module.exports = React.createClass({
     user: React.PropTypes.object,
     navigator: React.PropTypes.object,
     store: React.PropTypes.object,
+    showBar: React.PropTypes.bool,
   },
   getInitialState: function() {
     return {
@@ -232,12 +238,13 @@ module.exports = React.createClass({
   },
   render: function() {
     return (
-      <View style={Styles.container}>
+      <View style={this.props.showBar ? Styles.containerWithBar : Styles.container}>
         <ListView
           dataSource={this.state.dataSource.cloneWithRows(this.props.store.messages)}
           renderRow={this.renderChatRow}
           automaticallyAdjustContentInsets={false}
         />
+        {this.props.children}
       </View>
     );
   }

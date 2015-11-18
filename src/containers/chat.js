@@ -16,16 +16,12 @@ var {
   Platform,
   Text,
   ListView,
-  ScrollView,
   StyleSheet,
 } = React;
 
 var Styles = StyleSheet.create({
   body: {
     backgroundColor: defaultStyles.background,
-  },
-  scroll: {
-    flex: 1,
   },
 });
 
@@ -38,34 +34,11 @@ module.exports = React.createClass({
     actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
-  getInitialState: function () {
-    return {
-      ready: false,
-    };
-  },
   componentDidMount: function () {
     this.props.actions.clearNewChat();
-
-    this.setState({
-      ready: true,
-    });
   },
   onBackPress: function () {
     this.props.navigator.pop();
-  },
-  renderChatBar: function (chat) {
-    if (this.state.ready) {
-      return (
-        <ChatBar
-          scrollView={this.refs.scrollView}
-          user={this.props.user}
-          chat={chat}
-          navigator={this.props.navigator}
-          bunch={this.props.store.bunch}
-          createMessage={this.props.actions.createMessage}
-        />
-      );
-    }
   },
   render: function() {
 
@@ -93,38 +66,35 @@ module.exports = React.createClass({
       .value()
       .length;
 
-    console.log(this.props.store.messages, messages);
-
     var title = this.props.store.bunch.attributes.name;
 
     return (
       <View style={Styles.body}>
-        <NavBar
-          title={title}
-          menuButton={this.props.menuButton}
-          userCount={userCount}
-          msgCount={messages.length}
-        />
-        <NavBarChat
-          title={chat.name}
-          onBackPress={this.onBackPress}
-          expiration={chat.expirationDate}
-          created={chat.createdAt}
-        />
-        <ScrollView
-          ref='scrollView'
-          keyboardDismissMode='on-drag'
-          style={Styles.scroll}
-          contentContainerStyle={Styles.contentContainerStyle}
-          scrollEnabled={false}
+        <ChatBar
+          user={this.props.user}
+          chat={chat}
+          createMessage={this.props.actions.createMessage}
+          height={0}
         >
           <ChatContainer
             user={this.props.user}
             messages={messages}
             navigator={this.props.navigator}
-          />
-          {this.renderChatBar(chat)}
-        </ScrollView>
+          >
+            <NavBar
+              title={title}
+              menuButton={this.props.menuButton}
+              userCount={userCount}
+              msgCount={messages.length}
+            />
+            <NavBarChat
+              title={chat.name}
+              onBackPress={this.onBackPress}
+              expiration={chat.expirationDate}
+              created={chat.createdAt}
+            />
+          </ChatContainer>
+        </ChatBar>
       </View>
     );
   }

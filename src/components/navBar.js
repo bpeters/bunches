@@ -15,15 +15,18 @@ var {
 
 var Styles = StyleSheet.create({
   body: {
+    position: 'absolute',
+    top: 0,
     flex: 1,
     flexDirection: 'row',
     height: defaultStyles.navBarHeight,
+    width: defaultStyles.bodyWidth,
     backgroundColor: defaultStyles.blue,
     shadowOpacity: 0.5,
     shadowRadius: 2,
     shadowOffset: {
       width: 0,
-      height: 1
+      height: 2
     },
   },
   left: {

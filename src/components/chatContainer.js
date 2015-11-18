@@ -24,8 +24,10 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight - defaultStyles.navBarHeight,
+    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
     backgroundColor: defaultStyles.white,
+    paddingTop: defaultStyles.navBarHeight,
+    paddingBottom: 16,
   },
   row: {
     flex:1,
@@ -202,6 +204,7 @@ module.exports = React.createClass({
           dataSource={this.state.dataSource.cloneWithRows(this.props.messages)}
           renderRow={this.renderChatRow}
         />
+        {this.props.children}
       </View>
     );
   }

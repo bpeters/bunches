@@ -12,6 +12,7 @@ var NavBar = require('../components/navBar');
 var BunchContainer = require('../components/bunchContainer');
 var NewChat = require('./newChat');
 var ActionButton = require('../elements/actionButton');
+var ChatBar = require('../components/chatBar');
 
 var defaultStyles = require('../styles');
 
@@ -21,6 +22,7 @@ var {
   Platform,
   Text,
   ListView,
+  ScrollView,
 } = React;
 
 var Styles = StyleSheet.create({
@@ -28,13 +30,8 @@ var Styles = StyleSheet.create({
     backgroundColor: defaultStyles.background,
   },
   container: {
-    height:defaultStyles.bodyHeight,
+    height: defaultStyles.bodyHeight,
   },
-  actionButton: {
-    position: 'absolute',
-    bottom: 50,
-    right: 16,
-  }
 });
 
 module.exports = React.createClass({
@@ -45,12 +42,14 @@ module.exports = React.createClass({
     store: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
+  getInitialState: function () {
+    return {
+      showActions: false,
+    };
+  },
   onActionButtonPress: function () {
-    this.props.navigator.push({
-      name: 'new chat',
-      component: NewChat,
-      hasSideMenu: false,
-      bunch: this.props.store.bunch,
+    this.setState({
+      showActions: !this.state.showActions
     });
   },
   render: function() {
@@ -58,18 +57,29 @@ module.exports = React.createClass({
 
     return (
       <View style={Styles.body}>
-        <NavBar
-          title={title}
-          menuButton={this.props.menuButton}
-        />
-        <BunchContainer
+        <ChatBar
+          scrollView={this.refs.scrollView}
           user={this.props.user}
-          navigator={this.props.navigator}
-          store={this.props.store}
+          bunch={this.props.store.bunch}
+          createChat={this.props.actions.createChat}
+          height={0}
+        >
+          <BunchContainer
+            user={this.props.user}
+            navigator={this.props.navigator}
+            store={this.props.store}
+            showBar={this.state.showActions}
+          >
+            <NavBar
+              title={title}
+              menuButton={this.props.menuButton}
+            />
+          </BunchContainer>
+        </ChatBar>
+        <ActionButton
+          onPress={this.onActionButtonPress}
+          show={this.state.showActions}
         />
-        <View style={Styles.actionButton}>
-          <ActionButton onPress={this.onActionButtonPress} />
-        </View>
       </View>
     );
   }

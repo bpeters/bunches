@@ -15,17 +15,23 @@ var {
 } = React;
 
 var Styles = StyleSheet.create({
-  body: {
+  timer: {
     flex: 1,
-    flexDirection: 'row',
+    position: 'absolute',
+    top: defaultStyles.navBarHeight,
     height: defaultStyles.navBarHeight,
+    width: defaultStyles.bodyWidth,
     backgroundColor: defaultStyles.blue,
     shadowOpacity: 0.5,
     shadowRadius: 2,
     shadowOffset: {
       width: 0,
-      height: 1
+      height: 2
     },
+  },
+  body: {
+    flex: 1,
+    flexDirection: 'row',
   },
   left: {
     flex: 1,
@@ -41,14 +47,11 @@ var Styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-end',
   },
-  title: {    
+  title: {
     fontSize: 20,
     overflow:'hidden',
     color: defaultStyles.white,
     fontFamily: 'Roboto-Medium',
-  },
-  timer: {
-    flex:1,
   },
 });
 
