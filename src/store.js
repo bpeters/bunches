@@ -21,9 +21,10 @@ module.exports = {
     userChats: [],
     messages: [],
     newChat: null,
+    error: null,
   },
-  initStore: function () {
-    this.queryMainBunch(this.props.user)
+  initStore: function (user) {
+    this.queryMainBunch(user)
       .then((result) => {
         this.store.bunch = result.get('bunch');
 
@@ -36,6 +37,17 @@ module.exports = {
         this.refreshUserChats();
       }, (err) => {
         this.handleParseError(err);
+    });
+  },
+  tearDownStore: function () {
+    this.setState({
+      user: null,
+      bunch: null,
+      chats: [],
+      userChats: [],
+      messages: [],
+      newChat: null,
+      error: null,
     });
   },
   refreshChats: function () {
@@ -67,6 +79,10 @@ module.exports = {
         break;
       default:
         console.log(err);
+
+        this.setState({
+          error: err
+        });
     }
   },
   getItem: function (key) {
@@ -217,21 +233,18 @@ module.exports = {
 
     });
   },
-  clearNewChat: function () {
-    this.store.newChat = null;
-
+  createUser: function (params) {
     this.setState({
-      newChat: this.store.newChat
+      error: null,
     });
-  },
-  createUser: function () {
-    var user = new Parse.User();
-    var random = (Math.floor(Math.random() * 10000000000) + 1).toString();
 
-    user.set('username', random);
-    user.set('password', random);
-    user.set('email', random + '@bunches.io');
-    user.set('name', 'User ' + random);
+    var user = new Parse.User();
+
+    user.set('username', params.email);
+    user.set('password', params.password);
+    user.set('email', params.email);
+    user.set('handle', params.username);
+    user.set('name', params.name);
 
     user.signUp(null, {
       success: (user) => {
@@ -247,13 +260,15 @@ module.exports = {
             })
             .dispatch()
             .then(() => {
+              this.initStore(user);
+
               this.setState({
                 user: user,
                 bunch: bunch,
               });
             });
           },
-          error: (error) => {
+          error: (user, error) => {
             this.handleParseError(error);
           }
         });
@@ -263,8 +278,33 @@ module.exports = {
       }
     });
   },
+  loginUser: function (email, password) {
+    this.setState({
+      error: null,
+    });
+
+    Parse.User.logIn(email, password, {
+      success: (user) => {
+        this.initStore(user);
+
+        this.setState({
+          user: user,
+        });
+      },
+      error: (user, err) => {
+        this.handleParseError(err);
+      }
+    });
+  },
   logoutUser: function () {
     Parse.User.logOut();
+    this.tearDownStore();
+  },
+  checkUsername: function (username) {
+    var query = new Parse.Query('User');
+    query.equalTo('handle', username);
+
+    return query.first();
   },
   queryMainBunch: function (user) {
     var query = (new Parse.Query('Bunch2User'))

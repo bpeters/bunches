@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react-native');
+var _ = require('lodash');
 
 var Button = require('../elements/button');
 var NavBarOnboard = require('../components/navBarOnboard');
@@ -39,6 +40,12 @@ var Styles = StyleSheet.create({
     paddingLeft: 16,
     fontFamily: 'Roboto-Light',
   },
+  error: {
+    marginTop: 16,
+    marginBottom: 16,
+    fontFamily: 'Roboto-Bold',
+    color: defaultStyles.red,
+  },
   buttonView: {
     position: 'absolute',
     bottom: 16,
@@ -49,6 +56,8 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
+    actions: React.PropTypes.object,
+    store: React.PropTypes.object,
   },
   getInitialState: function () {
     return {
@@ -56,11 +65,22 @@ module.exports = React.createClass({
       password: null,
     };
   },
+  componentWillReceiveProps: function (nextProps) {
+    var Bunch = require('./bunch');
+
+    if (nextProps.store.user) {
+      this.props.navigator.replace({
+        name: 'bunch',
+        component: Bunch,
+        hasSideMenu: true,
+      });
+    }
+  },
   onBackPress: function () {
     this.props.navigator.pop();
   },
   onLogin: function () {
-
+    this.props.actions.loginUser(this.state.email, this.state.password);
   },
   render: function() {
     return (
@@ -79,8 +99,7 @@ module.exports = React.createClass({
             value={this.state.email}
             keyboardType='email-address'
             returnKeyType='next'
-            clearTextOnFocus={true}
-            defaultValue='email@email.com'
+            placeholder='sally@university.edu'
             onSubmitEditing={() => {
               this.refs.password.focus();
             }}
@@ -95,19 +114,14 @@ module.exports = React.createClass({
             value={this.state.password}
             secureTextEntry={true}
             returnKeyType='done'
-            clearTextOnFocus={true}
-            defaultValue='password'
+            placeholder='*******'
             onSubmitEditing={() => {
               this.onLogin();
             }}
           />
-        </View>
-        <View style={Styles.buttonView}>
-          <Button
-            onPress={this.onLogin}
-            title='SIGN IN'
-            color={defaultStyles.red}
-          />
+          <Text style={Styles.error}>
+            {_.get(this.props.store.error, 'message')}
+          </Text>
         </View>
         <View style={Styles.buttonView}>
           <Button
