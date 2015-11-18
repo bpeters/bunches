@@ -24,9 +24,6 @@ module.exports= React.createClass({
   getInitialState: function () {
     return this.store;
   },
-  componentDidMount: function () {
-    this.initStore();
-  },
   renderScene: function(route, navigator) {
     var Component = route.component;
 

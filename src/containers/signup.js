@@ -3,8 +3,7 @@
 var React = require('react-native');
 
 var Button = require('../elements/button');
-var Login = require('./login');
-var Signup = require('./signup');
+var NavBarOnboard = require('../components/navBarOnboard');
 
 var defaultStyles = require('../styles');
 
@@ -31,33 +30,26 @@ module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
   },
-  onLoginPress: function () {
-    this.props.navigator.push({
-      name: 'login',
-      component: Login,
-    });
+  onBackPress: function () {
+    this.props.navigator.pop();
   },
-  onCreateAccountPress: function () {
-    this.props.navigator.push({
-      name: 'signup',
-      component: Signup,
-    });
+  onCreateAccount: function () {
+
   },
   render: function() {
     return (
       <View style={Styles.view}>
+        <NavBarOnboard
+          title='Create Account'
+          onBackPress={this.onBackPress}
+        />
         <View style={Styles.buttonView}>
           <Button
-            onPress={this.onLoginPress}
-            title='SIGN IN'
-            color={defaultStyles.blue}
-          />
-          <Button
-            onPress={this.onCreateAccountPress}
+            onPress={this.onCreateAccount}
             title='CREATE ACCOUNT'
             color={defaultStyles.red}
           />
-          </View>
+        </View>
       </View>
     );
   }
