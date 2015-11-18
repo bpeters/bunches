@@ -19,7 +19,7 @@ module.exports = {
     chats: [],
     userChats: [],
     messages: [],
-    newChatId: null,
+    newChat: null,
   },
   initStore: function () {
     this.queryMainBunch(this.props.user)
@@ -148,7 +148,6 @@ module.exports = {
             messages: this.store.messages,
             chats: this.store.chats,
             bunch: this.store.bunch,
-            newChatId: this.store.newChatId,
           });
 
         });
@@ -168,7 +167,15 @@ module.exports = {
     .dispatch()
     .then((chat) => {
 
-      this.store.newChatId = chat.objectId;
+      this.store.newChat = chat;
+
+      this.setState({
+        newChat: {
+          attributes: chat,
+          message: message,
+          photo: photo,
+        }
+      });
 
       if (photo) {
         var photo64 = new Parse.File('image.jpeg', { base64: photo.split(',')[1]});
@@ -216,10 +223,10 @@ module.exports = {
     });
   },
   clearNewChat: function () {
-    this.store.newChatId = null;
+    this.store.newChat = null;
 
     this.setState({
-      newChatId: this.store.newChatId
+      newChat: this.store.newChat
     });
   },
   queryMainBunch: function (user) {

@@ -45,7 +45,7 @@ module.exports = React.createClass({
   },
   componentDidMount: function () {
     this.props.actions.clearNewChat();
-    console.log(this.refs);
+
     this.setState({
       ready: true,
     });
@@ -71,10 +71,13 @@ module.exports = React.createClass({
 
     var chatId = this.props.route.chatId;
 
-    var chat = _.chain(this.props.store.messages)
-      .find({'id' : chatId})
-      .result('chat')
-      .value();
+    var chat = (
+      _.chain(this.props.store.messages)
+        .find({'id' : chatId})
+        .result('chat')
+        .get('attributes')
+        .value() || this.props.route.newChat.attributes
+    );
 
     var messages = _.chain(this.props.store.messages)
       .find({'id' : chatId})
@@ -90,6 +93,8 @@ module.exports = React.createClass({
       .value()
       .length;
 
+    console.log(this.props.store.messages, messages);
+
     var title = this.props.store.bunch.attributes.name;
 
     return (
@@ -101,9 +106,9 @@ module.exports = React.createClass({
           msgCount={messages.length}
         />
         <NavBarChat
-          title={chat.attributes.name}
+          title={chat.name}
           onBackPress={this.onBackPress}
-          expiration={chat.attributes.expirationDate}
+          expiration={chat.expirationDate}
           created={chat.createdAt}
         />
         <ScrollView

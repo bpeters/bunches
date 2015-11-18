@@ -54,12 +54,12 @@ module.exports = React.createClass({
   componentWillReceiveProps: function (nextProps) {
     var Chat = require('./chat');
 
-    if (nextProps.store.newChatId) {
+    if (nextProps.store.newChat) {
       this.props.navigator.replace({
         name: 'chat',
         component: Chat,
         hasSideMenu: true,
-        chatId: nextProps.store.newChatId,
+        newChat: nextProps.store.newChat,
       });
     }
   },
