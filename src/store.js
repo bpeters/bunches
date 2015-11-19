@@ -22,9 +22,15 @@ module.exports = {
     messages: [],
     newChat: null,
     error: null,
+    loading: false,
+    success: false,
   },
   initStore: function (user) {
     if (user) {
+
+      this.setState({
+        loading: true,
+      });
 
       this.store.user = user;
 
@@ -45,7 +51,7 @@ module.exports = {
     }
   },
   tearDownStore: function () {
-    this.setState({
+    this.store = {
       user: null,
       bunch: null,
       chats: [],
@@ -53,7 +59,11 @@ module.exports = {
       messages: [],
       newChat: null,
       error: null,
-    });
+      loading: false,
+      success: false,
+    };
+
+    this.setState(this.store);
   },
   refreshChats: function () {
     return this.queryChats(this.store.bunch)
@@ -86,7 +96,8 @@ module.exports = {
         console.log(err);
 
         this.setState({
-          error: err
+          error: err,
+          loading: false,
         });
     }
   },
@@ -169,6 +180,7 @@ module.exports = {
             chats: this.store.chats,
             bunch: this.store.bunch,
             user: this.store.user,
+            loading: false,
           });
 
         });
@@ -187,8 +199,6 @@ module.exports = {
     })
     .dispatch()
     .then((chat) => {
-
-      this.store.newChat = chat;
 
       this.setState({
         newChat: chat
@@ -242,6 +252,7 @@ module.exports = {
   createUser: function (params) {
     this.setState({
       error: null,
+      loading: true,
     });
 
     var user = new Parse.User();
@@ -274,6 +285,7 @@ module.exports = {
               this.setState({
                 user: this.store.user,
                 bunch: this.store.bunch,
+                loading: false,
               });
             });
           },
@@ -288,8 +300,10 @@ module.exports = {
     });
   },
   loginUser: function (email, password) {
+
     this.setState({
       error: null,
+      loading: true,
     });
 
     Parse.User.logIn(email, password, {
@@ -300,6 +314,7 @@ module.exports = {
 
         this.setState({
           user: this.store.user,
+          loading: false,
         });
       },
       error: (user, err) => {
@@ -325,6 +340,11 @@ module.exports = {
     });
   },
   updateUser: function (field, value) {
+    this.setState({
+      error: null,
+      loading: true,
+    });
+
     var changes = {};
 
     changes[field] = value;
@@ -334,9 +354,20 @@ module.exports = {
       .then((user) => {
         this.store.user = user;
         this.setState({
-          user: this.store.user
+          user: this.store.user,
+          loading: false,
+          success: true,
         });
+      }, (err) => {
+        this.handleParseError(err);
       });
+  },
+  clearSuccess: function () {
+    this.store.success = false;
+
+    this.setState({
+      success: this.store.success
+    });
   },
   queryUser: function (user) {
     var query = new Parse.Query('User');

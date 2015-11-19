@@ -5,6 +5,8 @@ var _ = require('lodash');
 
 var NavBar = require('../components/navBar');
 var Button = require('../elements/button');
+var Loading = require('../elements/loading');
+var Success = require('../elements/success');
 
 var defaultStyles = require('../styles');
 
@@ -57,6 +59,12 @@ var Styles = StyleSheet.create({
     backgroundColor: defaultStyles.white,
     paddingLeft: 16,
     fontFamily: 'Roboto-Light',
+  },
+  successView: {
+    position: 'absolute',
+    backgroundColor: 'transparent',
+    top: defaultStyles.navBarHeight - 28,
+    left: (defaultStyles.bodyWidth / 2) - 28
   },
   buttonView: {
     position: 'absolute',
@@ -141,6 +149,9 @@ module.exports = React.createClass({
               });
             } else {
               this.props.actions.updateUser('handle', this.state.username);
+              this.setState({
+                username: null,
+              });
             }
           });
       }
@@ -155,6 +166,9 @@ module.exports = React.createClass({
         });
       } else {
         this.props.actions.updateUser('password', this.state.password);
+        this.setState({
+          password: null,
+        });
       }
     }
   },
@@ -176,7 +190,20 @@ module.exports = React.createClass({
       />
     )
   },
+  renderSuccess: function () {
+    setTimeout(() => {
+      this.props.actions.clearSuccess();
+    }, 3000);
+
+    return (
+      <View style={Styles.successView}>
+        <Success />
+      </View>
+    );
+  },
   render: function() {
+
+    console.log(this.props.store, this.state);
 
     if (_.get(this.state.error, 'message')) {
       AlertIOS.alert(
@@ -192,6 +219,7 @@ module.exports = React.createClass({
 
     return (
       <View style={Styles.view}>
+
         <NavBar
           title='Account'
           menuButton={this.props.menuButton}
@@ -218,6 +246,7 @@ module.exports = React.createClass({
           <TextInput
             style={Styles.input}
             onChangeText={(username) => this.setState({username})}
+            value={this.state.username}
             placeholder={user.handle}
           />
           <Text style={Styles.label}>
@@ -228,6 +257,7 @@ module.exports = React.createClass({
             style={Styles.input}
             onChangeText={(password) => this.setState({password})}
             placeholder="**********"
+            value={this.state.password}
             secureTextEntry={true}
           />
         </View>
@@ -238,6 +268,7 @@ module.exports = React.createClass({
             color={defaultStyles.red}
           />
         </View>
+        {this.props.store.success ? this.renderSuccess() : null}
       </View>
     );
   }

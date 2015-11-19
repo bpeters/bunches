@@ -4,6 +4,7 @@ var React = require('react-native');
 var _ = require('lodash');
 
 var Button = require('../elements/button');
+var Loading = require('../elements/loading');
 var NavBarOnboard = require('../components/navBarOnboard');
 
 var defaultStyles = require('../styles');
@@ -42,6 +43,12 @@ var Styles = StyleSheet.create({
     bottom: 16,
     left: 16,
   },
+  loadingView: {
+    position: 'absolute',
+    backgroundColor: 'transparent',
+    top: defaultStyles.navBarHeight - 28,
+    right: (defaultStyles.bodyWidth / 2) - 28,
+  },
 });
 
 module.exports = React.createClass({
@@ -77,6 +84,13 @@ module.exports = React.createClass({
   },
   onLogin: function () {
     this.props.actions.loginUser(this.state.email, this.state.password);
+  },
+  renderLoading: function () {
+    return (
+      <View style={Styles.loadingView}>
+        <Loading />
+      </View>
+    );
   },
   render: function() {
 
@@ -135,6 +149,7 @@ module.exports = React.createClass({
             color={defaultStyles.red}
           />
         </View>
+        {this.props.store.loading ? this.renderLoading() : null}
       </View>
     );
   }

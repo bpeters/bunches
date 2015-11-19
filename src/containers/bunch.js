@@ -9,6 +9,7 @@ var BunchContainer = require('../components/bunchContainer');
 var ActionButton = require('../elements/actionButton');
 var ChatBar = require('../components/chatBar');
 var Chat = require('./chat');
+var Loading = require('../elements/loading');
 
 var defaultStyles = require('../styles');
 
@@ -32,6 +33,12 @@ if (Platform.OS === 'android') {
 var Styles = StyleSheet.create({
   body: {
     backgroundColor: defaultStyles.background,
+  },
+  loadingView: {
+    position: 'absolute',
+    backgroundColor: 'transparent',
+    top: defaultStyles.navBarHeight - 28,
+    right: (defaultStyles.bodyWidth / 2) - 28,
   },
 });
 
@@ -95,6 +102,13 @@ module.exports = React.createClass({
       />
     );
   },
+  renderLoading: function () {
+    return (
+      <View style={Styles.loadingView}>
+        <Loading />
+      </View>
+    );
+  },
   render: function () {
     var title = _.get(this.props.store.bunch, 'attributes.name');
 
@@ -121,6 +135,7 @@ module.exports = React.createClass({
           show={this.state.showActions}
         />
         {this.state.showActions ? this.renderCameraAction() : null}
+        {this.props.store.loading ? this.renderLoading() : null}
       </View>
     );
   }

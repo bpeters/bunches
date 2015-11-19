@@ -39,6 +39,7 @@ module.exports= React.createClass({
       checkUsername: this.checkUsername,
       clearErrors: this.clearErrors,
       updateUser: this.updateUser,
+      clearSuccess: this.clearSuccess,
     };
 
     if (route.hasSideMenu) {

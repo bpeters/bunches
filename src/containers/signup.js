@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 var Button = require('../elements/button');
 var NavBarOnboard = require('../components/navBarOnboard');
+var Loading = require('../elements/loading');
 
 var defaultStyles = require('../styles');
 
@@ -44,6 +45,12 @@ var Styles = StyleSheet.create({
     position: 'absolute',
     bottom: 16,
     left: 16,
+  },
+  loadingView: {
+    position: 'absolute',
+    backgroundColor: 'transparent',
+    top: defaultStyles.navBarHeight - 28,
+    right: (defaultStyles.bodyWidth / 2) - 28,
   },
 });
 
@@ -134,6 +141,13 @@ module.exports = React.createClass({
       });
     }
   },
+  renderLoading: function () {
+    return (
+      <View style={Styles.loadingView}>
+        <Loading />
+      </View>
+    );
+  },
   render: function() {
 
     if (_.get(this.state.error, 'message')) {
@@ -213,6 +227,7 @@ module.exports = React.createClass({
             color={defaultStyles.red}
           />
         </View>
+        {this.props.store.loading ? this.renderLoading() : null}
       </View>
     );
   }
