@@ -14,6 +14,8 @@ var {
   Text,
 } = React;
 
+var IconButton = require('../elements/iconButton');
+
 var Styles = StyleSheet.create({
   scroll: {
     flex: 1,
@@ -23,6 +25,8 @@ var Styles = StyleSheet.create({
     flexDirection: 'row',
     height: defaultStyles.chatBarHeight,
     backgroundColor: defaultStyles.blue,
+    borderTopWidth:1,
+    borderColor: defaultStyles.blue,
     shadowColor: defaultStyles.dark,
     shadowOpacity: 0.5,
     shadowRadius: 2,
@@ -31,45 +35,21 @@ var Styles = StyleSheet.create({
       height: -1
     },
   },
-  wrap: {
-    flexDirection: 'row',
-    left: 6,
-    top: 6,
-    width: defaultStyles.bodyWidth - 12,
-    height: defaultStyles.chatBarHeight - 12,
-    borderColor: defaultStyles.white,
-    borderWidth: 1,
-    borderRadius: 2,
-    backgroundColor: defaultStyles.background,
-  },
   input : {
     alignItems: 'flex-start',
     fontFamily: 'Roboto-Light',
     color: defaultStyles.dark,
     paddingLeft: 12,
-    width: defaultStyles.bodyWidth - 12 - 76,
+    width: defaultStyles.bodyWidth - 12 - 36,
     height: defaultStyles.chatBarHeight - 12 - 2,
     borderBottomWidth: 0,
     borderWidth: 0,
     backgroundColor: defaultStyles.white,
   },
-  send: {
-    width: 74,
-    fontSize: 16,
-    paddingLeft: 18,
-    paddingTop: 12,
-    alignItems: 'flex-end',
-    fontFamily: 'Roboto-Bold',
-    color: defaultStyles.dark,
-  },
-  notSend: {
-    width: 74,
-    fontSize: 16,
-    paddingLeft: 18,
-    paddingTop: 12,
-    alignItems: 'flex-end',
-    fontFamily: 'Roboto-Bold',
-    color: defaultStyles.medium,
+  iconView : {
+    flex: 1,
+    alignItems: 'center',    
+    alignSelf:'flex-start',
   },
 });
 
@@ -80,6 +60,7 @@ module.exports = React.createClass({
     createMessage: React.PropTypes.func,
     createChat: React.PropTypes.func,
     height: React.PropTypes.number,
+    onPress: React.PropTypes.func,
   },
   getInitialState: function () {
     return {
@@ -114,22 +95,6 @@ module.exports = React.createClass({
       message: null
     });
   },
-  renderSend: function () {
-    return (
-      <TouchableOpacity onPress={this.addChatMessage}>
-        <Text style={Styles.send}>
-          Send
-        </Text>
-      </TouchableOpacity>
-    );
-  },
-  renderNotSend: function () {
-    return (
-      <Text style={Styles.notSend}>
-        Send
-      </Text>
-    );
-  },
   render: function() {
     return (
       <ScrollView
@@ -140,23 +105,27 @@ module.exports = React.createClass({
       >
         {this.props.children}
         <View ref='chat' style={Styles.body}>
-          <View style={Styles.wrap}>
-            <TextInput
-              style={Styles.input}
-              onChangeText={(message) => this.setState({message})}
-              onSubmitEditing={() => {
-                if (_.trim(this.state.message)) {
-                  this.addChatMessage();
-                }
-              }}
-              value={this.state.message}
-              onFocus={this.inputFocused.bind(this, 'chat')}
-              onBlur={this.inputBlured.bind(this, 'chat')}
-              underlineColorAndroid={defaultStyles.light}
-              clearButtonMode='while-editing'
-              returnKeyType='send'
+          <TextInput
+            style={Styles.input}
+            onChangeText={(message) => this.setState({message})}
+            onSubmitEditing={() => {
+              if (_.trim(this.state.message)) {
+                this.addChatMessage();
+              }
+            }}
+            value={this.state.message}
+            onFocus={this.inputFocused.bind(this, 'chat')}
+            onBlur={this.inputBlured.bind(this, 'chat')}
+            underlineColorAndroid={defaultStyles.light}
+            clearButtonMode='while-editing'
+            returnKeyType='send'
+          />
+          <View style={Styles.iconView}>
+            <IconButton
+              onPress={this.props.onPress}
+              icon='material|camera'
+              size={36}
             />
-            {_.trim(this.state.message) ? this.renderSend() : this.renderNotSend()}
           </View>
         </View>
       </ScrollView>

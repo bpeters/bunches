@@ -24,14 +24,6 @@ var Styles = StyleSheet.create({
   overall: {
     flex: 1,
   },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000000',
-    borderWidth:1,
-    borderColor:'#000000'
-  },
   camera: {
     position: 'absolute',
     top: 0,
@@ -102,11 +94,10 @@ module.exports = React.createClass({
     route: React.PropTypes.object,
     store: React.PropTypes.object,
     actions: React.PropTypes.object,
-    user: React.PropTypes.object,
   },
   getInitialState: function() {
     return {
-      cameraType: Camera.constants.Type.back,
+      cameraType: Camera.constants.Type.front,
       preview: false,
       photo: '',
       message: '',
@@ -116,8 +107,13 @@ module.exports = React.createClass({
     this.props.navigator.pop();
   },
   onCameraPress: function () {
-    this.refs.cam.capture((image) => {
-      this.setState({photo:image,preview:true});
+    this.refs.cam.capture({
+      target: Camera.constants.CaptureTarget.memory
+    }, (err, image) => {
+      this.setState({
+        photo: image,
+        preview: true
+      });
     });
   },
   onCameraSwitch: function() {
@@ -134,25 +130,18 @@ module.exports = React.createClass({
     });
   },
   onComplete: function () {
-    var Chat = require('./chat');
-
-    this.props.actions.createChat(this.state.message, this.state.message, this.state.photo);
-
-    var bunch = this.props.store.bunch;
-    var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
-
-    this.props.navigator.replace({
-      name: 'chat',
-      component: Chat,
-      hasSideMenu: true,
-      newChat: {
-        name: this.state.message,
-        expirationDate: expirationDate,
-        createdAt: Date.now(),
-        message: this.state.message,
-        photo: 'data:image/jpeg;base64,' + this.state.photo,
-      },
-    });
+    this.props.route.onPhotoChange('data:image/jpeg;base64,' + this.state.photo);
+  },
+  renderComplete: function () {
+    return (
+      <View style={Styles.iconViewRight}>
+        <IconButton
+          onPress={this.onComplete}
+          icon='material|check'
+          size={30}
+        />
+      </View>
+    );
   },
   renderPreview: function () {
     return (
@@ -163,6 +152,18 @@ module.exports = React.createClass({
           }}
           style={Styles.preview}
         />
+        <View style={Styles.field}>
+          <Text style={Styles.title}>
+            Add A Title
+          </Text>
+          <View style={Styles.inputWrap}>
+            <TextInput
+              style={Styles.input}
+              onChangeText={(message) => this.setState({message})}
+              value={this.state.message}
+            />
+          </View>
+        </View>
         <View style={Styles.iconViewLeft}>
           <IconButton
             onPress={this.onPreviewClose}
@@ -170,31 +171,23 @@ module.exports = React.createClass({
             size={30}
           />
         </View>
-        <View style={Styles.iconViewRight}>
-          <IconButton
-            onPress={this.onComplete}
-            icon='material|check'
-            size={30}
-          />
-        </View>
+        {this.state.message ? this.renderComplete() : null}
       </View>
     );
   },
   renderCamera: function() {
     return (
-      <View style={Styles.container}>
       <Camera 
         style={Styles.camera}
         ref='cam'
         type={this.state.cameraType}
-        captureTarget={Camera.constants.CaptureTarget.memory}
-      ></Camera>
+      >
         <TouchableOpacity style={Styles.capture} onPress={this.onCameraPress} >
           <View style={Styles.captureButton} />
         </TouchableOpacity>
         <View style={Styles.iconViewLeft}>
           <IconButton
-            onPress={this.props.onPressClose}
+            onPress={this.onPressClose}
             icon='material|close'
             size={30}
           />
@@ -206,8 +199,7 @@ module.exports = React.createClass({
             size={30}
           />
         </View>
-      </View>
-      
+      </Camera>
     );
   },
   render: function() {

@@ -25,7 +25,7 @@ var Styles = StyleSheet.create({
   iconView: {
     position:'absolute',
     top: 20,
-    right: 20,
+    left: 20,
     width: 30,
     height: 30, 
   },

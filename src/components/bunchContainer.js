@@ -23,12 +23,8 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height: defaultStyles.bodyHeight,
+    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight - 13,
     paddingTop: defaultStyles.navBarHeight,
-    paddingBottom: 16,
-  },
-  containerWithBar: {
-    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
     paddingBottom: 16,
   },
   row: {
@@ -237,7 +233,7 @@ module.exports = React.createClass({
   },
   render: function() {
     return (
-      <View style={this.props.showBar ? Styles.containerWithBar : Styles.container}>
+      <View style={Styles.container}>
         <ListView
           dataSource={this.state.dataSource.cloneWithRows(this.props.store.messages)}
           renderRow={this.renderChatRow}

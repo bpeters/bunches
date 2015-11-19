@@ -345,9 +345,82 @@ module.exports = {
       loading: true,
     });
 
+
+    var setUser = (changes) => {
+      ParseReact.Mutation.Set(this.state.user, changes)
+      .dispatch()
+      .then((user) => {
+        this.store.user = user;
+        this.setState({
+          user: this.store.user,
+          loading: false,
+          success: true,
+        });
+      }, (err) => {
+        this.handleParseError(err);
+      });
+    }
+
     var changes = {};
 
     changes[field] = value;
+
+
+    if (field == "image") {
+      var photo64 = new Parse.File('image.jpeg', { base64: value});
+      photo64.save().then((image) => {
+
+      // console.log(image);
+
+        changes['image'] = image;
+        // console.log(changes);
+        ParseReact.Mutation.Set(this.state.user, changes)
+        .dispatch()
+        .then((user) => {
+          console.log(user);
+          this.store.user = user;
+          this.setState({
+            user: this.store.user,
+            loading: false,
+            success: true,
+          });
+        }, (err) => {
+          this.handleParseError(err);
+        });
+
+
+
+
+        //setUser(changes);
+      });
+    } else {     
+
+      ParseReact.Mutation.Set(this.state.user, changes)
+      .dispatch()
+      .then((user) => {
+        this.store.user = user;
+        this.setState({
+          user: this.store.user,
+          loading: false,
+          success: true,
+        });
+      }, (err) => {
+        this.handleParseError(err);
+      });
+
+
+
+      //setUser(changes);
+    }
+        
+
+
+
+      
+
+
+
+
 
     ParseReact.Mutation.Set(this.state.user, changes)
       .dispatch()
@@ -361,6 +434,11 @@ module.exports = {
       }, (err) => {
         this.handleParseError(err);
       });
+
+
+
+
+
   },
   clearSuccess: function () {
     this.store.success = false;

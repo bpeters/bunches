@@ -106,7 +106,7 @@ module.exports = React.createClass({
   },
   getInitialState: function() {
     return {
-      cameraType: Camera.constants.Type.back,
+      cameraType: Camera.constants.Type.front,
       preview: false,
       photo: '',
       message: '',
@@ -134,25 +134,7 @@ module.exports = React.createClass({
     });
   },
   onComplete: function () {
-    var Chat = require('./chat');
-
-    this.props.actions.createChat(this.state.message, this.state.message, this.state.photo);
-
-    var bunch = this.props.store.bunch;
-    var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
-
-    this.props.navigator.replace({
-      name: 'chat',
-      component: Chat,
-      hasSideMenu: true,
-      newChat: {
-        name: this.state.message,
-        expirationDate: expirationDate,
-        createdAt: Date.now(),
-        message: this.state.message,
-        photo: 'data:image/jpeg;base64,' + this.state.photo,
-      },
-    });
+    this.props.route.onPhotoChange('data:image/jpeg;base64,' + this.state.photo);
   },
   renderPreview: function () {
     return (

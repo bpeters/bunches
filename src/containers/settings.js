@@ -28,10 +28,10 @@ var AddPhoto;
 var Loading;
 
 if (Platform.OS === 'android') {
-  AddPhoto = require('./addPhotoAndroid');
+  AddPhoto = require('./settingsPhotoAndroid');
   Loading = require('../elements/loadingAndroid');
 } else {
-  AddPhoto = require('./addPhotoIOS');
+  AddPhoto = require('./settingsPhotoIOS');
   Loading = require('../elements/loadingIOS');
 }
 
@@ -103,6 +103,7 @@ var Styles = StyleSheet.create({
     width: 80,
     borderRadius: 80,
     justifyContent: 'center',
+    backgroundColor: defaultStyles.background,
   },
 });
 
@@ -122,12 +123,20 @@ module.exports = React.createClass({
       error: this.props.store.error,
     }
   },
+
+  onPhotoChange: function(image) {
+    this.setState({image});
+    this.props.navigator.pop();
+  },
+
+
   onCamera: function(){
     this.props.navigator.push({
       name: "add photo",
       component: AddPhoto,
       hasSideMenu: false,
       bunch: this.props.store.bunch,
+      onPhotoChange: this.onPhotoChange,
     });
   },
   onUpdateAccount: function () {
@@ -173,6 +182,15 @@ module.exports = React.createClass({
         });
       }
     }
+
+    if (this.state.image) {
+      this.props.actions.updateUser('image', this.state.image);
+      this.setState({
+        image: null,
+      });      
+    }
+
+
   },
   renderIcon: function() {
     return (
@@ -188,7 +206,7 @@ module.exports = React.createClass({
     return (
       <Image
         style={Styles.image}
-        source={{uri: this.props.store.user.image}}
+        source={{uri: this.state.image}}
       />
     )
   },
@@ -204,9 +222,6 @@ module.exports = React.createClass({
     );
   },
   render: function() {
-
-    console.log(this.props.store, this.state);
-
     if (_.get(this.state.error, 'message')) {
       AlertIOS.alert(
         'Failed to Update Account',
@@ -230,7 +245,7 @@ module.exports = React.createClass({
           <View style={Styles.static}>
             <TouchableOpacity onPress={this.onCamera}>
               <View style={Styles.body}>
-                {user.image ? this.renderImage() : this.renderIcon()}
+                {this.state.image ? this.renderImage() : this.renderIcon()}
               </View>
             </TouchableOpacity>
             <View style={Styles.info}>

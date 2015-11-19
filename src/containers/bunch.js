@@ -54,7 +54,7 @@ module.exports = React.createClass({
   },
   getInitialState: function () {
     return {
-      showActions: false,
+      showActions: true,
     };
   },
   onActionButtonPress: function () {
@@ -63,10 +63,6 @@ module.exports = React.createClass({
     });
   },
   onCameraActionButtonPress: function () {
-    this.setState({
-      showActions: false
-    });
-
     this.props.navigator.push({
       name: "add photo",
       component: AddPhoto,
@@ -96,14 +92,6 @@ module.exports = React.createClass({
       },
     });
   },
-  renderCameraAction: function () {
-    return (
-      <ActionButton
-        onPress={this.onCameraActionButtonPress}
-        camera={true}
-      />
-    );
-  },
   renderLoading: function () {
     return (
       <View style={Styles.loadingView}>
@@ -119,7 +107,7 @@ module.exports = React.createClass({
         <ChatBar
           user={this.props.store.user}
           createChat={this.createChat}
-          height={0}
+          onPress={this.onCameraActionButtonPress}
         >
           <BunchContainer
             navigator={this.props.navigator}
@@ -136,7 +124,6 @@ module.exports = React.createClass({
           onPress={this.onActionButtonPress}
           show={this.state.showActions}
         />
-        {this.state.showActions ? this.renderCameraAction() : null}
         {this.props.store.loading ? this.renderLoading() : null}
       </View>
     );

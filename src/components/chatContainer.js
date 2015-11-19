@@ -24,7 +24,7 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
+    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight - 13,
     backgroundColor: defaultStyles.white,
     paddingTop: defaultStyles.navBarHeight,
     paddingBottom: 16,
