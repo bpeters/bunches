@@ -54,8 +54,7 @@ var NavBar = React.createClass({
   propTypes: {
     title: React.PropTypes.string,
     menuButton: React.PropTypes.object,
-    userCount: React.PropTypes.number,
-    msgCount: React.PropTypes.number,
+    score: React.PropTypes.number,
   },
   onHandlePress: function(e) {
     this.context.menuActions.toggle();
@@ -64,9 +63,7 @@ var NavBar = React.createClass({
   renderCounter: function() {
     return (
       <Counter
-        users={this.props.userCount}
-        messages={this.props.msgCount}
-        color='white'
+        score={this.props.score}
       /> 
     )
   },

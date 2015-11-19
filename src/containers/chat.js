@@ -40,26 +40,17 @@ module.exports = React.createClass({
 
     var chatId = this.props.route.chatId || _.get(this.props.store.newChat, 'objectId');
 
-    var chat = _.chain(this.props.store.messages)
-      .find({'id' : chatId})
-      .result('chat')
-      .value();
+    var data = _.find(this.props.store.messages, {'id' : chatId});
+
+    var chat = data.chat;
 
     var chatAttributes = _.get(chat, 'attributes') || this.props.route.newChat;
 
-    var messages = _.chain(this.props.store.messages)
-      .find({'id' : chatId})
-      .result('messages')
+    var messages = _.chain(data.messages)
       .cloneDeep()
       .sortBy('time')
       .value()
       .reverse();
-
-    var userCount = _.chain(messages)
-      .pluck('uid')
-      .uniq()
-      .value()
-      .length;
 
     var title = this.props.store.bunch.attributes.name;
 
@@ -79,8 +70,7 @@ module.exports = React.createClass({
             <NavBar
               title={title}
               menuButton={this.props.menuButton}
-              userCount={userCount}
-              msgCount={messages.length}
+              score={data.score}
             />
             <NavBarChat
               title={chatAttributes.name}
