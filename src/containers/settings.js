@@ -3,7 +3,6 @@
 var React = require('react-native');
 
 var NavBar = require('../components/navBar');
-var Avatar = require('../elements/avatar');
 var Button = require('../elements/button');
 
 var defaultStyles = require('../styles');
@@ -29,9 +28,6 @@ if (Platform.OS === 'android') {
 } else {
   AddPhoto = require('./addPhotoIOS')
 }
-
-
-
 
 var Styles = StyleSheet.create({
   view: {
@@ -98,7 +94,6 @@ var Styles = StyleSheet.create({
 });
 
 module.exports = React.createClass({
-
   propTypes: {
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
@@ -107,16 +102,13 @@ module.exports = React.createClass({
     actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
-
-
   getInitialState: function(){
     return {
       username: this.props.user.username,
-      password: '',
+      password: null,
       image: this.props.user.image,
     }
   },
-
   onCamera: function(){
     this.props.navigator.push({
       name: "add photo",
@@ -125,7 +117,9 @@ module.exports = React.createClass({
       bunch: this.props.store.bunch,
     });
   },
+  onUpdateAccount: function () {
 
+  },
   renderIcon: function() {
     return (
       <Icon
@@ -144,14 +138,8 @@ module.exports = React.createClass({
       />
     )
   },
-
-
-
-
   render: function() {
     return (
-      
-
       <View style={Styles.view}>
         <NavBar
           title='Account'
@@ -159,16 +147,11 @@ module.exports = React.createClass({
         />
         <View style={Styles.inputView}>
           <View style={Styles.static}>
-
-            
             <TouchableOpacity onPress={this.onCamera}>
               <View style={Styles.body}>
                 {this.props.user.image ? this.renderImage() : this.renderIcon()}
               </View>
             </TouchableOpacity>
-
-
-
             <View style={Styles.info}>
               <Text style={Styles.infoLabel}>
                 {this.props.user.name}
@@ -177,10 +160,7 @@ module.exports = React.createClass({
                 {this.props.user.email}
               </Text>
             </View>
-
           </View>
-
-
           <Text style={Styles.label}>
             Username
           </Text>
@@ -208,10 +188,6 @@ module.exports = React.createClass({
           />
         </View>
       </View>
-
-
-
-
     );
   }
 });

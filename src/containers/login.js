@@ -14,6 +14,8 @@ var {
   TextInput,
   StyleSheet,
   Text,
+  ScrollView,
+  AlertIOS,
 } = React;
 
 var Styles = StyleSheet.create({
@@ -26,11 +28,6 @@ var Styles = StyleSheet.create({
     left: 16,
     top: defaultStyles.navBarHeight + 16,
   },
-  label: {
-    marginTop: 16,
-    marginBottom: 16,
-    fontFamily: 'Roboto-Bold',
-  },
   input: {
     width: defaultStyles.bodyWidth - 16 - 16,
     height: 56,
@@ -39,12 +36,6 @@ var Styles = StyleSheet.create({
     backgroundColor: defaultStyles.white,
     paddingLeft: 16,
     fontFamily: 'Roboto-Light',
-  },
-  error: {
-    marginTop: 16,
-    marginBottom: 16,
-    fontFamily: 'Roboto-Bold',
-    color: defaultStyles.red,
   },
   buttonView: {
     position: 'absolute',
@@ -63,6 +54,7 @@ module.exports = React.createClass({
     return {
       email: null,
       password: null,
+      error: this.props.store.error
     };
   },
   componentWillReceiveProps: function (nextProps) {
@@ -75,6 +67,10 @@ module.exports = React.createClass({
         hasSideMenu: true,
       });
     }
+
+    this.setState({
+      error: nextProps.store.error
+    });
   },
   onBackPress: function () {
     this.props.navigator.pop();
@@ -83,46 +79,55 @@ module.exports = React.createClass({
     this.props.actions.loginUser(this.state.email, this.state.password);
   },
   render: function() {
+
+    if (_.get(this.state.error, 'message')) {
+      AlertIOS.alert(
+        'Failed to Sign In',
+        _.get(this.state.error, 'message'),
+        [
+          {text: 'Try Again', onPress: () => this.setState({error: null})},
+        ]
+      );
+    }
+
     return (
       <View style={Styles.view}>
-        <NavBarOnboard
-          title='Sign In'
-          onBackPress={this.onBackPress}
-        />
-        <View style={Styles.inputView}>
-          <Text style={Styles.label}>
-            Email
-          </Text>
-          <TextInput
-            style={Styles.input}
-            onChangeText={(email) => this.setState({email})}
-            value={this.state.email}
-            keyboardType='email-address'
-            returnKeyType='next'
-            placeholder='sally@university.edu'
-            onSubmitEditing={() => {
-              this.refs.password.focus();
-            }}
+        <ScrollView
+          ref='scrollView'
+          keyboardDismissMode='on-drag'
+          style={Styles.scroll}
+          scrollEnabled={false}
+        >
+          <NavBarOnboard
+            title='Sign In'
+            onBackPress={this.onBackPress}
           />
-          <Text style={Styles.label}>
-            Password
-          </Text>
-          <TextInput
-            ref='password'
-            style={Styles.input}
-            onChangeText={(password) => this.setState({password})}
-            value={this.state.password}
-            secureTextEntry={true}
-            returnKeyType='done'
-            placeholder='*******'
-            onSubmitEditing={() => {
-              this.onLogin();
-            }}
-          />
-          <Text style={Styles.error}>
-            {_.get(this.props.store.error, 'message')}
-          </Text>
-        </View>
+          <View style={Styles.inputView}>
+            <TextInput
+              style={Styles.input}
+              onChangeText={(email) => this.setState({email})}
+              value={this.state.email}
+              keyboardType='email-address'
+              returnKeyType='next'
+              placeholder='Email'
+              onSubmitEditing={() => {
+                this.refs.password.focus();
+              }}
+            />
+            <TextInput
+              ref='password'
+              style={Styles.input}
+              onChangeText={(password) => this.setState({password})}
+              value={this.state.password}
+              secureTextEntry={true}
+              returnKeyType='done'
+              placeholder='Password'
+              onSubmitEditing={() => {
+                this.onLogin();
+              }}
+            />
+          </View>
+        </ScrollView>
         <View style={Styles.buttonView}>
           <Button
             onPress={this.onLogin}

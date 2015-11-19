@@ -24,20 +24,22 @@ module.exports = {
     error: null,
   },
   initStore: function (user) {
-    this.queryMainBunch(user)
-      .then((result) => {
-        this.store.bunch = result.get('bunch');
+    if (user) {
+      this.queryMainBunch(user)
+        .then((result) => {
+          this.store.bunch = result.get('bunch');
 
-        return this.queryChats(this.store.bunch)
-      })
-      .then((result) => {
-        this.store.chats = result;
+          return this.queryChats(this.store.bunch)
+        })
+        .then((result) => {
+          this.store.chats = result;
 
-        this.listenToFirebase();
-        this.refreshUserChats();
-      }, (err) => {
-        this.handleParseError(err);
-    });
+          this.listenToFirebase();
+          this.refreshUserChats();
+        }, (err) => {
+          this.handleParseError(err);
+      });
+    }
   },
   tearDownStore: function () {
     this.setState({
@@ -305,6 +307,13 @@ module.exports = {
     query.equalTo('handle', username);
 
     return query.first();
+  },
+  clearErrors: function () {
+    this.store.error = null;
+
+    this.setState({
+      error: this.store.error
+    });
   },
   queryMainBunch: function (user) {
     var query = (new Parse.Query('Bunch2User'))

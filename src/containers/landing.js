@@ -30,14 +30,19 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
+    actions: React.PropTypes.object,
   },
   onLoginPress: function () {
+    this.props.actions.clearErrors();
+
     this.props.navigator.push({
       name: 'login',
       component: Login,
     });
   },
   onCreateAccountPress: function () {
+    this.props.actions.clearErrors();
+
     this.props.navigator.push({
       name: 'signup',
       component: Signup,

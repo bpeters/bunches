@@ -14,6 +14,8 @@ var {
   TextInput,
   StyleSheet,
   Text,
+  ScrollView,
+  AlertIOS,
 } = React;
 
 var Styles = StyleSheet.create({
@@ -22,14 +24,12 @@ var Styles = StyleSheet.create({
     alignItems: 'stretch',
     backgroundColor: defaultStyles.background,
   },
+  scroll: {
+    flex: 1,
+  },
   inputView: {
     left: 16,
     top: defaultStyles.navBarHeight + 16,
-  },
-  label: {
-    marginTop: 16,
-    marginBottom: 16,
-    fontFamily: 'Roboto-Bold',
   },
   input: {
     width: defaultStyles.bodyWidth - 16 - 16,
@@ -39,12 +39,6 @@ var Styles = StyleSheet.create({
     backgroundColor: defaultStyles.white,
     paddingLeft: 16,
     fontFamily: 'Roboto-Light',
-  },
-  error: {
-    marginTop: 16,
-    marginBottom: 16,
-    fontFamily: 'Roboto-Bold',
-    color: defaultStyles.red,
   },
   buttonView: {
     position: 'absolute',
@@ -65,7 +59,7 @@ module.exports = React.createClass({
       username: null,
       email: null,
       password: null,
-      error: null,
+      error: this.props.store.error
     };
   },
   componentWillReceiveProps: function (nextProps) {
@@ -78,20 +72,31 @@ module.exports = React.createClass({
         hasSideMenu: true,
       });
     }
+
+    this.setState({
+      error: nextProps.store.error
+    });
   },
   onBackPress: function () {
     this.props.navigator.pop();
   },
   onCreateAccount: function () {
-    this.setState({
-      error: null
-    });
+
+    var usernameCheck = new RegExp("^[A-Za-z0-9]{1,15}$");
 
     if (this.state.email && this.state.password && this.state.name && this.state.username) {
 
-      if (this.state.password.length >= 8) {
+      if (this.state.password.length < 8) {
         this.setState({
-          error: 'password must be greater than or equal to 8 characters in length'
+          error: {
+            message: 'password must be greater than or equal to 8 characters in length'
+          }
+        });
+      } else if (!usernameCheck.test(this.state.username)) {
+        this.setState({
+          error: {
+            message: 'username needs to be less than 16 characters and contain no spaces or special characters'
+          }
         });
       } else {
 
@@ -100,7 +105,9 @@ module.exports = React.createClass({
 
             if (user) {
               this.setState({
-                error: 'username is already taken'
+                error: {
+                  message: 'username is already taken'
+                }
               });
             } else {
               this.props.actions.createUser({
@@ -121,79 +128,84 @@ module.exports = React.createClass({
 
     } else {
       this.setState({
-        error: 'all fields are required'
+        error: {
+          message: 'all fields are required'
+        }
       });
     }
   },
   render: function() {
+
+    if (_.get(this.state.error, 'message')) {
+      AlertIOS.alert(
+        'Failed to Create Account',
+        _.get(this.state.error, 'message'),
+        [
+          {text: 'Try Again', onPress: () => this.setState({error: null})},
+        ]
+      );
+    }
+
     return (
       <View style={Styles.view}>
-        <NavBarOnboard
-          title='Create Account'
-          onBackPress={this.onBackPress}
-        />
-        <View style={Styles.inputView}>
-          <Text style={Styles.label}>
-            Full Name
-          </Text>
-          <TextInput
-            style={Styles.input}
-            onChangeText={(name) => this.setState({name})}
-            value={this.state.name}
-            returnKeyType='next'
-            placeholder='Sally Joy'
-            onSubmitEditing={() => {
-              this.refs.username.focus();
-            }}
+        <ScrollView
+          ref='scrollView'
+          keyboardDismissMode='on-drag'
+          style={Styles.scroll}
+          scrollEnabled={false}
+        >
+          <NavBarOnboard
+            title='Create Account'
+            onBackPress={this.onBackPress}
           />
-          <Text style={Styles.label}>
-            Username
-          </Text>
-          <TextInput
-            ref='username'
-            style={Styles.input}
-            onChangeText={(username) => this.setState({username})}
-            value={this.state.username}
-            returnKeyType='next'
-            placeholder='sjoy'
-            onSubmitEditing={() => {
-              this.refs.email.focus();
-            }}
-          />
-          <Text style={Styles.label}>
-            University or Private Email
-          </Text>
-          <TextInput
-            ref='email'
-            style={Styles.input}
-            onChangeText={(email) => this.setState({email})}
-            value={this.state.email}
-            keyboardType='email-address'
-            returnKeyType='next'
-            placeholder='sally@university.edu'
-            onSubmitEditing={() => {
-              this.refs.password.focus();
-            }}
-          />
-          <Text style={Styles.label}>
-            Password
-          </Text>
-          <TextInput
-            ref='password'
-            style={Styles.input}
-            onChangeText={(password) => this.setState({password})}
-            value={this.state.password}
-            secureTextEntry={true}
-            returnKeyType='done'
-            placeholder='*******'
-            onSubmitEditing={() => {
-              this.onCreateAccount();
-            }}
-          />
-          <Text style={Styles.error}>
-            {_.get(this.props.store.error, 'message') || this.state.error}
-          </Text>
-        </View>
+          <View style={Styles.inputView}>
+            <TextInput
+              style={Styles.input}
+              onChangeText={(name) => this.setState({name})}
+              value={this.state.name}
+              returnKeyType='next'
+              placeholder='Full Name (Sally Joy)'
+              onSubmitEditing={() => {
+                this.refs.username.focus();
+              }}
+            />
+            <TextInput
+              ref='username'
+              style={Styles.input}
+              onChangeText={(username) => this.setState({username})}
+              value={this.state.username}
+              returnKeyType='next'
+              placeholder='Username (sjoy)'
+              onSubmitEditing={() => {
+                this.refs.email.focus();
+              }}
+            />
+            <TextInput
+              ref='email'
+              style={Styles.input}
+              onChangeText={(email) => this.setState({email})}
+              value={this.state.email}
+              keyboardType='email-address'
+              returnKeyType='next'
+              placeholder='Email (sally@university.edu)'
+              onSubmitEditing={() => {
+                this.refs.password.focus();
+              }}
+            />
+            <TextInput
+              ref='password'
+              style={Styles.input}
+              onChangeText={(password) => this.setState({password})}
+              value={this.state.password}
+              secureTextEntry={true}
+              returnKeyType='done'
+              placeholder='Password'
+              onSubmitEditing={() => {
+                this.onCreateAccount();
+              }}
+            />
+          </View>
+        </ScrollView>
         <View style={Styles.buttonView}>
           <Button
             onPress={this.onCreateAccount}
