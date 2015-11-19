@@ -64,6 +64,7 @@ var NavBar = React.createClass({
     return (
       <Counter
         score={this.props.score}
+        color='white'
       /> 
     )
   },
@@ -82,7 +83,7 @@ var NavBar = React.createClass({
           </Text>
         </View>
         <View style={Styles.right}>
-        {this.props.userCount && this.props.msgCount ? this.renderCounter() : null}
+        {this.props.score ? this.renderCounter() : null}
         </View>
       </View>
     );

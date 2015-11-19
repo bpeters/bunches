@@ -187,6 +187,8 @@ module.exports = {
                   score: score,
                   messages: messages,
                 });
+              } else {
+                chat.score = calcPowerScore(chat.chat, messages);
               }
             }
 
