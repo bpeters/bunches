@@ -5,7 +5,6 @@ var _ = require('lodash');
 
 var NavBar = require('../components/navBar');
 var Button = require('../elements/button');
-var Loading = require('../elements/loading');
 var Success = require('../elements/success');
 
 var defaultStyles = require('../styles');
@@ -26,11 +25,14 @@ var {
 } = React;
 
 var AddPhoto;
+var Loading;
 
 if (Platform.OS === 'android') {
   AddPhoto = require('./addPhotoAndroid');
+  Loading = require('../elements/loadingAndroid');
 } else {
-  AddPhoto = require('./addPhotoIOS')
+  AddPhoto = require('./addPhotoIOS');
+  Loading = require('../elements/loadingIOS');
 }
 
 var Styles = StyleSheet.create({

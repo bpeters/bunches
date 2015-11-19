@@ -4,7 +4,6 @@ var React = require('react-native');
 var _ = require('lodash');
 
 var Button = require('../elements/button');
-var Loading = require('../elements/loading');
 var NavBarOnboard = require('../components/navBarOnboard');
 
 var defaultStyles = require('../styles');
@@ -17,7 +16,16 @@ var {
   Text,
   ScrollView,
   AlertIOS,
+  Platform,
 } = React;
+
+var Loading;
+
+if (Platform.OS === 'android') {
+  Loading = require('../elements/loadingAndroid');
+} else {
+  Loading = require('../elements/loadingIOS');
+}
 
 var Styles = StyleSheet.create({
   view: {

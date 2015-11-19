@@ -9,7 +9,6 @@ var BunchContainer = require('../components/bunchContainer');
 var ActionButton = require('../elements/actionButton');
 var ChatBar = require('../components/chatBar');
 var Chat = require('./chat');
-var Loading = require('../elements/loading');
 
 var defaultStyles = require('../styles');
 
@@ -23,11 +22,14 @@ var {
 } = React;
 
 var AddPhoto;
+var Loading;
 
 if (Platform.OS === 'android') {
   AddPhoto = require('./addPhotoAndroid');
+  Loading = require('../elements/loadingAndroid');
 } else {
   AddPhoto = require('./addPhotoIOS')
+  Loading = require('../elements/loadingIOS');
 }
 
 var Styles = StyleSheet.create({
