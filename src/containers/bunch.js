@@ -33,9 +33,6 @@ var Styles = StyleSheet.create({
   body: {
     backgroundColor: defaultStyles.background,
   },
-  container: {
-    height: defaultStyles.bodyHeight,
-  },
 });
 
 module.exports = React.createClass({

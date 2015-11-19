@@ -6,35 +6,21 @@ var defaultStyles = require('../styles');
 
 var {
   View,
-  Image,
+  TouchableOpacity,
   StyleSheet,
+  Text,
   Animated,
 } = React;
-
-var Styles = StyleSheet.create({
-  view: {
-    width: defaultStyles.bodyWidth - 16 - 16,
-    height: 56,
-    borderRadius: 4,
-    backgroundColor: defaultStyles.blue,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    color: defaultStyles.white,
-    fontFamily: 'Roboto-Bold',
-  },
-});
 
 module.exports = React.createClass({
   propTypes: {
     onPress: React.PropTypes.func,
     title: React.PropTypes.string,
+    color: React.PropTypes.string,
   },
   getInitialState: function () {
     return {
-      offset: new Animated.Value(76)
+      offset: new Animated.Value(16)
     };
   },
   componentDidMount: function () {
@@ -49,6 +35,23 @@ module.exports = React.createClass({
     ).start(); 
   },
   render: function() {
+    var Styles = StyleSheet.create({
+      view: {
+        width: defaultStyles.bodyWidth - 16 - 16,
+        height: 56,
+        borderRadius: 4,
+        backgroundColor: this.props.color,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 16,
+      },
+      text: {
+        color: defaultStyles.white,
+        fontFamily: 'Roboto-Bold',
+      },
+    });
+
     return (
       <Animated.View
         style={{

@@ -25,7 +25,7 @@ module.exports= React.createClass({
     return this.store;
   },
   componentDidMount: function () {
-    this.initStore();
+    this.initStore(this.props.user);
   },
   renderScene: function(route, navigator) {
     var Component = route.component;
@@ -33,8 +33,10 @@ module.exports= React.createClass({
     var actions = {
       createMessage: this.createMessage,
       createChat: this.createChat,
-      clearNewChat: this.clearNewChat,
       logoutUser: this.logoutUser,
+      loginUser: this.loginUser,
+      createUser: this.createUser,
+      checkUsername: this.checkUsername,
     };
 
     if (route.hasSideMenu) {
@@ -62,7 +64,7 @@ module.exports= React.createClass({
   render: function() {
     var route;
 
-    if (this.props.user) {
+    if (this.props.user || this.state.user) {
       route = {
         name: 'bunch',
         component: Bunch,
