@@ -146,12 +146,12 @@ module.exports= React.createClass({
       {
         name: 'Log Out',
         onPress: () => {
-          this.props.actions.logoutUser();
-
           this.props.navigator.push({
             name: 'landing',
             component: Landing
           });
+
+          this.props.actions.logoutUser();
         }
       },
     ];

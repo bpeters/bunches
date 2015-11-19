@@ -113,7 +113,6 @@ module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
-    user: React.PropTypes.object,
   },
   getInitialState: function() {
     return {

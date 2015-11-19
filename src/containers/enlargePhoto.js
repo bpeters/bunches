@@ -35,7 +35,6 @@ module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
-    user: React.PropTypes.object,
   },
   onPress: function() {
     this.props.navigator.pop();

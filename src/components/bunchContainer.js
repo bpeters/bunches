@@ -123,7 +123,6 @@ var Styles = StyleSheet.create({
 
 module.exports = React.createClass({
   propTypes: {
-    user: React.PropTypes.object,
     navigator: React.PropTypes.object,
     store: React.PropTypes.object,
     showBar: React.PropTypes.bool,

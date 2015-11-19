@@ -27,7 +27,6 @@ module.exports= React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
-    user: React.PropTypes.object,
     store: React.PropTypes.object,
     actions: React.PropTypes.object,
   },
@@ -57,7 +56,6 @@ module.exports= React.createClass({
         menu={
           <Menu
             navigator={this.props.navigator}
-            user={this.props.user}
             actions={this.props.actions}
             store={this.props.store}
           />
@@ -69,7 +67,6 @@ module.exports= React.createClass({
           <Component
             navigator={this.props.navigator}
             route={this.props.route}
-            user={this.props.user}
             store={this.props.store}
             actions={this.props.actions}
             menuButton={{

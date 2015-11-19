@@ -25,6 +25,9 @@ module.exports = {
   },
   initStore: function (user) {
     if (user) {
+
+      this.store.user = user;
+
       this.queryMainBunch(user)
         .then((result) => {
           this.store.bunch = result.get('bunch');
@@ -165,6 +168,7 @@ module.exports = {
             messages: this.store.messages,
             chats: this.store.chats,
             bunch: this.store.bunch,
+            user: this.store.user,
           });
 
         });
@@ -178,7 +182,7 @@ module.exports = {
       name: title,
       expirationDate: new Date(expirationDate),
       belongsTo: bunch,
-      createdBy: this.props.user,
+      createdBy: this.store.user,
       isDead: false,
     })
     .dispatch()
@@ -210,7 +214,7 @@ module.exports = {
     var bunch = this.store.bunch;
     var url = config.firebase.url + '/bunch/' + bunch.id + '/chat/' + (chat.objectId || chat.id);
     var messenger = new Firebase(url);
-    var user = this.props.user;
+    var user = this.store.user;
 
     ParseReact.Mutation.Create('Chat2User', {
       chat: chat,
@@ -264,9 +268,12 @@ module.exports = {
             .then(() => {
               this.initStore(user);
 
+              this.store.user = user;
+              this.store.bunch = bunch;
+
               this.setState({
-                user: user,
-                bunch: bunch,
+                user: this.store.user,
+                bunch: this.store.bunch,
               });
             });
           },
@@ -289,8 +296,10 @@ module.exports = {
       success: (user) => {
         this.initStore(user);
 
+        this.store.user = user;
+
         this.setState({
-          user: user,
+          user: this.store.user,
         });
       },
       error: (user, err) => {
@@ -315,6 +324,26 @@ module.exports = {
       error: this.store.error
     });
   },
+  updateUser: function (field, value) {
+    var changes = {};
+
+    changes[field] = value;
+
+    ParseReact.Mutation.Set(this.state.user, changes)
+      .dispatch()
+      .then((user) => {
+        this.store.user = user;
+        this.setState({
+          user: this.store.user
+        });
+      });
+  },
+  queryUser: function (user) {
+    var query = new Parse.Query('User');
+    query.equalTo('id', user.id);
+
+    return query.first();
+  },
   queryMainBunch: function (user) {
     var query = (new Parse.Query('Bunch2User'))
       .equalTo('user',  user)
@@ -337,7 +366,7 @@ module.exports = {
   },
   queryUserChats: function (chat) {
     var query = (new Parse.Query('Chat2User'))
-      .equalTo('user', this.props.user)
+      .equalTo('user', this.store.user)
       .include('user')
       .include('chat')
 

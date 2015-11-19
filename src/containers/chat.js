@@ -2,6 +2,7 @@
 
 var React = require('react-native');
 var _ = require('lodash');
+var moment = require('moment');
 
 var NavBar = require('../components/navBar');
 var NavBarChat = require('../components/navBarChat');
@@ -28,7 +29,6 @@ module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
-    user: React.PropTypes.object,
     store: React.PropTypes.object,
     actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
@@ -66,13 +66,13 @@ module.exports = React.createClass({
     return (
       <View style={Styles.body}>
         <ChatBar
-          user={this.props.user}
+          user={this.props.store.user}
           chat={chat}
           createMessage={this.props.actions.createMessage}
           height={0}
         >
           <ChatContainer
-            user={this.props.user}
+            user={this.props.store.user}
             messages={messages}
             navigator={this.props.navigator}
           >
@@ -85,8 +85,8 @@ module.exports = React.createClass({
             <NavBarChat
               title={chatAttributes.name}
               onBackPress={this.onBackPress}
-              expiration={chatAttributes.expirationDate}
-              created={chatAttributes.createdAt}
+              expiration={moment(chatAttributes.expirationDate).toDate()}
+              created={moment(chatAttributes.createdAt).toDate()}
             />
           </ChatContainer>
         </ChatBar>

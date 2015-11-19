@@ -94,7 +94,6 @@ module.exports = React.createClass({
     route: React.PropTypes.object,
     store: React.PropTypes.object,
     actions: React.PropTypes.object,
-    user: React.PropTypes.object,
   },
   getInitialState: function() {
     return {

@@ -39,7 +39,6 @@ module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
-    user: React.PropTypes.object,
     store: React.PropTypes.object,
     actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
@@ -102,12 +101,11 @@ module.exports = React.createClass({
     return (
       <View style={Styles.body}>
         <ChatBar
-          user={this.props.user}
+          user={this.props.store.user}
           createChat={this.createChat}
           height={0}
         >
           <BunchContainer
-            user={this.props.user}
             navigator={this.props.navigator}
             store={this.props.store}
             showBar={this.state.showActions}

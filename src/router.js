@@ -38,6 +38,7 @@ module.exports= React.createClass({
       createUser: this.createUser,
       checkUsername: this.checkUsername,
       clearErrors: this.clearErrors,
+      updateUser: this.updateUser,
     };
 
     if (route.hasSideMenu) {
@@ -45,7 +46,6 @@ module.exports= React.createClass({
         <SideMenu
           navigator={navigator}
           route={route}
-          user={this.props.user}
           store={this.state}
           actions={actions}
         />
@@ -55,7 +55,6 @@ module.exports= React.createClass({
         <Component
           navigator={navigator}
           route={route}
-          user={this.props.user}
           store={this.state}
           actions={actions}
         />

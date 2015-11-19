@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react-native');
+var _ = require('lodash');
 
 var NavBar = require('../components/navBar');
 var Button = require('../elements/button');
@@ -19,6 +20,7 @@ var {
   TextInput,
   TouchableOpacity,
   Platform,
+  AlertIOS,
 } = React;
 
 var AddPhoto;
@@ -58,7 +60,7 @@ var Styles = StyleSheet.create({
   },
   buttonView: {
     position: 'absolute',
-    bottom: 50,
+    bottom: 16,
     left: 16,
   },
   static: {
@@ -73,6 +75,7 @@ var Styles = StyleSheet.create({
   infoLabel: {
     marginBottom: 16,
     fontFamily: 'Roboto-Bold',
+    fontSize: 24,
   },
   body: {
     width: 80,
@@ -97,16 +100,16 @@ module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
-    user: React.PropTypes.object,
     store: React.PropTypes.object,
     actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
   getInitialState: function(){
     return {
-      username: this.props.user.username,
+      username: null,
       password: null,
-      image: this.props.user.image,
+      image: this.props.store.user.image,
+      error: this.props.store.error,
     }
   },
   onCamera: function(){
@@ -118,7 +121,42 @@ module.exports = React.createClass({
     });
   },
   onUpdateAccount: function () {
+    if (this.state.username) {
+      var usernameCheck = new RegExp("^[A-Za-z0-9]{1,15}$");
 
+      if (!usernameCheck.test(this.state.username)) {
+        this.setState({
+          error: {
+            message: 'username needs to be less than 16 characters and contain no spaces or special characters'
+          }
+        });
+      } else {
+        this.props.actions.checkUsername(this.state.username)
+          .then((user) => {
+            if (user) {
+              this.setState({
+                error: {
+                  message: 'username is already taken'
+                }
+              });
+            } else {
+              this.props.actions.updateUser('handle', this.state.username);
+            }
+          });
+      }
+    }
+
+    if (this.state.password) {
+      if (this.state.password.length < 8) {
+        this.setState({
+          error: {
+            message: 'password must be greater than or equal to 8 characters in length'
+          }
+        });
+      } else {
+        this.props.actions.updateUser('password', this.state.password);
+      }
+    }
   },
   renderIcon: function() {
     return (
@@ -134,30 +172,43 @@ module.exports = React.createClass({
     return (
       <Image
         style={Styles.image}
-        source={{uri: this.props.user.image}}
+        source={{uri: this.props.store.user.image}}
       />
     )
   },
   render: function() {
+
+    if (_.get(this.state.error, 'message')) {
+      AlertIOS.alert(
+        'Failed to Update Account',
+        _.get(this.state.error, 'message'),
+        [
+          {text: 'Try Again', onPress: () => this.setState({error: null})},
+        ]
+      );
+    }
+
+    var user = _.get(this.props.store.user, 'attributes') || this.props.store.user;
+
     return (
       <View style={Styles.view}>
         <NavBar
           title='Account'
-          onBackPress={this.onBackPress}
+          menuButton={this.props.menuButton}
         />
         <View style={Styles.inputView}>
           <View style={Styles.static}>
             <TouchableOpacity onPress={this.onCamera}>
               <View style={Styles.body}>
-                {this.props.user.image ? this.renderImage() : this.renderIcon()}
+                {user.image ? this.renderImage() : this.renderIcon()}
               </View>
             </TouchableOpacity>
             <View style={Styles.info}>
               <Text style={Styles.infoLabel}>
-                {this.props.user.name}
+                {user.name}
               </Text>
               <Text style={Styles.infoLabel}>
-                {this.props.user.email}
+                {user.email}
               </Text>
             </View>
           </View>
@@ -167,7 +218,7 @@ module.exports = React.createClass({
           <TextInput
             style={Styles.input}
             onChangeText={(username) => this.setState({username})}
-            placeholder={this.state.username}
+            placeholder={user.handle}
           />
           <Text style={Styles.label}>
             Password
