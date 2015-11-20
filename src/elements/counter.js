@@ -16,22 +16,22 @@ var {
 
 var Styles = StyleSheet.create({  
   bolt: {
-    flex:1,
+    flex: 1,
     flexDirection:'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    paddingRight:10,
+    paddingRight: 16,
     alignSelf:'stretch',
   },
   iconView: {
-    height:16,
-    width:16,
+    height: 16,
+    width: 16,
     borderRadius: 8,
   },
   iconText: {
     fontSize: 16,
     fontFamily: 'Roboto-Regular',
-    paddingRight: 2,
+    paddingRight: 4,
   },
   icon: {
     width: 16,

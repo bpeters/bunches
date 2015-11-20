@@ -98,7 +98,7 @@ module.exports = React.createClass({
         message: this.state.message
       });
     } else if (this.props.createChat) {
-      this.props.createChat(this.state.message, this.state.message);
+      this.props.createChat(this.state.message);
     }
 
     this.setState({

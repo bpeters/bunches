@@ -26,7 +26,7 @@ var Styles = StyleSheet.create({
   container: {
     height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
     backgroundColor: defaultStyles.white,
-    paddingTop: defaultStyles.navBarHeight,
+    paddingTop: defaultStyles.navBarHeight + defaultStyles.navBarHeight +  16,
     paddingBottom: 16,
   },
   row: {
@@ -120,7 +120,7 @@ module.exports = React.createClass({
     };
   },
   onAvatarPress: function (rowData) {
-    console.log(rowData);
+
   },
   onPressImage: function (imageURL) {
     this.props.navigator.push({

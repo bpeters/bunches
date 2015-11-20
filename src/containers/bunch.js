@@ -8,7 +8,6 @@ var NavBar = require('../components/navBar');
 var BunchContainer = require('../components/bunchContainer');
 var ActionButton = require('../elements/actionButton');
 var ChatBar = require('../components/chatBar');
-var Chat = require('./chat');
 
 var defaultStyles = require('../styles');
 
@@ -61,8 +60,10 @@ module.exports = React.createClass({
       bunch: this.props.store.bunch,
     });
   },
-  createChat: function (title, message) {
-    this.props.actions.createChat(title, message);
+  createChat: function (message) {
+    var Chat = require('./chat');
+
+    this.props.actions.createChat(message);
 
     var bunch = this.props.store.bunch;
     var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
@@ -72,7 +73,7 @@ module.exports = React.createClass({
       component: Chat,
       hasSideMenu: true,
       newChat: {
-        name: title,
+        name: this.props.store.user.handle,
         expirationDate: expirationDate,
         createdAt: Date.now(),
         message: message,

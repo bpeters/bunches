@@ -9,6 +9,8 @@ var moment = require('moment');
 
 var config = require('./config/default');
 
+var nouns = require('./assets/nouns');
+
 var {
   AsyncStorage,
 } = React;
@@ -219,12 +221,12 @@ module.exports = {
       return image;
     });
   },
-  createChat: function (title, message, photo) {
+  createChat: function (message, photo) {
     var bunch = this.store.bunch;
     var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
 
     ParseReact.Mutation.Create('Chat', {
-      name: title,
+      name: this.store.user.handle + "'s " + _.sample(nouns),
       expirationDate: new Date(expirationDate),
       belongsTo: bunch,
       createdBy: this.store.user,
@@ -233,8 +235,10 @@ module.exports = {
     .dispatch()
     .then((chat) => {
 
+      this.store.newChat = chat;
+
       this.setState({
-        newChat: chat
+        newChat: this.store.newChat
       });
 
       if (photo) {
@@ -390,8 +394,6 @@ module.exports = {
       ParseReact.Mutation.Set(this.state.user, changes)
       .dispatch()
       .then((user) => {
-        console.log(user);
-
         this.store.user = user;
         this.setState({
           user: this.store.user,

@@ -125,7 +125,7 @@ module.exports = React.createClass({
   onComplete: function () {
     var Chat = require('./chat');
 
-    this.props.actions.createChat(this.state.message, this.state.message, this.state.photo);
+    this.props.actions.createChat(this.state.message, this.state.photo);
 
     var bunch = this.props.store.bunch;
     var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();

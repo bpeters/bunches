@@ -25,12 +25,22 @@ var Styles = StyleSheet.create({
   container: {
     height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
     paddingTop: defaultStyles.navBarHeight,
-    paddingBottom: 16,
   },
   row: {
     width: defaultStyles.bodyWidth - 32,
     marginTop: 16,
     marginLeft: 16,
+  },
+  loadMore: {
+    width: defaultStyles.bodyWidth - 32,
+    marginTop: 32,
+    marginBottom: 32,
+    marginLeft: 16,
+    alignItems: 'center',
+  },
+  loadMoreText: {
+    fontFamily: 'Roboto-Regular', 
+    color: defaultStyles.medium,
   },
   rowHeader: {
     backgroundColor: defaultStyles.white,
@@ -48,6 +58,7 @@ var Styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingTop: 16,
     paddingLeft: 16,
+    paddingBottom: 16,
   },
   rowImage: {
     height: 176,
@@ -74,13 +85,14 @@ var Styles = StyleSheet.create({
     borderRightWidth: 1,
   },
   userName: {
-    flex:2.5,
+    flex: 2.5,
     fontSize: 16,
     fontFamily: 'Roboto-Regular',
     color: defaultStyles.dark,
   },
-  chatTitle: {
+  userHandle: {
     fontSize: 14,
+    paddingTop: 2,
     fontFamily: 'Roboto-Regular', 
     color: defaultStyles.medium,
   },
@@ -93,12 +105,12 @@ var Styles = StyleSheet.create({
     color: defaultStyles.dark,
   },
   counts: {
-    flex:1,
+    flex: 1,
     flexDirection:'row',
     justifyContent:'flex-end',
     alignItems:'flex-start',
     alignSelf:'stretch',
-    paddingBottom:10,
+    paddingBottom: 10,
   },
   info: {
     flex:1,
@@ -169,64 +181,81 @@ module.exports = React.createClass({
   },
   renderChatRow: function(rowData) {
 
-    var mostRecentImage;
-    var mostRecentMessage;
+    if (rowData.chat) {
 
-    _.forEach(rowData.messages, (message) => {
+      var mostRecentImage;
+      var mostRecentMessage;
 
-      if (message.imageURL) {
-        mostRecentImage = message.imageURL;
-      }
+      _.forEach(rowData.messages, (message) => {
 
-      if (message.message) {
-        mostRecentMessage = message.message;
-      }
+        if (message.imageURL) {
+          mostRecentImage = message.imageURL;
+        }
 
-    });
+        if (message.message) {
+          mostRecentMessage = message.message;
+        }
 
-    var user = rowData.chat.get('createdBy');
+      });
 
-    return (
-      <TouchableOpacity activeOpacity={0.8} onPress={() => this.onPressRow(rowData)}>
-        <View style={Styles.row}>
-          <View style={Styles.rowHeader}>
-            <Avatar
-              onPress={() => this.onAvatarPress(rowData)}
-              imageURL={user.attributes.image ? user.attributes.image.url() : null}
-            />
-            <View style={Styles.info}>
-              <View style={Styles.infoBar}>
-                <Text style={Styles.userName}>
-                  {user.attributes.name}
-                </Text>
-                <Text style={Styles.chatTitle}>
-                  {rowData.chat.attributes.name}
-                </Text>
-              </View>
-              <View style={Styles.counts}>
-                <Counter
-                  score={rowData.score}
-                />
+      var user = rowData.chat.get('createdBy');
+
+      return (
+        <TouchableOpacity activeOpacity={0.8} onPress={() => this.onPressRow(rowData)}>
+          <View style={Styles.row}>
+            <View style={Styles.rowHeader}>
+              <Avatar
+                onPress={() => this.onAvatarPress(rowData)}
+                imageURL={user.attributes.image ? user.attributes.image.url() : null}
+              />
+              <View style={Styles.info}>
+                <View style={Styles.infoBar}>
+                  <Text style={Styles.userName}>
+                    {user.attributes.name}
+                  </Text>
+                  <Text style={Styles.userHandle}>
+                    @{user.attributes.handle}
+                  </Text>
+                </View>
+                <View style={Styles.counts}>
+                  <Counter
+                    score={rowData.score}
+                  />
+                </View>
               </View>
             </View>
+            {mostRecentImage ? this.renderImage(mostRecentImage) : null}
+            {mostRecentMessage ? this.renderMessage(mostRecentMessage) : null}
+            <Timer
+              expiration={rowData.chat.attributes.expirationDate}
+              created={rowData.chat.createdAt}
+              color={defaultStyles.white}
+              width={defaultStyles.bodyWidth - 32}
+            />
           </View>
-          {mostRecentImage ? this.renderImage(mostRecentImage) : null}
-          {mostRecentMessage ? this.renderMessage(mostRecentMessage) : null}
-          <Timer
-            expiration={rowData.chat.attributes.expirationDate}
-            created={rowData.chat.createdAt}
-            color={defaultStyles.white}
-            width={defaultStyles.bodyWidth - 32}
-          />
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <View style={Styles.loadMore}>
+          <Text style={Styles.loadMoreText}>
+            Show More
+          </Text>
         </View>
-      </TouchableOpacity>
-    );
+      );
+    }
   },
   render: function() {
+    var messages = this.props.store.messages;
+
+    if (messages.length > 3) {
+      messages.push(0);
+    }
+
     return (
       <View style={Styles.container}>
         <ListView
-          dataSource={this.state.dataSource.cloneWithRows(this.props.store.messages)}
+          dataSource={this.state.dataSource.cloneWithRows(messages)}
           renderRow={this.renderChatRow}
           automaticallyAdjustContentInsets={false}
         />

@@ -30,7 +30,6 @@ if (Platform.OS === 'android') {
   Loading = require('../elements/loadingIOS');
 }
 
-
 var Styles = StyleSheet.create({
   body: {
     backgroundColor: defaultStyles.background,
@@ -47,8 +46,6 @@ module.exports = React.createClass({
     menuButton: React.PropTypes.object,
   },
   onCameraActionButtonPress: function (chat) {
-    console.log(chat);
-
     this.props.navigator.push({
       name: "add photo",
       component: AddPhoto,
@@ -63,7 +60,13 @@ module.exports = React.createClass({
 
     var chatId = this.props.route.chatId || _.get(this.props.store.newChat, 'objectId');
 
-    var data = _.find(this.props.store.messages, {'id' : chatId});
+    console.log(this.props.store);
+
+    var data = _.find(this.props.store.messages, {'id' : chatId}) || {
+      chat: null,
+      messages: [],
+      score: null,
+    };
 
     var chat = data.chat;
 
