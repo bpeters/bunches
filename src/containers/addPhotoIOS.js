@@ -47,17 +47,29 @@ var Styles = StyleSheet.create({
   },
   iconViewRight: {
     position:'absolute',
-    top: 20,
-    right: 20,
-    width: 30,
-    height: 30,
+    top: 16,
+    right: 16,
+    width: 56,
+    height: 56,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: defaultStyles.dark,
+    opacity: 0.8,
+    borderRadius: 28,
   },
   iconViewLeft: {
     position:'absolute',
-    top: 20,
-    left: 20,
-    width: 30,
-    height: 30,
+    top: 16,
+    left: 16,
+    width: 56,
+    height: 56,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: defaultStyles.dark,
+    opacity: 0.8,
+    borderRadius: 28,
   },
   preview: {
     width: defaultStyles.bodyWidth,
@@ -125,11 +137,10 @@ module.exports = React.createClass({
   onPreviewClose: function(){
     this.setState({
       photo: '',
-      message: '',
       preview: false
     });
   },
-  onComplete: function () {
+  onNewChat: function () {
     var Chat = require('./chat');
 
     this.props.actions.createChat(this.state.message, this.state.message, this.state.photo);
@@ -142,24 +153,16 @@ module.exports = React.createClass({
       component: Chat,
       hasSideMenu: true,
       newChat: {
-        name: this.state.message,
+        name: null,
         expirationDate: expirationDate,
         createdAt: Date.now(),
-        message: this.state.message,
         photo: 'data:image/jpeg;base64,' + this.state.photo,
       },
     });
   },
-  renderComplete: function () {
-    return (
-      <View style={Styles.iconViewRight}>
-        <IconButton
-          onPress={this.onComplete}
-          icon='material|check'
-          size={30}
-        />
-      </View>
-    );
+  onNewMessage: function () {
+    this.props.actions.createImageMessage(this.props.route.chat, this.state.photo);
+    this.props.navigator.pop();
   },
   renderPreview: function () {
     return (
@@ -170,18 +173,6 @@ module.exports = React.createClass({
           }}
           style={Styles.preview}
         />
-        <View style={Styles.field}>
-          <Text style={Styles.title}>
-            Add A Title
-          </Text>
-          <View style={Styles.inputWrap}>
-            <TextInput
-              style={Styles.input}
-              onChangeText={(message) => this.setState({message})}
-              value={this.state.message}
-            />
-          </View>
-        </View>
         <View style={Styles.iconViewLeft}>
           <IconButton
             onPress={this.onPreviewClose}
@@ -189,7 +180,13 @@ module.exports = React.createClass({
             size={30}
           />
         </View>
-        {this.state.message ? this.renderComplete() : null}
+        <View style={Styles.iconViewRight}>
+          <IconButton
+            onPress={this.props.route.chat ? this.onNewMessage : this.onNewChat}
+            icon='material|check'
+            size={30}
+          />
+        </View>
       </View>
     );
   },

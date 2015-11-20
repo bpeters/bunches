@@ -34,6 +34,7 @@ if (Platform.OS === 'android') {
 var Styles = StyleSheet.create({
   body: {
     backgroundColor: defaultStyles.background,
+    height: defaultStyles.bodyHeight,
   },
 });
 
@@ -45,12 +46,14 @@ module.exports = React.createClass({
     actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
-  onCameraActionButtonPress: function () {
+  onCameraActionButtonPress: function (chat) {
+    console.log(chat);
+
     this.props.navigator.push({
       name: "add photo",
       component: AddPhoto,
       hasSideMenu: false,
-      bunch: this.props.store.bunch,
+      chat: chat,
     });
   },
   onBackPress: function () {
@@ -89,7 +92,9 @@ module.exports = React.createClass({
           user={this.props.store.user}
           chat={chat}
           createMessage={this.props.actions.createMessage}
-          onPress={this.onCameraActionButtonPress}
+          onPress={() => {
+            this.onCameraActionButtonPress(chat)}
+          }
           height={0}
         >
           <ChatContainer

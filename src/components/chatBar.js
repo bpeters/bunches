@@ -25,9 +25,6 @@ var Styles = StyleSheet.create({
     flexDirection: 'row',
     height: defaultStyles.chatBarHeight,
     backgroundColor: defaultStyles.blue,
-    borderTopWidth:1,
-    borderColor: defaultStyles.blue,
-    shadowColor: defaultStyles.dark,
     shadowOpacity: 0.5,
     shadowRadius: 2,
     shadowOffset: {
@@ -35,20 +32,33 @@ var Styles = StyleSheet.create({
       height: -1
     },
   },
+  wrap: {
+    flexDirection: 'row',
+    left: 6,
+    top: 6,
+    width: defaultStyles.bodyWidth - 12,
+    height: defaultStyles.chatBarHeight - 12,
+    borderColor: defaultStyles.blue,
+    borderWidth: 1,
+    borderRadius: 2,
+    backgroundColor: defaultStyles.blue,
+  },
   input : {
     alignItems: 'flex-start',
     fontFamily: 'Roboto-Light',
     color: defaultStyles.dark,
     paddingLeft: 12,
-    width: defaultStyles.bodyWidth - 12 - 36,
+    width: defaultStyles.bodyWidth - 12 - 56,
     height: defaultStyles.chatBarHeight - 12 - 2,
     borderBottomWidth: 0,
     borderWidth: 0,
     backgroundColor: defaultStyles.white,
   },
   iconView : {
+    paddingTop: 4,
+    paddingLeft: 8,
     flex: 1,
-    alignItems: 'center',    
+    alignItems: 'center',
     alignSelf:'flex-start',
   },
 });
@@ -105,27 +115,29 @@ module.exports = React.createClass({
       >
         {this.props.children}
         <View ref='chat' style={Styles.body}>
-          <TextInput
-            style={Styles.input}
-            onChangeText={(message) => this.setState({message})}
-            onSubmitEditing={() => {
-              if (_.trim(this.state.message)) {
-                this.addChatMessage();
-              }
-            }}
-            value={this.state.message}
-            onFocus={this.inputFocused.bind(this, 'chat')}
-            onBlur={this.inputBlured.bind(this, 'chat')}
-            underlineColorAndroid={defaultStyles.light}
-            clearButtonMode='while-editing'
-            returnKeyType='send'
-          />
-          <View style={Styles.iconView}>
-            <IconButton
-              onPress={this.props.onPress}
-              icon='material|camera'
-              size={36}
+          <View style={Styles.wrap}>
+            <TextInput
+              style={Styles.input}
+              onChangeText={(message) => this.setState({message})}
+              onSubmitEditing={() => {
+                if (_.trim(this.state.message)) {
+                  this.addChatMessage();
+                }
+              }}
+              value={this.state.message}
+              onFocus={this.inputFocused.bind(this, 'chat')}
+              onBlur={this.inputBlured.bind(this, 'chat')}
+              underlineColorAndroid={defaultStyles.light}
+              clearButtonMode='while-editing'
+              returnKeyType='send'
             />
+            <View style={Styles.iconView}>
+              <IconButton
+                onPress={this.props.onPress}
+                icon='material|camera'
+                size={36}
+              />
+            </View>
           </View>
         </View>
       </ScrollView>

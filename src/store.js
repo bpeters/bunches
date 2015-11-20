@@ -186,6 +186,13 @@ module.exports = {
         });
     });
   },
+  uploadImage: function (photo) {
+    var photo64 = new Parse.File('image.jpeg', { base64: photo});
+
+    return photo64.save().then((image) => {
+      return image;
+    });
+  },
   createChat: function (title, message, photo) {
     var bunch = this.store.bunch;
     var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
@@ -205,13 +212,13 @@ module.exports = {
       });
 
       if (photo) {
-        var photo64 = new Parse.File('image.jpeg', { base64: photo});
-        photo64.save().then((image) => {
-          this.createMessage(chat, {
-            image: image,
-            message: message,
+        this.uploadImage(photo)
+          .then((image) => {
+            this.createMessage(chat, {
+              image: image,
+              message: message,
+            });
           });
-        });
       } else {
         this.createMessage(chat, {
           message: message
@@ -220,7 +227,19 @@ module.exports = {
 
     });
   },
+  createImageMessage: function (chat, photo) {
+    console.log(chat);
+
+    this.uploadImage(photo)
+      .then((image) => {
+        this.createMessage(chat, {
+          image: image,
+        });
+      });
+  },
   createMessage: function (chat, options) {
+    console.log(chat, options);
+
     var bunch = this.store.bunch;
     var url = config.firebase.url + '/bunch/' + bunch.id + '/chat/' + (chat.objectId || chat.id);
     var messenger = new Firebase(url);
@@ -238,12 +257,12 @@ module.exports = {
       this.refreshUserChats();
 
       messenger.push({
-        uid: user.id,
+        uid: user.objectId || user.id,
         name: user.name,
         username: user.username,
         userImageURL: user.image ? user.image.url() : null,
         imageURL: options.image ? options.image.url() : null,
-        message: options.message,
+        message: options.message || 'Added Photo',
         time: new Date().getTime(),
       });
 

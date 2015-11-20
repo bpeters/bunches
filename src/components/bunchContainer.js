@@ -23,7 +23,7 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight - 13,
+    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
     paddingTop: defaultStyles.navBarHeight,
     paddingBottom: 16,
   },
@@ -121,7 +121,6 @@ module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     store: React.PropTypes.object,
-    showBar: React.PropTypes.bool,
   },
   getInitialState: function() {
     return {
@@ -194,7 +193,7 @@ module.exports = React.createClass({
     var user = rowData.chat.get('createdBy');
 
     return (
-      <TouchableOpacity onPress={() => this.onPressRow(rowData)}>
+      <TouchableOpacity activeOpacity={0.8} onPress={() => this.onPressRow(rowData)}>
         <View style={Styles.row}>
           <View style={Styles.rowHeader}>
             <Avatar

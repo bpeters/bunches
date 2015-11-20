@@ -24,10 +24,16 @@ var Styles = StyleSheet.create({
   },
   iconView: {
     position:'absolute',
-    top: 20,
-    left: 20,
-    width: 30,
-    height: 30, 
+    top: 16,
+    left: 16,
+    width: 56,
+    height: 56,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: defaultStyles.dark,
+    opacity: 0.8,
+    borderRadius: 28,
   },
 });
 

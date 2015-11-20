@@ -33,6 +33,7 @@ module.exports= React.createClass({
     var actions = {
       createMessage: this.createMessage,
       createChat: this.createChat,
+      createImageMessage: this.createImageMessage,
       logoutUser: this.logoutUser,
       loginUser: this.loginUser,
       createUser: this.createUser,
