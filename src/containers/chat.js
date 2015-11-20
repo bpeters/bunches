@@ -60,8 +60,6 @@ module.exports = React.createClass({
 
     var chatId = this.props.route.chatId || _.get(this.props.store.newChat, 'objectId');
 
-    console.log(this.props.store);
-
     var data = _.find(this.props.store.messages, {'id' : chatId}) || {
       chat: null,
       messages: [],

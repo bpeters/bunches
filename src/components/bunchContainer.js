@@ -181,82 +181,75 @@ module.exports = React.createClass({
   },
   renderChatRow: function(rowData) {
 
-    if (rowData.chat) {
+    var mostRecentImage;
+    var mostRecentMessage;
 
-      var mostRecentImage;
-      var mostRecentMessage;
+    _.forEach(rowData.messages, (message) => {
 
-      _.forEach(rowData.messages, (message) => {
+      if (message.imageURL) {
+        mostRecentImage = message.imageURL;
+      }
 
-        if (message.imageURL) {
-          mostRecentImage = message.imageURL;
-        }
+      if (message.message) {
+        mostRecentMessage = message.message;
+      }
 
-        if (message.message) {
-          mostRecentMessage = message.message;
-        }
+    });
 
-      });
+    var user = rowData.chat.get('createdBy');
 
-      var user = rowData.chat.get('createdBy');
-
-      return (
-        <TouchableOpacity activeOpacity={0.8} onPress={() => this.onPressRow(rowData)}>
-          <View style={Styles.row}>
-            <View style={Styles.rowHeader}>
-              <Avatar
-                onPress={() => this.onAvatarPress(rowData)}
-                imageURL={user.attributes.image ? user.attributes.image.url() : null}
-              />
-              <View style={Styles.info}>
-                <View style={Styles.infoBar}>
-                  <Text style={Styles.userName}>
-                    {user.attributes.name}
-                  </Text>
-                  <Text style={Styles.userHandle}>
-                    @{user.attributes.handle}
-                  </Text>
-                </View>
-                <View style={Styles.counts}>
-                  <Counter
-                    score={rowData.score}
-                  />
-                </View>
+    return (
+      <TouchableOpacity activeOpacity={0.8} onPress={() => this.onPressRow(rowData)}>
+        <View style={Styles.row}>
+          <View style={Styles.rowHeader}>
+            <Avatar
+              onPress={() => this.onAvatarPress(rowData)}
+              imageURL={user.attributes.image ? user.attributes.image.url() : null}
+            />
+            <View style={Styles.info}>
+              <View style={Styles.infoBar}>
+                <Text style={Styles.userName}>
+                  {user.attributes.name}
+                </Text>
+                <Text style={Styles.userHandle}>
+                  @{user.attributes.handle}
+                </Text>
+              </View>
+              <View style={Styles.counts}>
+                <Counter
+                  score={rowData.score}
+                />
               </View>
             </View>
-            {mostRecentImage ? this.renderImage(mostRecentImage) : null}
-            {mostRecentMessage ? this.renderMessage(mostRecentMessage) : null}
-            <Timer
-              expiration={rowData.chat.attributes.expirationDate}
-              created={rowData.chat.createdAt}
-              color={defaultStyles.white}
-              width={defaultStyles.bodyWidth - 32}
-            />
           </View>
-        </TouchableOpacity>
-      );
-    } else {
-      return (
-        <View style={Styles.loadMore}>
-          <Text style={Styles.loadMoreText}>
-            Show More
-          </Text>
+          {mostRecentImage ? this.renderImage(mostRecentImage) : null}
+          {mostRecentMessage ? this.renderMessage(mostRecentMessage) : null}
+          <Timer
+            expiration={rowData.chat.attributes.expirationDate}
+            created={rowData.chat.createdAt}
+            color={defaultStyles.white}
+            width={defaultStyles.bodyWidth - 32}
+          />
         </View>
-      );
-    }
+      </TouchableOpacity>
+    );
+  },
+  renderChatFooter: function () {
+    return (
+      <View style={Styles.loadMore}>
+
+      </View>
+    );
   },
   render: function() {
     var messages = this.props.store.messages;
-
-    if (messages.length > 3) {
-      messages.push(0);
-    }
 
     return (
       <View style={Styles.container}>
         <ListView
           dataSource={this.state.dataSource.cloneWithRows(messages)}
           renderRow={this.renderChatRow}
+          renderFooter={this.renderChatFooter}
           automaticallyAdjustContentInsets={false}
         />
         {this.props.children}
