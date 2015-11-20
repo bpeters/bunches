@@ -40,6 +40,7 @@ module.exports= React.createClass({
       clearErrors: this.clearErrors,
       updateUser: this.updateUser,
       clearSuccess: this.clearSuccess,
+      getProfileChats: this.getProfileChats,
     };
 
     if (route.hasSideMenu) {

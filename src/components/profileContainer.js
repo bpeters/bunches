@@ -9,7 +9,6 @@ var PopImage = require('../elements/popImage');
 var EnlargePhoto = require('../containers/enlargePhoto');
 var Timer = require('../elements/timer');
 var Counter = require('../elements/counter');
-var Profile = require('../containers/profile');
 
 var defaultStyles = require('../styles');
 
@@ -24,11 +23,6 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height: defaultStyles.bodyHeight,
-    paddingTop: defaultStyles.navBarHeight,
-    paddingBottom: 16,
-  },
-  containerWithBar: {
     height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
     paddingBottom: 16,
   },
@@ -127,7 +121,7 @@ module.exports = React.createClass({
     navigator: React.PropTypes.object,
     store: React.PropTypes.object,
     showBar: React.PropTypes.bool,
-    getProfileChats: React.PropTypes.func,
+    chats: React.PropTypes.object,
   },
   getInitialState: function() {
     return {
@@ -146,13 +140,6 @@ module.exports = React.createClass({
   },
   onAvatarPress: function (rowData) {
 
-    this.props.getProfileChats(rowData.id);
-
-    this.props.navigator.push({
-      name: 'profile',
-      component: Profile,
-      hasSideMenu: true,
-    });
   },
   onPressImage: function (imageURL) {
     this.props.navigator.push({
@@ -182,6 +169,7 @@ module.exports = React.createClass({
     );
   },
   renderChatRow: function(rowData) {
+    console.log(rowData);
 
     var mostRecentImage;
     var mostRecentMessage;
@@ -237,10 +225,11 @@ module.exports = React.createClass({
     );
   },
   render: function() {
+    console.log(this.props.chats);
     return (
-      <View style={this.props.showBar ? Styles.containerWithBar : Styles.container}>
+      <View style={Styles.container}>
         <ListView
-          dataSource={this.state.dataSource.cloneWithRows(this.props.store.messages)}
+          dataSource={this.state.dataSource.cloneWithRows(this.props.chats)}
           renderRow={this.renderChatRow}
           automaticallyAdjustContentInsets={false}
         />

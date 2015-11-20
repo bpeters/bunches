@@ -125,6 +125,7 @@ module.exports = React.createClass({
             navigator={this.props.navigator}
             store={this.props.store}
             showBar={this.state.showActions}
+            getProfileChats={this.props.actions.getProfileChats}
           >
             <NavBar
               title={title}

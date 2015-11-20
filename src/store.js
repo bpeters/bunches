@@ -43,6 +43,7 @@ module.exports = {
     error: null,
     loading: false,
     success: false,
+    profileMessages: [],
   },
   initStore: function (user) {
     if (user) {
@@ -80,6 +81,7 @@ module.exports = {
       error: null,
       loading: false,
       success: false,
+      profileMessages: [],
     };
 
     this.setState(this.store);
@@ -395,6 +397,18 @@ module.exports = {
       success: this.store.success
     });
   },
+  getProfileChats: function(id){
+    this.queryChatsByUserId(id)
+      .then((chats)=>{
+        var chatIds = _.pluck(chats,'objectId');
+        var messages = _.filter(this.store.messages,(message)=>{
+          return _.indexOf(chatIds,message.chat.objectId) >= 0;
+        });
+        this.store.profileMessages = messages;
+        console.log(messages);
+        this.setState({profileMessages:this.store.profileMessages});
+      })
+  },
   queryUser: function (user) {
     var query = new Parse.Query('User');
     query.equalTo('id', user.id);
@@ -424,6 +438,14 @@ module.exports = {
   queryUserChats: function (chat) {
     var query = (new Parse.Query('Chat2User'))
       .equalTo('user', this.store.user)
+      .include('user')
+      .include('chat')
+
+    return query.find();
+  },
+  queryChatsByUserId: function (id) {
+    var query = (new Parse.Query('Chat'))
+      .equalTo('createdBy', id)
       .include('user')
       .include('chat')
 

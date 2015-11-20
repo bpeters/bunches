@@ -157,17 +157,17 @@ module.exports = React.createClass({
     );
   },
   render: function() {
-
-    if (_.get(this.state.error, 'message')) {
-      AlertIOS.alert(
-        'Failed to Create Account',
-        _.get(this.state.error, 'message'),
-        [
-          {text: 'Try Again', onPress: () => this.setState({error: null})},
-        ]
-      );
+    if(Platform.OS === 'ios'){
+      if (_.get(this.state.error, 'message')) {
+        AlertIOS.alert(
+          'Failed to Create Account',
+          _.get(this.state.error, 'message'),
+          [
+            {text: 'Try Again', onPress: () => this.setState({error: null})},
+          ]
+        );
+      }
     }
-
     return (
       <View style={Styles.view}>
         <ScrollView
