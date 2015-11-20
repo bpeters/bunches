@@ -1,6 +1,8 @@
 'use strict';
 
 var React = require('react-native');
+var moment = require('moment');
+
 var {
   StyleSheet,
   Text,
@@ -9,20 +11,18 @@ var {
   TouchableOpacity,
   TouchableHighlight,
   CameraRoll,
-  TextInput,
+  TextInput
 } = React;
 
-var {
-  Icon,
-} = require('react-native-icons');
-
 var Camera = require('react-native-camera');
+
+var IconButton = require('../elements/iconButton');
 
 var defaultStyles = require('../styles');
 
 var Styles = StyleSheet.create({
   overall: {
-    flex:1,
+    flex: 1,
   },
   container: {
     flex: 1,
@@ -41,127 +41,109 @@ var Styles = StyleSheet.create({
   },
   capture: {
     position: 'absolute',
-    left: defaultStyles.bodyWidth/2 - 40,
-    bottom: 0, 
+    left: defaultStyles.bodyWidth / 2 - 40,
+    bottom: 30, 
   },
   captureButton: {
     height: 90,
     width: 90,
     borderRadius: 90,
     borderWidth: 5,
-    marginBottom: 30,
     borderColor: defaultStyles.white,
     backgroundColor: defaultStyles.red,
     opacity: 0.7,
   },
-  iconView: {
+  iconViewRight: {
     position:'absolute',
-    top: 20,
-    right: 20,
-    width: 30,
-    height: 30,
-  },
-  iconViewSwitch: {
-    position:'absolute',
-    top: 20,
-    left: 20,
-    width: 30,
-    height: 30,
-  },
-
-  icon: {
-    width: 30,
-    height: 30,
-  },
-
-
-
-  preview: {
-    width: defaultStyles.window.width,
-    height: defaultStyles.window.height,
-  },
-
-  title: {
-    position:'absolute',
-    top: 100,
-    left: 19,
-    height:60,
-    flex:1,
-    flexDirection:'column',
+    top: 16,
+    right: 16,
+    width: 56,
+    height: 56,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: defaultStyles.dark,
-    opacity: 0.5,
+    opacity: 0.8,
+    borderRadius: 28,
   },
-  label: {
-    fontSize: 16,
-    color: defaultStyles.light,
+  iconViewLeft: {
+    position:'absolute',
+    top: 16,
+    left: 16,
+    width: 56,
+    height: 56,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: defaultStyles.dark,
+    opacity: 0.8,
+    borderRadius: 28,
   },
-
-  input : {
-    fontFamily: 'Roboto-Light',
-    color: defaultStyles.light,
-    height: 36,
-    width: defaultStyles.bodyWidth - 38,
-    borderBottomWidth: 0,
-    borderWidth: 0,
+  preview: {
+    width: defaultStyles.bodyWidth,
+    height: defaultStyles.bodyHeight,
+    backgroundColor: defaultStyles.dark,
   },
-
-
-
 });
 
 module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
+    store: React.PropTypes.object,
+    actions: React.PropTypes.object,
+    user: React.PropTypes.object,
   },
   getInitialState: function() {
     return {
-      cameraType: Camera.constants.Type.front,
-      photo: '',
+      cameraType: Camera.constants.Type.back,
       preview: false,
-      message: '',
-    };   
+      photo: '',
+    };
   },
-  onPressClose: function() {
+  onPressClose: function () {
     this.props.navigator.pop();
   },
-
-  onCameraSwitch: function(){   
+  onCameraPress: function () {
+    this.refs.cam.capture((image) => {
+      this.setState({photo:image,preview:true});
+    });
+  },
+  onCameraSwitch: function() {
     var state = this.state;
     state.cameraType = state.cameraType === Camera.constants.Type.back
       ? Camera.constants.Type.front : Camera.constants.Type.back;
     this.setState(state);
   },
-
-
-  onVideoRecord: function(){
-    this.refs.cam.captureVideo((image) => {
-      console.log(image);
-      // this.props.route.onPhotoChange(image);
-    });
-  },
-
-
-
-
-  onCameraPress: function(){
-    this.refs.cam.capture((image) => {
-      this.setState({photo:image,preview:true});
-    });
-  },
-
-
   onPreviewClose: function(){
-    this.setState({photo:'',preview:false});
+    this.setState({
+      photo: '',
+      message: '',
+      preview: false
+    });
   },
-  
+  onComplete: function () {
+    var Chat = require('./chat');
 
-  test: function(){
-    console.log('yippee');
+    this.props.actions.createChat(this.state.message, this.state.message, this.state.photo);
+
+    var bunch = this.props.store.bunch;
+    var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
+
+    this.props.navigator.replace({
+      name: 'chat',
+      component: Chat,
+      hasSideMenu: true,
+      newChat: {
+        name: this.state.message,
+        expirationDate: expirationDate,
+        createdAt: Date.now(),
+        message: this.state.message,
+        photo: 'data:image/jpeg;base64,' + this.state.photo,
+      },
+    });
   },
-
-
-  renderPreview: function(){
+  renderPreview: function () {
     return (
       <View style={Styles.container}>
         <Image
@@ -170,97 +152,57 @@ module.exports = React.createClass({
           }}
           style={Styles.preview}
         />
-
-        <View style={Styles.title}>
-          <Text style={Styles.label}>
-            Title
-          </Text>
-          <TextInput
-            style={Styles.input}
-            onChangeText={(message) => this.setState({message})}
-            value={this.state.message}
-            onSubmitEditing={this.test}
-            blurOnSubmit={false}
-            enablesReturnKeyAutomatically={true}
-            underlineColorAndroid={defaultStyles.light}
+        <View style={Styles.iconViewLeft}>
+          <IconButton
+            onPress={this.onPreviewClose}
+            icon='material|close'
+            size={30}
           />
-
         </View>
-
-
-
-
-        <View style={Styles.iconViewSwitch}>
-          <TouchableOpacity onPress={this.onPreviewClose}>
-            <Icon
-              name='material|close'
-              size={30}
-              color='#ffffff'
-              style={Styles.icon}
-            />
-          </TouchableOpacity>  
+        <View style={Styles.iconViewRight}>
+          <IconButton
+            onPress={this.onComplete}
+            icon='material|check'
+            size={30}
+          />
         </View>
-        <View style={Styles.iconView}>
-          <TouchableOpacity onPress={this.onPressClose}>
-            <Icon
-              name='material|check'
-              size={30}
-              color='#ffffff'
-              style={Styles.icon}
-            />
-          </TouchableOpacity>  
-        </View>
-      </View>
-    )
-  },
-
-
-
-  renderCamera: function() {
-    return (
-      <View style={Styles.container}>
-        <Camera 
-          style={Styles.camera} 
-          ref="cam"
-          type={this.state.cameraType}
-          captureTarget={Camera.constants.CaptureTarget.memory}
-        >
-        </Camera>
-        <TouchableOpacity 
-          style={Styles.capture}
-          onPress={this.onCameraPress} 
-          >
-          <View style={Styles.captureButton} />
-        </TouchableOpacity>
-        <View style={Styles.iconViewSwitch}>
-          <TouchableOpacity onPress={this.onCameraSwitch}>
-            <Icon
-              name='material|camera-switch'
-              size={30}
-              color='#ffffff'
-              style={Styles.icon}
-            />
-          </TouchableOpacity>  
-        </View>
-        <View style={Styles.iconView}>
-          <TouchableOpacity onPress={this.onPressClose}>
-            <Icon
-              name='material|close'
-              size={30}
-              color='#ffffff'
-              style={Styles.icon}
-            />
-          </TouchableOpacity>  
-        </View>     
       </View>
     );
   },
-
-  render: function(){
+  renderCamera: function() {
     return (
-      <View style={Styles.overall}>             
-        {this.state.preview ? this.renderPreview() : this.renderCamera()}        
+      <View style={Styles.container}>
+      <Camera 
+        style={Styles.camera}
+        ref='cam'
+        type={this.state.cameraType}
+        captureTarget={Camera.constants.CaptureTarget.memory}
+      ></Camera>
+        <TouchableOpacity style={Styles.capture} onPress={this.onCameraPress} >
+          <View style={Styles.captureButton} />
+        </TouchableOpacity>
+        <View style={Styles.iconViewLeft}>
+          <IconButton
+            onPress={this.props.onPressClose}
+            icon='material|close'
+            size={30}
+          />
+        </View>
+        <View style={Styles.iconViewRight}>
+          <IconButton
+            onPress={this.onCameraSwitch}
+            icon='material|camera-switch'
+            size={30}
+          />
+        </View>
       </View>
-    )
+    );
+  },
+  render: function() {
+    return (
+      <View style={Styles.overall}>
+        {this.state.preview ? this.renderPreview() : this.renderCamera()}
+      </View>
+    );
   }
 });

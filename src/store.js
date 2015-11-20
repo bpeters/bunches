@@ -212,6 +212,13 @@ module.exports = {
         });
     });
   },
+  uploadImage: function (photo) {
+    var photo64 = new Parse.File('image.jpeg', { base64: photo});
+
+    return photo64.save().then((image) => {
+      return image;
+    });
+  },
   createChat: function (title, message, photo) {
     var bunch = this.store.bunch;
     var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
@@ -231,13 +238,13 @@ module.exports = {
       });
 
       if (photo) {
-        var photo64 = new Parse.File('image.jpeg', { base64: photo});
-        photo64.save().then((image) => {
-          this.createMessage(chat, {
-            image: image,
-            message: message,
+        this.uploadImage(photo)
+          .then((image) => {
+            this.createMessage(chat, {
+              image: image,
+              message: message,
+            });
           });
-        });
       } else {
         this.createMessage(chat, {
           message: message
@@ -245,6 +252,14 @@ module.exports = {
       }
 
     });
+  },
+  createImageMessage: function (chat, photo) {
+    this.uploadImage(photo)
+      .then((image) => {
+        this.createMessage(chat, {
+          image: image,
+        });
+      });
   },
   createMessage: function (chat, options) {
     var bunch = this.store.bunch;
@@ -264,12 +279,12 @@ module.exports = {
       this.refreshUserChats();
 
       messenger.push({
-        uid: user.id,
+        uid: user.objectId || user.id,
         name: user.name,
         username: user.username,
         userImageURL: user.image ? user.image.url() : null,
         imageURL: options.image ? options.image.url() : null,
-        message: options.message,
+        message: options.message || 'Added Photo',
         time: new Date().getTime(),
       });
 
@@ -371,13 +386,12 @@ module.exports = {
       loading: true,
     });
 
-    var changes = {};
-
-    changes[field] = value;
-
-    ParseReact.Mutation.Set(this.state.user, changes)
+    var setUser = (changes) => {
+      ParseReact.Mutation.Set(this.state.user, changes)
       .dispatch()
       .then((user) => {
+        console.log(user);
+
         this.store.user = user;
         this.setState({
           user: this.store.user,
@@ -387,6 +401,23 @@ module.exports = {
       }, (err) => {
         this.handleParseError(err);
       });
+    };
+
+    var changes = {};
+
+    if (field === 'image') {
+
+      this.uploadImage(value)
+        .then((image) => {
+          changes[field] = image;
+
+          setUser(changes);
+        });
+
+    } else {
+      changes[field] = value;
+      setUser(changes);
+    }
   },
   clearSuccess: function () {
     this.store.success = false;

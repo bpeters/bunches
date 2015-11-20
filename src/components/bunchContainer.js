@@ -23,12 +23,8 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height: defaultStyles.bodyHeight,
-    paddingTop: defaultStyles.navBarHeight,
-    paddingBottom: 16,
-  },
-  containerWithBar: {
     height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
+    paddingTop: defaultStyles.navBarHeight,
     paddingBottom: 16,
   },
   row: {
@@ -125,7 +121,6 @@ module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     store: React.PropTypes.object,
-    showBar: React.PropTypes.bool,
   },
   getInitialState: function() {
     return {
@@ -192,7 +187,7 @@ module.exports = React.createClass({
     var user = rowData.chat.get('createdBy');
 
     return (
-      <TouchableOpacity onPress={() => this.onPressRow(rowData)}>
+      <TouchableOpacity activeOpacity={0.8} onPress={() => this.onPressRow(rowData)}>
         <View style={Styles.row}>
           <View style={Styles.rowHeader}>
             <Avatar
@@ -229,7 +224,7 @@ module.exports = React.createClass({
   },
   render: function() {
     return (
-      <View style={this.props.showBar ? Styles.containerWithBar : Styles.container}>
+      <View style={Styles.container}>
         <ListView
           dataSource={this.state.dataSource.cloneWithRows(this.props.store.messages)}
           renderRow={this.renderChatRow}

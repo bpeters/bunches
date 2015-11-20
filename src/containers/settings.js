@@ -28,10 +28,10 @@ var AddPhoto;
 var Loading;
 
 if (Platform.OS === 'android') {
-  AddPhoto = require('./addPhotoAndroid');
+  AddPhoto = require('./settingsPhotoAndroid');
   Loading = require('../elements/loadingAndroid');
 } else {
-  AddPhoto = require('./addPhotoIOS');
+  AddPhoto = require('./settingsPhotoIOS');
   Loading = require('../elements/loadingIOS');
 }
 
@@ -83,13 +83,19 @@ var Styles = StyleSheet.create({
     marginLeft:16,
   },
   infoLabel: {
-    marginBottom: 16,
+    marginTop: 16,
+    fontFamily: 'Roboto-Regular',
+    fontSize: 18,
+    color: defaultStyles.medium,
+  },
+  labelName: {
+    color: defaultStyles.dark,
     fontFamily: 'Roboto-Bold',
-    fontSize: 24,
   },
   body: {
     width: 80,
     height: 80,
+    borderRadius: 40,
     backgroundColor: defaultStyles.medium,
   },
   icon: {
@@ -101,8 +107,9 @@ var Styles = StyleSheet.create({
   image: {
     height: 80,
     width: 80,
-    borderRadius: 80,
+    borderRadius: 40,
     justifyContent: 'center',
+    backgroundColor: 'transparent',
   },
 });
 
@@ -118,9 +125,13 @@ module.exports = React.createClass({
     return {
       username: null,
       password: null,
-      image: this.props.store.user.image,
+      image: null,
       error: this.props.store.error,
     }
+  },
+  onPhotoChange: function(image) {
+    this.setState({image});
+    this.props.navigator.pop();
   },
   onCamera: function(){
     this.props.navigator.push({
@@ -128,6 +139,7 @@ module.exports = React.createClass({
       component: AddPhoto,
       hasSideMenu: false,
       bunch: this.props.store.bunch,
+      onPhotoChange: this.onPhotoChange,
     });
   },
   onUpdateAccount: function () {
@@ -173,6 +185,14 @@ module.exports = React.createClass({
         });
       }
     }
+
+    if (this.state.image) {
+      this.props.actions.updateUser('image', this.state.image);
+      this.setState({
+        image: null,
+      });
+    }
+
   },
   renderIcon: function() {
     return (
@@ -185,10 +205,12 @@ module.exports = React.createClass({
     );
   },
   renderImage: function() {
+    var image = this.props.store.user.image ? this.props.store.user.image.url() : null;
+
     return (
       <Image
         style={Styles.image}
-        source={{uri: this.props.store.user.image}}
+        source={{uri: this.state.image || image}}
       />
     )
   },
@@ -204,9 +226,6 @@ module.exports = React.createClass({
     );
   },
   render: function() {
-
-    console.log(this.props.store, this.state);
-
     if (_.get(this.state.error, 'message')) {
       AlertIOS.alert(
         'Failed to Update Account',
@@ -221,7 +240,6 @@ module.exports = React.createClass({
 
     return (
       <View style={Styles.view}>
-
         <NavBar
           title='Account'
           menuButton={this.props.menuButton}
@@ -230,11 +248,11 @@ module.exports = React.createClass({
           <View style={Styles.static}>
             <TouchableOpacity onPress={this.onCamera}>
               <View style={Styles.body}>
-                {user.image ? this.renderImage() : this.renderIcon()}
+                {this.props.store.user.image ? this.renderImage() : this.renderIcon()}
               </View>
             </TouchableOpacity>
             <View style={Styles.info}>
-              <Text style={Styles.infoLabel}>
+              <Text style={[Styles.infoLabel, Styles.labelName]}>
                 {user.name}
               </Text>
               <Text style={Styles.infoLabel}>
