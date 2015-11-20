@@ -254,8 +254,6 @@ module.exports = {
     });
   },
   createImageMessage: function (chat, photo) {
-    console.log(chat);
-
     this.uploadImage(photo)
       .then((image) => {
         this.createMessage(chat, {
@@ -264,8 +262,6 @@ module.exports = {
       });
   },
   createMessage: function (chat, options) {
-    console.log(chat, options);
-
     var bunch = this.store.bunch;
     var url = config.firebase.url + '/bunch/' + bunch.id + '/chat/' + (chat.objectId || chat.id);
     var messenger = new Firebase(url);
@@ -390,11 +386,12 @@ module.exports = {
       loading: true,
     });
 
-
     var setUser = (changes) => {
       ParseReact.Mutation.Set(this.state.user, changes)
       .dispatch()
       .then((user) => {
+        console.log(user);
+
         this.store.user = user;
         this.setState({
           user: this.store.user,
@@ -404,86 +401,23 @@ module.exports = {
       }, (err) => {
         this.handleParseError(err);
       });
-    }
+    };
 
     var changes = {};
 
-    changes[field] = value;
+    if (field === 'image') {
 
+      this.uploadImage(value)
+        .then((image) => {
+          changes[field] = image;
 
-    if (field == "image") {
-      var photo64 = new Parse.File('image.jpeg', { base64: value});
-      photo64.save().then((image) => {
-
-      // console.log(image);
-
-        changes['image'] = image;
-        // console.log(changes);
-        ParseReact.Mutation.Set(this.state.user, changes)
-        .dispatch()
-        .then((user) => {
-          console.log(user);
-          this.store.user = user;
-          this.setState({
-            user: this.store.user,
-            loading: false,
-            success: true,
-          });
-        }, (err) => {
-          this.handleParseError(err);
+          setUser(changes);
         });
 
-
-
-
-        //setUser(changes);
-      });
-    } else {     
-
-      ParseReact.Mutation.Set(this.state.user, changes)
-      .dispatch()
-      .then((user) => {
-        this.store.user = user;
-        this.setState({
-          user: this.store.user,
-          loading: false,
-          success: true,
-        });
-      }, (err) => {
-        this.handleParseError(err);
-      });
-
-
-
-      //setUser(changes);
+    } else {
+      changes[field] = value;
+      setUser(changes);
     }
-        
-
-
-
-      
-
-
-
-
-
-    ParseReact.Mutation.Set(this.state.user, changes)
-      .dispatch()
-      .then((user) => {
-        this.store.user = user;
-        this.setState({
-          user: this.store.user,
-          loading: false,
-          success: true,
-        });
-      }, (err) => {
-        this.handleParseError(err);
-      });
-
-
-
-
-
   },
   clearSuccess: function () {
     this.store.success = false;

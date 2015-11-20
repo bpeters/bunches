@@ -34,7 +34,7 @@ var Styles = StyleSheet.create({
   capture: {
     position: 'absolute',
     left: defaultStyles.bodyWidth / 2 - 40,
-    bottom: 30, 
+    bottom: 30,
   },
   captureButton: {
     height: 90,
@@ -47,44 +47,34 @@ var Styles = StyleSheet.create({
   },
   iconViewRight: {
     position:'absolute',
-    top: 20,
-    right: 20,
-    width: 30,
-    height: 30,
+    top: 16,
+    right: 16,
+    width: 56,
+    height: 56,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: defaultStyles.dark,
+    opacity: 0.8,
+    borderRadius: 28,
   },
   iconViewLeft: {
     position:'absolute',
-    top: 20,
-    left: 20,
-    width: 30,
-    height: 30,
+    top: 16,
+    left: 16,
+    width: 56,
+    height: 56,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: defaultStyles.dark,
+    opacity: 0.8,
+    borderRadius: 28,
   },
   preview: {
     width: defaultStyles.bodyWidth,
     height: defaultStyles.bodyHeight,
     backgroundColor: defaultStyles.dark,
-  },
-  field: {
-    position:'absolute',
-    top: 76,
-    left: 16,
-  },
-  title: {
-    fontSize: 16,
-    fontFamily: 'Roboto-Bold',
-    marginBottom: 16,
-    color: defaultStyles.white,
-  },
-  inputWrap: {
-    borderBottomColor: defaultStyles.white,
-    borderBottomWidth: 2,
-    width: defaultStyles.bodyWidth - 32,
-  },
-  input : {
-    fontFamily: 'Roboto-light',
-    color: defaultStyles.white,
-    height: 44,
-    width: defaultStyles.bodyWidth - 32,
   },
 });
 
@@ -100,7 +90,6 @@ module.exports = React.createClass({
       cameraType: Camera.constants.Type.front,
       preview: false,
       photo: '',
-      message: '',
     };
   },
   onPressClose: function () {
@@ -125,23 +114,11 @@ module.exports = React.createClass({
   onPreviewClose: function(){
     this.setState({
       photo: '',
-      message: '',
       preview: false
     });
   },
   onComplete: function () {
     this.props.route.onPhotoChange('data:image/jpeg;base64,' + this.state.photo);
-  },
-  renderComplete: function () {
-    return (
-      <View style={Styles.iconViewRight}>
-        <IconButton
-          onPress={this.onComplete}
-          icon='material|check'
-          size={30}
-        />
-      </View>
-    );
   },
   renderPreview: function () {
     return (
@@ -152,18 +129,6 @@ module.exports = React.createClass({
           }}
           style={Styles.preview}
         />
-        <View style={Styles.field}>
-          <Text style={Styles.title}>
-            Add A Title
-          </Text>
-          <View style={Styles.inputWrap}>
-            <TextInput
-              style={Styles.input}
-              onChangeText={(message) => this.setState({message})}
-              value={this.state.message}
-            />
-          </View>
-        </View>
         <View style={Styles.iconViewLeft}>
           <IconButton
             onPress={this.onPreviewClose}
@@ -171,7 +136,13 @@ module.exports = React.createClass({
             size={30}
           />
         </View>
-        {this.state.message ? this.renderComplete() : null}
+        <View style={Styles.iconViewRight}>
+          <IconButton
+            onPress={this.onComplete}
+            icon='material|check'
+            size={30}
+          />
+        </View>
       </View>
     );
   },

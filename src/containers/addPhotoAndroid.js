@@ -84,28 +84,6 @@ var Styles = StyleSheet.create({
     height: defaultStyles.bodyHeight,
     backgroundColor: defaultStyles.dark,
   },
-  field: {
-    position:'absolute',
-    top: 76,
-    left: 16,
-  },
-  title: {
-    fontSize: 16,
-    fontFamily: 'Roboto-Bold',
-    marginBottom: 16,
-    color: defaultStyles.white,
-  },
-  inputWrap: {
-    borderBottomColor: defaultStyles.white,
-    borderBottomWidth: 2,
-    width: defaultStyles.bodyWidth - 32,
-  },
-  input : {
-    fontFamily: 'Roboto-light',
-    color: defaultStyles.white,
-    height: 44,
-    width: defaultStyles.bodyWidth - 32,
-  },
 });
 
 module.exports = React.createClass({
