@@ -151,8 +151,6 @@ module.exports= React.createClass({
             name: 'landing',
             component: Landing
           });
-
-          this.props.actions.logoutUser();
         }
       },
     ];

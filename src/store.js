@@ -436,11 +436,13 @@ module.exports = {
     this.queryChatsByUser(user)
       .then((chats) => {
 
-        var chatIds = _.pluck(chats,'objectId');
+        var chatIds = _.pluck(chats,'id');
 
         var messages = _.filter(this.store.messages,(message) => {
-          return _.indexOf(chatIds, message.chat.objectId) >= 0;
+          return _.indexOf(chatIds, message.chat.id) >= 0;
         });
+
+        console.log(messages);
 
         this.store.profileMessages = messages;
         this.setState({

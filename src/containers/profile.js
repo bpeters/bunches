@@ -57,8 +57,8 @@ module.exports = React.createClass({
   render: function () {
     var chats = this.props.store.profileMessages;
     var user = {
-      name: null,
-      handle: null,
+      name: this.props.route.name,
+      handle: this.props.route.handle,
     };
 
     if (!_.isEmpty(chats)) {

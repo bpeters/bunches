@@ -36,6 +36,7 @@ var Styles = StyleSheet.create({
   icon: {
     width: 16,
     height: 16,
+    borderRadius: 8,
   }, 
 });
 

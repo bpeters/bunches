@@ -27,8 +27,14 @@ var Styles = StyleSheet.create({
   container: {
     height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
     backgroundColor: defaultStyles.white,
-    paddingTop: defaultStyles.navBarHeight + defaultStyles.navBarHeight +  16,
-    paddingBottom: 16,
+    paddingTop: defaultStyles.navBarHeight + defaultStyles.navBarHeight,
+  },
+  gap: {
+    width: defaultStyles.bodyWidth - 32,
+    marginTop: 16,
+    marginBottom: 16,
+    marginLeft: 16,
+    alignItems: 'center',
   },
   row: {
     flex:1,
@@ -126,11 +132,14 @@ module.exports = React.createClass({
 
     this.props.queryUser(rowData.uid)
       .then((user) => {
+
         this.props.getProfileChats(user);
 
         this.props.navigator.push({
           name: 'profile',
           component: Profile,
+          name: user.attributes.name,
+          handle: user.attributes.handle,
         });
       })
   },
@@ -208,6 +217,11 @@ module.exports = React.createClass({
       );
     }
   },
+  renderChatFooter: function () {
+    return (
+      <View style={Styles.gap} />
+    );
+  },
   render: function() {
     return (
       <View style={Styles.container}>
@@ -215,6 +229,7 @@ module.exports = React.createClass({
           renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
           dataSource={this.state.dataSource.cloneWithRows(this.props.messages)}
           renderRow={this.renderChatRow}
+          renderFooter={this.renderChatFooter}
         />
         {this.props.children}
       </View>

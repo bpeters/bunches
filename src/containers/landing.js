@@ -32,6 +32,9 @@ module.exports = React.createClass({
     navigator: React.PropTypes.object,
     actions: React.PropTypes.object,
   },
+  componentDidMount: function () {
+    this.props.actions.logoutUser();
+  },
   onLoginPress: function () {
     this.props.actions.clearErrors();
 
