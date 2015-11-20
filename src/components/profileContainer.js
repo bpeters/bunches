@@ -3,7 +3,6 @@
 var React = require('react-native');
 var _ = require('lodash');
 
-var Chat = require('../containers/chat');
 var Avatar = require('../elements/avatar');
 var PopImage = require('../elements/popImage');
 var EnlargePhoto = require('../containers/enlargePhoto');
@@ -23,13 +22,24 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
-    paddingBottom: 16,
+    height: defaultStyles.bodyHeight,
+    paddingTop: defaultStyles.navBarHeight,
   },
   row: {
     width: defaultStyles.bodyWidth - 32,
     marginTop: 16,
     marginLeft: 16,
+  },
+  loadMore: {
+    width: defaultStyles.bodyWidth - 32,
+    marginTop: 32,
+    marginBottom: 32,
+    marginLeft: 16,
+    alignItems: 'center',
+  },
+  loadMoreText: {
+    fontFamily: 'Roboto-Regular', 
+    color: defaultStyles.medium,
   },
   rowHeader: {
     backgroundColor: defaultStyles.white,
@@ -47,6 +57,7 @@ var Styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingTop: 16,
     paddingLeft: 16,
+    paddingBottom: 16,
   },
   rowImage: {
     height: 176,
@@ -73,13 +84,14 @@ var Styles = StyleSheet.create({
     borderRightWidth: 1,
   },
   userName: {
-    flex:2.5,
+    flex: 2.5,
     fontSize: 16,
     fontFamily: 'Roboto-Regular',
     color: defaultStyles.dark,
   },
-  chatTitle: {
+  userHandle: {
     fontSize: 14,
+    paddingTop: 2,
     fontFamily: 'Roboto-Regular', 
     color: defaultStyles.medium,
   },
@@ -92,12 +104,12 @@ var Styles = StyleSheet.create({
     color: defaultStyles.dark,
   },
   counts: {
-    flex:1,
+    flex: 1,
     flexDirection:'row',
     justifyContent:'flex-end',
     alignItems:'flex-start',
     alignSelf:'stretch',
-    paddingBottom:10,
+    paddingBottom: 10,
   },
   info: {
     flex:1,
@@ -119,8 +131,6 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
-    store: React.PropTypes.object,
-    showBar: React.PropTypes.bool,
     chats: React.PropTypes.object,
   },
   getInitialState: function() {
@@ -131,15 +141,14 @@ module.exports = React.createClass({
     };
   },
   onPressRow: function (rowData) {
+    var Chat = require('../containers/chat');
+
     this.props.navigator.push({
       name: 'chat',
       component: Chat,
       hasSideMenu: true,
       chatId: rowData.chat.id
     });
-  },
-  onAvatarPress: function (rowData) {
-
   },
   onPressImage: function (imageURL) {
     this.props.navigator.push({
@@ -149,6 +158,7 @@ module.exports = React.createClass({
       photo: imageURL,
     });
   },
+
   renderImage: function (imageURL) {
     return (
       <View style={Styles.rowImage}>
@@ -169,7 +179,6 @@ module.exports = React.createClass({
     );
   },
   renderChatRow: function(rowData) {
-    console.log(rowData);
 
     var mostRecentImage;
     var mostRecentMessage;
@@ -193,7 +202,11 @@ module.exports = React.createClass({
         <View style={Styles.row}>
           <View style={Styles.rowHeader}>
             <Avatar
-              onPress={() => this.onAvatarPress(rowData)}
+              onPress={() => {
+                if (user.attributes.image) {
+                  this.onPressImage(user.attributes.image.url());
+                }
+              }}
               imageURL={user.attributes.image ? user.attributes.image.url() : null}
             />
             <View style={Styles.info}>
@@ -224,13 +237,20 @@ module.exports = React.createClass({
       </TouchableOpacity>
     );
   },
+  renderChatFooter: function () {
+    return (
+      <View style={Styles.loadMore}>
+
+      </View>
+    );
+  },
   render: function() {
-    console.log(this.props.chats);
     return (
       <View style={Styles.container}>
         <ListView
           dataSource={this.state.dataSource.cloneWithRows(this.props.chats)}
           renderRow={this.renderChatRow}
+          renderFooter={this.renderChatFooter}
           automaticallyAdjustContentInsets={false}
         />
         {this.props.children}

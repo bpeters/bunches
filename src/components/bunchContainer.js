@@ -153,12 +153,13 @@ module.exports = React.createClass({
   },
   onAvatarPress: function (rowData) {
 
-    this.props.getProfileChats(rowData.id);
+    var user = rowData.chat.get('createdBy');
+
+    this.props.getProfileChats(user);
 
     this.props.navigator.push({
       name: 'profile',
       component: Profile,
-      hasSideMenu: true,
     });
   },
   onPressImage: function (imageURL) {

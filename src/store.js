@@ -45,6 +45,7 @@ module.exports = {
     error: null,
     loading: false,
     success: false,
+    profileUser: null,
     profileMessages: [],
   },
   initStore: function (user) {
@@ -83,6 +84,7 @@ module.exports = {
       error: null,
       loading: false,
       success: false,
+      profileUser: null,
       profileMessages: [],
     };
 
@@ -430,23 +432,26 @@ module.exports = {
       success: this.store.success
     });
   },
-  getProfileChats: function(id){
-    this.queryChatsByUserId(id)
-      .then((chats)=>{
-        var chatIds = _.pluck(chats,'objectId');
-        var messages = _.filter(this.store.messages,(message)=>{
-          return _.indexOf(chatIds,message.chat.objectId) >= 0;
-        });
-        this.store.profileMessages = messages;
-        console.log(messages);
-        this.setState({profileMessages:this.store.profileMessages});
-      })
-  },
-  queryUser: function (user) {
-    var query = new Parse.Query('User');
-    query.equalTo('id', user.id);
+  getProfileChats: function (user) {
+    this.queryChatsByUser(user)
+      .then((chats) => {
 
-    return query.first();
+        var chatIds = _.pluck(chats,'objectId');
+
+        var messages = _.filter(this.store.messages,(message) => {
+          return _.indexOf(chatIds, message.chat.objectId) >= 0;
+        });
+
+        this.store.profileMessages = messages;
+        this.setState({
+          profileMessages: this.store.profileMessages
+        });
+      });
+  },
+  queryUser: function (id) {
+    var query = new Parse.Query('User');
+
+    return query.get(id);
   },
   queryMainBunch: function (user) {
     var query = (new Parse.Query('Bunch2User'))
@@ -476,11 +481,10 @@ module.exports = {
 
     return query.find();
   },
-  queryChatsByUserId: function (id) {
+  queryChatsByUser: function (user) {
     var query = (new Parse.Query('Chat'))
-      .equalTo('createdBy', id)
-      .include('user')
-      .include('chat')
+      .equalTo('createdBy', user)
+      .include('createdBy')
 
     return query.find();
   },

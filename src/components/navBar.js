@@ -54,11 +54,16 @@ var NavBar = React.createClass({
   propTypes: {
     title: React.PropTypes.string,
     menuButton: React.PropTypes.object,
+    onBackButton: React.PropTypes.func,
     score: React.PropTypes.number,
   },
   onHandlePress: function(e) {
-    this.context.menuActions.toggle();
-    this.props.menuButton.onPress(e);
+    if (this.props.onBackButton) {
+      this.props.onBackButton();
+    } else {
+      this.context.menuActions.toggle();
+      this.props.menuButton.onPress(e);
+    }
   },
   renderCounter: function() {
     return (
@@ -74,7 +79,7 @@ var NavBar = React.createClass({
         <View style={Styles.left}>
           <IconButton
             onPress={this.onHandlePress}
-            icon='material|menu'
+            icon={this.props.onBackButton ? 'material|arrow-left' : 'material|menu'}
           />
         </View>
         <View style={Styles.center}>

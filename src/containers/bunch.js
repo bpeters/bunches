@@ -6,7 +6,6 @@ var moment = require('moment');
 
 var NavBar = require('../components/navBar');
 var BunchContainer = require('../components/bunchContainer');
-var ActionButton = require('../elements/actionButton');
 var ChatBar = require('../components/chatBar');
 
 var defaultStyles = require('../styles');

@@ -46,7 +46,6 @@ module.exports = React.createClass({
     this.props.navigator.pop();
   },
   render: function() {
-    console.log(this.props.route.photo);
     return (
       <View style={Styles.parent}>
         <TouchableHighlight onPress={this.onPress} style={Styles.parent}>

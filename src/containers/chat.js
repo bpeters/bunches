@@ -93,6 +93,8 @@ module.exports = React.createClass({
             user={this.props.store.user}
             messages={messages}
             navigator={this.props.navigator}
+            getProfileChats={this.props.actions.getProfileChats}
+            queryUser={this.props.actions.queryUser}
           >
             <NavBar
               title={title}
