@@ -8,6 +8,7 @@ var Avatar = require('../elements/avatar');
 var PopImage = require('../elements/popImage');
 var EnlargePhoto = require('../containers/enlargePhoto');
 var InvertibleScrollView = require('react-native-invertible-scroll-view');
+var Profile = require('../containers/profile');
 
 var defaultStyles = require('../styles');
 
@@ -110,6 +111,8 @@ module.exports = React.createClass({
   propTypes: {
     user: React.PropTypes.object,
     messages: React.PropTypes.array,
+    getProfileChats: React.PropTypes.func,
+    queryUser: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -121,6 +124,15 @@ module.exports = React.createClass({
   },
   onAvatarPress: function (rowData) {
 
+    this.props.queryUser(rowData.uid)
+      .then((user) => {
+        this.props.getProfileChats(user);
+
+        this.props.navigator.push({
+          name: 'profile',
+          component: Profile,
+        });
+      })
   },
   onPressImage: function (imageURL) {
     this.props.navigator.push({

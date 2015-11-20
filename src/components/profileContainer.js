@@ -3,13 +3,11 @@
 var React = require('react-native');
 var _ = require('lodash');
 
-var Chat = require('../containers/chat');
 var Avatar = require('../elements/avatar');
 var PopImage = require('../elements/popImage');
 var EnlargePhoto = require('../containers/enlargePhoto');
 var Timer = require('../elements/timer');
 var Counter = require('../elements/counter');
-var Profile = require('../containers/profile');
 
 var defaultStyles = require('../styles');
 
@@ -24,7 +22,7 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
+    height: defaultStyles.bodyHeight,
     paddingTop: defaultStyles.navBarHeight,
   },
   row: {
@@ -133,8 +131,7 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
-    store: React.PropTypes.object,
-    getProfileChats: React.PropTypes.func,
+    chats: React.PropTypes.object,
   },
   getInitialState: function() {
     return {
@@ -144,22 +141,13 @@ module.exports = React.createClass({
     };
   },
   onPressRow: function (rowData) {
+    var Chat = require('../containers/chat');
+
     this.props.navigator.push({
       name: 'chat',
       component: Chat,
       hasSideMenu: true,
       chatId: rowData.chat.id
-    });
-  },
-  onAvatarPress: function (rowData) {
-
-    var user = rowData.chat.get('createdBy');
-
-    this.props.getProfileChats(user);
-
-    this.props.navigator.push({
-      name: 'profile',
-      component: Profile,
     });
   },
   onPressImage: function (imageURL) {
@@ -170,6 +158,7 @@ module.exports = React.createClass({
       photo: imageURL,
     });
   },
+
   renderImage: function (imageURL) {
     return (
       <View style={Styles.rowImage}>
@@ -209,11 +198,15 @@ module.exports = React.createClass({
     var user = rowData.chat.get('createdBy');
 
     return (
-      <TouchableOpacity activeOpacity={0.8} onPress={() => this.onPressRow(rowData)}>
+      <TouchableOpacity onPress={() => this.onPressRow(rowData)}>
         <View style={Styles.row}>
           <View style={Styles.rowHeader}>
             <Avatar
-              onPress={() => this.onAvatarPress(rowData)}
+              onPress={() => {
+                if (user.attributes.image) {
+                  this.onPressImage(user.attributes.image.url());
+                }
+              }}
               imageURL={user.attributes.image ? user.attributes.image.url() : null}
             />
             <View style={Styles.info}>
@@ -221,8 +214,8 @@ module.exports = React.createClass({
                 <Text style={Styles.userName}>
                   {user.attributes.name}
                 </Text>
-                <Text style={Styles.userHandle}>
-                  @{user.attributes.handle}
+                <Text style={Styles.chatTitle}>
+                  {rowData.chat.attributes.name}
                 </Text>
               </View>
               <View style={Styles.counts}>
@@ -252,12 +245,10 @@ module.exports = React.createClass({
     );
   },
   render: function() {
-    var messages = this.props.store.messages;
-
     return (
       <View style={Styles.container}>
         <ListView
-          dataSource={this.state.dataSource.cloneWithRows(messages)}
+          dataSource={this.state.dataSource.cloneWithRows(this.props.chats)}
           renderRow={this.renderChatRow}
           renderFooter={this.renderChatFooter}
           automaticallyAdjustContentInsets={false}

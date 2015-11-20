@@ -6,7 +6,6 @@ var moment = require('moment');
 
 var NavBar = require('../components/navBar');
 var BunchContainer = require('../components/bunchContainer');
-var ActionButton = require('../elements/actionButton');
 var ChatBar = require('../components/chatBar');
 
 var defaultStyles = require('../styles');
@@ -100,6 +99,7 @@ module.exports = React.createClass({
           <BunchContainer
             navigator={this.props.navigator}
             store={this.props.store}
+            getProfileChats={this.props.actions.getProfileChats}
           >
             <NavBar
               title={title}

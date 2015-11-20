@@ -45,6 +45,8 @@ module.exports = {
     error: null,
     loading: false,
     success: false,
+    profileUser: null,
+    profileMessages: [],
   },
   initStore: function (user) {
     if (user) {
@@ -82,6 +84,8 @@ module.exports = {
       error: null,
       loading: false,
       success: false,
+      profileUser: null,
+      profileMessages: [],
     };
 
     this.setState(this.store);
@@ -428,11 +432,26 @@ module.exports = {
       success: this.store.success
     });
   },
-  queryUser: function (user) {
-    var query = new Parse.Query('User');
-    query.equalTo('id', user.id);
+  getProfileChats: function (user) {
+    this.queryChatsByUser(user)
+      .then((chats) => {
 
-    return query.first();
+        var chatIds = _.pluck(chats,'objectId');
+
+        var messages = _.filter(this.store.messages,(message) => {
+          return _.indexOf(chatIds, message.chat.objectId) >= 0;
+        });
+
+        this.store.profileMessages = messages;
+        this.setState({
+          profileMessages: this.store.profileMessages
+        });
+      });
+  },
+  queryUser: function (id) {
+    var query = new Parse.Query('User');
+
+    return query.get(id);
   },
   queryMainBunch: function (user) {
     var query = (new Parse.Query('Bunch2User'))
@@ -459,6 +478,13 @@ module.exports = {
       .equalTo('user', this.store.user)
       .include('user')
       .include('chat')
+
+    return query.find();
+  },
+  queryChatsByUser: function (user) {
+    var query = (new Parse.Query('Chat'))
+      .equalTo('createdBy', user)
+      .include('createdBy')
 
     return query.find();
   },
