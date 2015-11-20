@@ -19,9 +19,21 @@ var {
   StyleSheet,
 } = React;
 
+var AddPhoto;
+var Loading;
+
+if (Platform.OS === 'android') {
+  AddPhoto = require('./addPhotoAndroid');
+  Loading = require('../elements/loadingAndroid');
+} else {
+  AddPhoto = require('./addPhotoIOS')
+  Loading = require('../elements/loadingIOS');
+}
+
 var Styles = StyleSheet.create({
   body: {
     backgroundColor: defaultStyles.background,
+    height: defaultStyles.bodyHeight,
   },
 });
 
@@ -33,6 +45,14 @@ module.exports = React.createClass({
     actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
+  onCameraActionButtonPress: function (chat) {
+    this.props.navigator.push({
+      name: "add photo",
+      component: AddPhoto,
+      hasSideMenu: false,
+      chat: chat,
+    });
+  },
   onBackPress: function () {
     this.props.navigator.pop();
   },
@@ -40,7 +60,11 @@ module.exports = React.createClass({
 
     var chatId = this.props.route.chatId || _.get(this.props.store.newChat, 'objectId');
 
-    var data = _.find(this.props.store.messages, {'id' : chatId});
+    var data = _.find(this.props.store.messages, {'id' : chatId}) || {
+      chat: null,
+      messages: [],
+      score: null,
+    };
 
     var chat = data.chat;
 
@@ -60,6 +84,9 @@ module.exports = React.createClass({
           user={this.props.store.user}
           chat={chat}
           createMessage={this.props.actions.createMessage}
+          onPress={() => {
+            this.onCameraActionButtonPress(chat)}
+          }
           height={0}
         >
           <ChatContainer

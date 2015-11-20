@@ -34,7 +34,7 @@ var Styles = StyleSheet.create({
   capture: {
     position: 'absolute',
     left: defaultStyles.bodyWidth / 2 - 40,
-    bottom: 30, 
+    bottom: 30,
   },
   captureButton: {
     height: 90,
@@ -87,10 +87,9 @@ module.exports = React.createClass({
   },
   getInitialState: function() {
     return {
-      cameraType: Camera.constants.Type.back,
+      cameraType: Camera.constants.Type.front,
       preview: false,
       photo: '',
-      message: '',
     };
   },
   onPressClose: function () {
@@ -118,29 +117,8 @@ module.exports = React.createClass({
       preview: false
     });
   },
-  onNewChat: function () {
-    var Chat = require('./chat');
-
-    this.props.actions.createChat(this.state.message, this.state.photo);
-
-    var bunch = this.props.store.bunch;
-    var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
-
-    this.props.navigator.replace({
-      name: 'chat',
-      component: Chat,
-      hasSideMenu: true,
-      newChat: {
-        name: null,
-        expirationDate: expirationDate,
-        createdAt: Date.now(),
-        photo: 'data:image/jpeg;base64,' + this.state.photo,
-      },
-    });
-  },
-  onNewMessage: function () {
-    this.props.actions.createImageMessage(this.props.route.chat, this.state.photo);
-    this.props.navigator.pop();
+  onComplete: function () {
+    this.props.route.onPhotoChange('data:image/jpeg;base64,' + this.state.photo);
   },
   renderPreview: function () {
     return (
@@ -160,7 +138,7 @@ module.exports = React.createClass({
         </View>
         <View style={Styles.iconViewRight}>
           <IconButton
-            onPress={this.props.route.chat ? this.onNewMessage : this.onNewChat}
+            onPress={this.onComplete}
             icon='material|check'
             size={30}
           />

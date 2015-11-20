@@ -8,7 +8,6 @@ var NavBar = require('../components/navBar');
 var BunchContainer = require('../components/bunchContainer');
 var ActionButton = require('../elements/actionButton');
 var ChatBar = require('../components/chatBar');
-var Chat = require('./chat');
 
 var defaultStyles = require('../styles');
 
@@ -35,6 +34,7 @@ if (Platform.OS === 'android') {
 var Styles = StyleSheet.create({
   body: {
     backgroundColor: defaultStyles.background,
+    height: defaultStyles.bodyHeight,
   },
   loadingView: {
     position: 'absolute',
@@ -52,21 +52,7 @@ module.exports = React.createClass({
     actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
-  getInitialState: function () {
-    return {
-      showActions: false,
-    };
-  },
-  onActionButtonPress: function () {
-    this.setState({
-      showActions: !this.state.showActions
-    });
-  },
   onCameraActionButtonPress: function () {
-    this.setState({
-      showActions: false
-    });
-
     this.props.navigator.push({
       name: "add photo",
       component: AddPhoto,
@@ -74,12 +60,10 @@ module.exports = React.createClass({
       bunch: this.props.store.bunch,
     });
   },
-  createChat: function (title, message) {
-    this.setState({
-      showActions: false,
-    });
+  createChat: function (message) {
+    var Chat = require('./chat');
 
-    this.props.actions.createChat(title, message);
+    this.props.actions.createChat(message);
 
     var bunch = this.props.store.bunch;
     var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
@@ -89,20 +73,12 @@ module.exports = React.createClass({
       component: Chat,
       hasSideMenu: true,
       newChat: {
-        name: title,
+        name: this.props.store.user.handle,
         expirationDate: expirationDate,
         createdAt: Date.now(),
         message: message,
       },
     });
-  },
-  renderCameraAction: function () {
-    return (
-      <ActionButton
-        onPress={this.onCameraActionButtonPress}
-        camera={true}
-      />
-    );
   },
   renderLoading: function () {
     return (
@@ -119,12 +95,11 @@ module.exports = React.createClass({
         <ChatBar
           user={this.props.store.user}
           createChat={this.createChat}
-          height={0}
+          onPress={this.onCameraActionButtonPress}
         >
           <BunchContainer
             navigator={this.props.navigator}
             store={this.props.store}
-            showBar={this.state.showActions}
             getProfileChats={this.props.actions.getProfileChats}
           >
             <NavBar
@@ -133,11 +108,6 @@ module.exports = React.createClass({
             />
           </BunchContainer>
         </ChatBar>
-        <ActionButton
-          onPress={this.onActionButtonPress}
-          show={this.state.showActions}
-        />
-        {this.state.showActions ? this.renderCameraAction() : null}
         {this.props.store.loading ? this.renderLoading() : null}
       </View>
     );

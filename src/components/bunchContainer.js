@@ -24,18 +24,24 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height: defaultStyles.bodyHeight,
-    paddingTop: defaultStyles.navBarHeight,
-    paddingBottom: 16,
-  },
-  containerWithBar: {
     height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
-    paddingBottom: 16,
+    paddingTop: defaultStyles.navBarHeight,
   },
   row: {
     width: defaultStyles.bodyWidth - 32,
     marginTop: 16,
     marginLeft: 16,
+  },
+  loadMore: {
+    width: defaultStyles.bodyWidth - 32,
+    marginTop: 32,
+    marginBottom: 32,
+    marginLeft: 16,
+    alignItems: 'center',
+  },
+  loadMoreText: {
+    fontFamily: 'Roboto-Regular', 
+    color: defaultStyles.medium,
   },
   rowHeader: {
     backgroundColor: defaultStyles.white,
@@ -53,6 +59,7 @@ var Styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingTop: 16,
     paddingLeft: 16,
+    paddingBottom: 16,
   },
   rowImage: {
     height: 176,
@@ -79,13 +86,14 @@ var Styles = StyleSheet.create({
     borderRightWidth: 1,
   },
   userName: {
-    flex:2.5,
+    flex: 2.5,
     fontSize: 16,
     fontFamily: 'Roboto-Regular',
     color: defaultStyles.dark,
   },
-  chatTitle: {
+  userHandle: {
     fontSize: 14,
+    paddingTop: 2,
     fontFamily: 'Roboto-Regular', 
     color: defaultStyles.medium,
   },
@@ -98,12 +106,12 @@ var Styles = StyleSheet.create({
     color: defaultStyles.dark,
   },
   counts: {
-    flex:1,
+    flex: 1,
     flexDirection:'row',
     justifyContent:'flex-end',
     alignItems:'flex-start',
     alignSelf:'stretch',
-    paddingBottom:10,
+    paddingBottom: 10,
   },
   info: {
     flex:1,
@@ -126,7 +134,6 @@ module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     store: React.PropTypes.object,
-    showBar: React.PropTypes.bool,
     getProfileChats: React.PropTypes.func,
   },
   getInitialState: function() {
@@ -201,7 +208,7 @@ module.exports = React.createClass({
     var user = rowData.chat.get('createdBy');
 
     return (
-      <TouchableOpacity onPress={() => this.onPressRow(rowData)}>
+      <TouchableOpacity activeOpacity={0.8} onPress={() => this.onPressRow(rowData)}>
         <View style={Styles.row}>
           <View style={Styles.rowHeader}>
             <Avatar
@@ -213,8 +220,8 @@ module.exports = React.createClass({
                 <Text style={Styles.userName}>
                   {user.attributes.name}
                 </Text>
-                <Text style={Styles.chatTitle}>
-                  {rowData.chat.attributes.name}
+                <Text style={Styles.userHandle}>
+                  @{user.attributes.handle}
                 </Text>
               </View>
               <View style={Styles.counts}>
@@ -236,12 +243,22 @@ module.exports = React.createClass({
       </TouchableOpacity>
     );
   },
-  render: function() {
+  renderChatFooter: function () {
     return (
-      <View style={this.props.showBar ? Styles.containerWithBar : Styles.container}>
+      <View style={Styles.loadMore}>
+
+      </View>
+    );
+  },
+  render: function() {
+    var messages = this.props.store.messages;
+
+    return (
+      <View style={Styles.container}>
         <ListView
-          dataSource={this.state.dataSource.cloneWithRows(this.props.store.messages)}
+          dataSource={this.state.dataSource.cloneWithRows(messages)}
           renderRow={this.renderChatRow}
+          renderFooter={this.renderChatFooter}
           automaticallyAdjustContentInsets={false}
         />
         {this.props.children}

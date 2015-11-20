@@ -20,6 +20,7 @@ var Styles = StyleSheet.create({
     width: 40,
     height: 40,
     backgroundColor: defaultStyles.medium,
+    borderRadius: 20,
   },
   icon: {
     left: 8,
@@ -30,7 +31,7 @@ var Styles = StyleSheet.create({
   image: {
     height: 40,
     width: 40,
-    borderRadius: 40,
+    borderRadius: 20,
     justifyContent: 'center',
   },
 });
@@ -62,7 +63,7 @@ module.exports = React.createClass({
     return (
       <TouchableOpacity onPress={this.props.onPress}>
         <View style={Styles.body}>
-          {this.props.imageUrl ? this.renderImage() : this.renderIcon()}
+          {this.props.imageURL ? this.renderImage() : this.renderIcon()}
         </View>
       </TouchableOpacity>
     );

@@ -22,6 +22,7 @@ var Styles = StyleSheet.create({
     backgroundColor: defaultStyles.medium,
     height: defaultStyles.window.height,
     width: defaultStyles.bodyWidth,
+    paddingBottom: 16,
   },
   list: {
     marginTop: 0,

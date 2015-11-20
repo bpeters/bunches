@@ -14,6 +14,8 @@ var {
   Text,
 } = React;
 
+var IconButton = require('../elements/iconButton');
+
 var Styles = StyleSheet.create({
   scroll: {
     flex: 1,
@@ -23,7 +25,6 @@ var Styles = StyleSheet.create({
     flexDirection: 'row',
     height: defaultStyles.chatBarHeight,
     backgroundColor: defaultStyles.blue,
-    shadowColor: defaultStyles.dark,
     shadowOpacity: 0.5,
     shadowRadius: 2,
     shadowOffset: {
@@ -37,39 +38,28 @@ var Styles = StyleSheet.create({
     top: 6,
     width: defaultStyles.bodyWidth - 12,
     height: defaultStyles.chatBarHeight - 12,
-    borderColor: defaultStyles.white,
+    borderColor: defaultStyles.blue,
     borderWidth: 1,
     borderRadius: 2,
-    backgroundColor: defaultStyles.background,
+    backgroundColor: defaultStyles.blue,
   },
   input : {
     alignItems: 'flex-start',
     fontFamily: 'Roboto-Light',
     color: defaultStyles.dark,
     paddingLeft: 12,
-    width: defaultStyles.bodyWidth - 12 - 76,
+    width: defaultStyles.bodyWidth - 12 - 56,
     height: defaultStyles.chatBarHeight - 12 - 2,
     borderBottomWidth: 0,
     borderWidth: 0,
     backgroundColor: defaultStyles.white,
   },
-  send: {
-    width: 74,
-    fontSize: 16,
-    paddingLeft: 18,
-    paddingTop: 12,
-    alignItems: 'flex-end',
-    fontFamily: 'Roboto-Bold',
-    color: defaultStyles.dark,
-  },
-  notSend: {
-    width: 74,
-    fontSize: 16,
-    paddingLeft: 18,
-    paddingTop: 12,
-    alignItems: 'flex-end',
-    fontFamily: 'Roboto-Bold',
-    color: defaultStyles.medium,
+  iconView : {
+    paddingTop: 4,
+    paddingLeft: 8,
+    flex: 1,
+    alignItems: 'center',
+    alignSelf:'flex-start',
   },
 });
 
@@ -80,6 +70,7 @@ module.exports = React.createClass({
     createMessage: React.PropTypes.func,
     createChat: React.PropTypes.func,
     height: React.PropTypes.number,
+    onPress: React.PropTypes.func,
   },
   getInitialState: function () {
     return {
@@ -107,28 +98,12 @@ module.exports = React.createClass({
         message: this.state.message
       });
     } else if (this.props.createChat) {
-      this.props.createChat(this.state.message, this.state.message);
+      this.props.createChat(this.state.message);
     }
 
     this.setState({
       message: null
     });
-  },
-  renderSend: function () {
-    return (
-      <TouchableOpacity onPress={this.addChatMessage}>
-        <Text style={Styles.send}>
-          Send
-        </Text>
-      </TouchableOpacity>
-    );
-  },
-  renderNotSend: function () {
-    return (
-      <Text style={Styles.notSend}>
-        Send
-      </Text>
-    );
   },
   render: function() {
     return (
@@ -156,7 +131,13 @@ module.exports = React.createClass({
               clearButtonMode='while-editing'
               returnKeyType='send'
             />
-            {_.trim(this.state.message) ? this.renderSend() : this.renderNotSend()}
+            <View style={Styles.iconView}>
+              <IconButton
+                onPress={this.props.onPress}
+                icon='material|camera'
+                size={36}
+              />
+            </View>
           </View>
         </View>
       </ScrollView>
