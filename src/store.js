@@ -13,6 +13,25 @@ var {
   AsyncStorage,
 } = React;
 
+function calcPowerScore (chat, messages) {
+  var userCount = _.chain(messages)
+    .pluck('uid.objectId')
+    .uniq()
+    .value()
+    .length;
+
+  var messageCount = messages.length;
+
+  var timeLeft = Math.abs(moment().diff(chat.attributes.expirationDate));
+  var timeSince = moment().diff(chat.attributes.createdAt);
+  var timePoints = Math.abs(timeLeft - timeSince) / (3600000 * 24);
+  var activityPoints = Math.log((userCount * 0.2) + (messageCount * 0.8));
+
+  var score = timePoints + activityPoints;
+
+  return Math.round(100 * score);
+}
+
 module.exports = {
   store: {
     user: null,
@@ -158,11 +177,18 @@ module.exports = {
               if (!chat) {
                 this.setItem(this.store.bunch.id, key);
 
+                var chat = _.find(this.store.chats, {'id' : key});
+
+                var score = calcPowerScore(chat, messages);
+
                 this.store.messages.push({
                   id: key,
-                  chat: _.find(this.store.chats, {'id' : key}),
+                  chat: chat,
+                  score: score,
                   messages: messages,
                 });
+              } else {
+                chat.score = calcPowerScore(chat.chat, messages);
               }
             }
 
@@ -170,7 +196,7 @@ module.exports = {
 
           this.store.messages = _.chain(this.store.messages)
             .sortBy((message) => {
-              return message.chat.attributes.expirationDate;
+              return message.score;
             })
             .value()
             .reverse();

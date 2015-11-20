@@ -169,12 +169,6 @@ module.exports = React.createClass({
   },
   renderChatRow: function(rowData) {
 
-    var userCount = _.chain(rowData.messages)
-      .pluck('uid')
-      .uniq()
-      .value()
-      .length;
-
     var mostRecentImage;
     var mostRecentMessage;
 
@@ -211,9 +205,7 @@ module.exports = React.createClass({
               </View>
               <View style={Styles.counts}>
                 <Counter
-                  users={userCount}
-                  messages={rowData.messages.length}
-                  color='full'
+                  score={rowData.score}
                 />
               </View>
             </View>
