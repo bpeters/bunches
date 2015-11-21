@@ -111,6 +111,12 @@ var Styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'transparent',
   },
+  loadingView: {
+    position: 'absolute',
+    backgroundColor: 'transparent',
+    top: defaultStyles.navBarHeight - 28,
+    right: (defaultStyles.bodyWidth / 2) - 28,
+  },
 });
 
 module.exports = React.createClass({
@@ -225,6 +231,24 @@ module.exports = React.createClass({
       </View>
     );
   },
+  renderLoading: function () {
+    return (
+      <View style={Styles.loadingView}>
+        <Loading />
+      </View>
+    );
+  },
+  renderButton: function () {
+    return (
+      <View style={Styles.buttonView}>
+        <Button
+          onPress={this.onUpdateAccount}
+          title='SAVE'
+          color={defaultStyles.red}
+        />
+      </View>
+    );
+  },
   render: function() {
 
     if(Platform.OS === 'ios'){
@@ -284,13 +308,7 @@ module.exports = React.createClass({
             secureTextEntry={true}
           />
         </View>
-        <View style={Styles.buttonView}>
-          <Button
-            onPress={this.onUpdateAccount}
-            title='SAVE'
-            color={defaultStyles.red}
-          />
-        </View>
+        {this.props.store.loading ? this.renderLoading() : this.renderButton()}
         {this.props.store.success ? this.renderSuccess() : null}
       </View>
     );

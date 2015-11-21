@@ -35,6 +35,12 @@ var Styles = StyleSheet.create({
     backgroundColor: defaultStyles.background,
     height: defaultStyles.bodyHeight,
   },
+  loadingView: {
+    position: 'absolute',
+    backgroundColor: 'transparent',
+    top: defaultStyles.navBarHeight + defaultStyles.navBarHeight - 28,
+    right: (defaultStyles.bodyWidth / 2) - 28,
+  },
 });
 
 module.exports = React.createClass({
@@ -55,6 +61,13 @@ module.exports = React.createClass({
   },
   onBackPress: function () {
     this.props.navigator.pop();
+  },
+  renderLoading: function () {
+    return (
+      <View style={Styles.loadingView}>
+        <Loading />
+      </View>
+    );
   },
   render: function() {
 
@@ -109,6 +122,7 @@ module.exports = React.createClass({
             />
           </ChatContainer>
         </ChatBar>
+        {this.props.store.loading ? this.renderLoading() : null}
       </View>
     );
   }

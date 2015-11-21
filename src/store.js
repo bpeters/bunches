@@ -226,6 +226,10 @@ module.exports = {
     });
   },
   createChat: function (message, photo) {
+    this.setState({
+      loading: true,
+    });
+
     var bunch = this.store.bunch;
     var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
 
@@ -294,6 +298,11 @@ module.exports = {
         imageURL: options.image ? options.image.url() : null,
         message: options.message || 'Added Photo',
         time: new Date().getTime(),
+      });
+
+      this.setState({
+        loading: false,
+        success: true,
       });
 
     });

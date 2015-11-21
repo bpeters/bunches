@@ -100,6 +100,17 @@ module.exports = React.createClass({
       </View>
     );
   },
+  renderButton: function () {
+    return (
+      <View style={Styles.buttonView}>
+        <Button
+          onPress={this.onLogin}
+          title='SIGN IN'
+          color={defaultStyles.red}
+        />
+      </View>
+    );
+  },
   render: function() {
 
     if(Platform.OS === 'ios'){
@@ -151,14 +162,7 @@ module.exports = React.createClass({
             />
           </View>
         </ScrollView>
-        <View style={Styles.buttonView}>
-          <Button
-            onPress={this.onLogin}
-            title='SIGN IN'
-            color={defaultStyles.red}
-          />
-        </View>
-        {this.props.store.loading ? this.renderLoading() : null}
+        {this.props.store.loading ? this.renderLoading() : this.renderButton()}
       </View>
     );
   }
