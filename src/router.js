@@ -42,6 +42,7 @@ module.exports= React.createClass({
       updateUser: this.updateUser,
       clearSuccess: this.clearSuccess,
       getProfileChats: this.getProfileChats,
+      queryUser: this.queryUser,
       getUsers: this.getUsers,
       clearUsers: this.clearUsers,
     };
