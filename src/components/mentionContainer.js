@@ -21,25 +21,42 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
-    paddingTop: defaultStyles.navBarHeight,
+    position: 'absolute',
+    bottom: defaultStyles.chatBarHeight,
+    width: defaultStyles.bodyWidth,
+    borderTopColor: defaultStyles.dark,
+    borderTopWidth: 1,
+    backgroundColor: defaultStyles.white,
+  },
+  row: {
+    width: defaultStyles.bodyWidth,
+    borderBottomColor: defaultStyles.medium,
+    borderBottomWidth: 1,
+    padding: 8,
+  },
+  rowText: {
+    flexDirection: 'row',
+    alignItems: 'flex-start'
+  },
+  handle: {
+    fontFamily: 'Roboto-Bold',
+    color: defaultStyles.dark,
+  },
+  name: {
+    marginLeft: 16,
+    fontFamily: 'Roboto-Regular',
+    color: defaultStyles.medium,
   },
   loadMore: {
-    width: defaultStyles.bodyWidth - 32,
-    marginTop: 32,
-    marginBottom: 32,
-    marginLeft: 16,
-    alignItems: 'center',
-  },
-  loadMoreText: {
-    fontFamily: 'Roboto-Regular', 
-    color: defaultStyles.medium,
+    marginTop: 16,
+    marginBottom: 16,
   },
 });
 
 module.exports = React.createClass({
   propTypes: {
     store: React.PropTypes.object,
+    onPressMention: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -48,12 +65,25 @@ module.exports = React.createClass({
       }),
     };
   },
-  onPressRow: function (rowData) {
-    console.log(rowData);
-  },
   renderChatRow: function(rowData) {
     return (
-      <View>
+      <TouchableOpacity onPress={() => this.props.onPressMention(rowData)}>
+        <View style={Styles.row}>
+          <View style={Styles.rowText}>
+            <Text style={Styles.handle}>
+              {'@' + rowData.handle}
+            </Text>
+            <Text style={Styles.name}>
+              {rowData.name}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  },
+  renderChatFooter: function () {
+    return (
+      <View style={Styles.loadMore}>
 
       </View>
     );
@@ -64,6 +94,7 @@ module.exports = React.createClass({
         <ListView
           dataSource={this.state.dataSource.cloneWithRows(this.props.store.users)}
           renderRow={this.renderChatRow}
+          renderFooter={this.renderChatFooter}
           automaticallyAdjustContentInsets={false}
         />
       </View>

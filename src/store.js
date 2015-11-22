@@ -104,7 +104,14 @@ module.exports = {
   refreshUserChats: function () {
     return this.queryUserChats()
       .then((result) => {
-        this.store.userChats = result;
+
+        var chatIds = _.pluck(this.store.chats, 'id');
+
+        var userChats = _.filter(result, (chat) => {
+          return _.indexOf(chatIds, chat.get('chat').id) >= 0;
+        });
+
+        this.store.userChats = userChats;
         this.setState({
           userChats: this.store.userChats
         });
@@ -341,10 +348,17 @@ module.exports = {
               this.store.user = user;
               this.store.bunch = bunch;
 
-              this.setState({
-                user: this.store.user,
-                bunch: this.store.bunch,
-                loading: false,
+              this.esIndexUser({
+                user_id: user.id,
+                name: params.name,
+                handle: params.username,
+              })
+              .then(() => {
+                this.setState({
+                  user: this.store.user,
+                  bunch: this.store.bunch,
+                  loading: false,
+                });
               });
             });
           },
@@ -458,14 +472,23 @@ module.exports = {
         });
       });
   },
-  getUsers: function () {
-    this.queryUsers()
-      .then((users) => {
-        this.store.users = users;
+  getUsers: function (query) {
+    this.esSearchUsers(query)
+      .then((result) => {
+
+        var hits = _.pluck(JSON.parse(result._bodyText).hits.hits, '_source');
+
+        this.store.users = hits;
         this.setState({
           users: this.store.users
         });
-      })
+      });
+  },
+  clearUsers: function () {
+    this.store.users = [];
+    this.setState({
+      users: this.store.users
+    });
   },
   queryUser: function (id) {
     var query = new Parse.Query('User');
@@ -507,9 +530,36 @@ module.exports = {
 
     return query.find();
   },
-  queryUsers: function () {
-    var query = (new Parse.Query('User'))
+  esIndexUser: function (body) {
+    return fetch(config.elasticsearch.url + '/bunches/users/', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+  },
+  esSearchUsers: function (query) {
 
-    return query.find();
+    var body;
+
+    if (query) {
+      body = {
+        query : {
+          multi_match : {
+            query : query,
+            fields: ['name', 'handle']
+          }
+        }
+      }
+    } else {
+      body = {
+        query : {
+          match_all : {}
+        }
+      };
+    }
+
+    return fetch(config.elasticsearch.url + '/bunches/users/_search', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
   },
 }
