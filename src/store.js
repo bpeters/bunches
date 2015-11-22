@@ -39,6 +39,7 @@ module.exports = {
     user: null,
     bunch: null,
     chats: [],
+    users: [],
     userChats: [],
     messages: [],
     newChat: null,
@@ -174,14 +175,14 @@ module.exports = {
                 if (!_.find(messages, {'key' : k})) {
                   v.key = k;
 
-                  this.setItem(key, k);
+                  //this.setItem(key, k);
                   messages.push(v);
                 }
 
               });
 
               if (!chat) {
-                this.setItem(this.store.bunch.id, key);
+                //this.setItem(this.store.bunch.id, key);
 
                 var chat = _.find(this.store.chats, {'id' : key});
 
@@ -451,13 +452,20 @@ module.exports = {
           return _.indexOf(chatIds, message.chat.id) >= 0;
         });
 
-        console.log(messages);
-
         this.store.profileMessages = messages;
         this.setState({
           profileMessages: this.store.profileMessages
         });
       });
+  },
+  getUsers: function () {
+    this.queryUsers()
+      .then((users) => {
+        this.store.users = users;
+        this.setState({
+          users: this.store.users
+        });
+      })
   },
   queryUser: function (id) {
     var query = new Parse.Query('User');
@@ -496,6 +504,11 @@ module.exports = {
     var query = (new Parse.Query('Chat'))
       .equalTo('createdBy', user)
       .include('createdBy')
+
+    return query.find();
+  },
+  queryUsers: function () {
+    var query = (new Parse.Query('User'))
 
     return query.find();
   },

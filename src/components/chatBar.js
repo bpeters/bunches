@@ -12,6 +12,7 @@ var {
   TouchableOpacity,
   ScrollView,
   Text,
+  ListView,
 } = React;
 
 var IconButton = require('../elements/iconButton');
@@ -75,6 +76,7 @@ module.exports = React.createClass({
   getInitialState: function () {
     return {
       message: null,
+      isMention: false,
     };
   },
   inputFocused: function (refName) {
@@ -91,6 +93,24 @@ module.exports = React.createClass({
       this.refs.scrollView.getScrollResponder().scrollTo(0, 0);
     }, 50);
   },
+  onChangeText: function (message) {
+
+    var words = _.words(message, /[^, ]+/g);
+    var mention;
+
+    if (_.includes(message, '@')) {
+      mention = _.chain(words)
+        .find((word) => {
+          return _.includes(word, '@');
+        })
+        .value();
+    }
+
+    this.setState({
+      message: message,
+      mention: mention,
+    });
+  },
   addChatMessage: function() {
 
     if (this.props.createMessage) {
@@ -105,7 +125,16 @@ module.exports = React.createClass({
       message: null
     });
   },
+  renderMentions: function () {
+    return (
+      <MentionContainer
+        store={this.props.store}
+      />
+    );
+  },
   render: function() {
+    console.log(this.state.mention);
+
     return (
       <ScrollView
         ref='scrollView'
@@ -118,7 +147,7 @@ module.exports = React.createClass({
           <View style={Styles.wrap}>
             <TextInput
               style={Styles.input}
-              onChangeText={(message) => this.setState({message})}
+              onChangeText={(message) => {this.onChangeText(message)}}
               onSubmitEditing={() => {
                 if (_.trim(this.state.message)) {
                   this.addChatMessage();

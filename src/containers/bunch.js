@@ -95,6 +95,7 @@ module.exports = React.createClass({
           user={this.props.store.user}
           createChat={this.createChat}
           onPress={this.onCameraActionButtonPress}
+          store={this.props.store}
         >
           <BunchContainer
             navigator={this.props.navigator}
