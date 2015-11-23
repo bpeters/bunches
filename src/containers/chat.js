@@ -100,7 +100,9 @@ module.exports = React.createClass({
           onPress={() => {
             this.onCameraActionButtonPress(chat)}
           }
-          height={0}
+          store={this.props.store}
+          getUsers={this.props.actions.getUsers}
+          clearUsers={this.props.actions.clearUsers}
         >
           <ChatContainer
             user={this.props.store.user}

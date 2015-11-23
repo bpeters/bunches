@@ -275,7 +275,7 @@ module.exports = React.createClass({
           <View style={Styles.static}>
             <TouchableOpacity onPress={this.onCamera}>
               <View style={Styles.body}>
-                {this.props.store.user.image ? this.renderImage() : this.renderIcon()}
+                {this.props.store.user.image || this.state.image ? this.renderImage() : this.renderIcon()}
               </View>
             </TouchableOpacity>
             <View style={Styles.info}>

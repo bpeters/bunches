@@ -39,6 +39,7 @@ module.exports = {
     user: null,
     bunch: null,
     chats: [],
+    users: [],
     userChats: [],
     messages: [],
     newChat: null,
@@ -103,7 +104,14 @@ module.exports = {
   refreshUserChats: function () {
     return this.queryUserChats()
       .then((result) => {
-        this.store.userChats = result;
+
+        var chatIds = _.pluck(this.store.chats, 'id');
+
+        var userChats = _.filter(result, (chat) => {
+          return _.indexOf(chatIds, chat.get('chat').id) >= 0;
+        });
+
+        this.store.userChats = userChats;
         this.setState({
           userChats: this.store.userChats
         });
@@ -174,14 +182,14 @@ module.exports = {
                 if (!_.find(messages, {'key' : k})) {
                   v.key = k;
 
-                  this.setItem(key, k);
+                  //this.setItem(key, k);
                   messages.push(v);
                 }
 
               });
 
               if (!chat) {
-                this.setItem(this.store.bunch.id, key);
+                //this.setItem(this.store.bunch.id, key);
 
                 var chat = _.find(this.store.chats, {'id' : key});
 
@@ -335,15 +343,22 @@ module.exports = {
             })
             .dispatch()
             .then(() => {
+              user.objectId = user.id;
               this.initStore(user);
 
               this.store.user = user;
               this.store.bunch = bunch;
 
-              this.setState({
-                user: this.store.user,
-                bunch: this.store.bunch,
-                loading: false,
+              this.esIndexUser(user.id, {
+                name: params.name,
+                handle: params.username,
+              })
+              .then(() => {
+                this.setState({
+                  user: this.store.user,
+                  bunch: this.store.bunch,
+                  loading: false,
+                });
               });
             });
           },
@@ -407,12 +422,28 @@ module.exports = {
       ParseReact.Mutation.Set(this.state.user, changes)
       .dispatch()
       .then((user) => {
-        this.store.user = user;
-        this.setState({
-          user: this.store.user,
-          loading: false,
-          success: true,
-        });
+
+        if (field === 'handle') {
+          this.esUpdateUser(user.objectId, {
+            'handle': value
+          })
+          .then(() => {
+            this.store.user = user;
+            this.setState({
+              user: this.store.user,
+              loading: false,
+              success: true,
+            });
+          });
+        } else {
+          this.store.user = user;
+          this.setState({
+            user: this.store.user,
+            loading: false,
+            success: true,
+          });
+        }
+
       }, (err) => {
         this.handleParseError(err);
       });
@@ -451,13 +482,29 @@ module.exports = {
           return _.indexOf(chatIds, message.chat.id) >= 0;
         });
 
-        console.log(messages);
-
         this.store.profileMessages = messages;
         this.setState({
           profileMessages: this.store.profileMessages
         });
       });
+  },
+  getUsers: function (query) {
+    this.esSearchUsers(query)
+      .then((result) => {
+
+        var hits = _.pluck(JSON.parse(result._bodyText).hits.hits, '_source');
+
+        this.store.users = hits;
+        this.setState({
+          users: this.store.users
+        });
+      });
+  },
+  clearUsers: function () {
+    this.store.users = [];
+    this.setState({
+      users: this.store.users
+    });
   },
   queryUser: function (id) {
     var query = new Parse.Query('User');
@@ -498,5 +545,45 @@ module.exports = {
       .include('createdBy')
 
     return query.find();
+  },
+  esIndexUser: function (id, body) {
+    return fetch(config.elasticsearch.url + '/bunches/users/'+ id, {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+  },
+  esUpdateUser: function (id, changes) {
+    return fetch(config.elasticsearch.url + '/bunches/users/' + id + '/_update', {
+      method: 'POST',
+      body: JSON.stringify({
+        doc : changes
+      }),
+    });
+  },
+  esSearchUsers: function (query) {
+
+    var body;
+
+    if (query) {
+      body = {
+        query : {
+          multi_match : {
+            query : query,
+            fields: ['name', 'handle']
+          }
+        }
+      }
+    } else {
+      body = {
+        query : {
+          match_all : {}
+        }
+      };
+    }
+
+    return fetch(config.elasticsearch.url + '/bunches/users/_search', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
   },
 }

@@ -9,6 +9,7 @@ var PopImage = require('../elements/popImage');
 var EnlargePhoto = require('../containers/enlargePhoto');
 var InvertibleScrollView = require('react-native-invertible-scroll-view');
 var Profile = require('../containers/profile');
+var Message = require('../elements/message');
 
 var defaultStyles = require('../styles');
 
@@ -77,12 +78,6 @@ var Styles = StyleSheet.create({
     alignItems: 'stretch',
     paddingTop: 8,
     paddingRight: 16,
-  },
-  chatText: {
-    color: defaultStyles.dark,
-    fontFamily: 'Roboto-Light',
-    fontSize: 14,
-    lineHeight: 18,
   },
   break: {
     flex: 1,
@@ -164,9 +159,7 @@ module.exports = React.createClass({
   renderMessage: function (message) {
     return (
       <View style={Styles.chat}>
-        <Text style={Styles.chatText}>
-          {message}
-        </Text>
+        <Message message={message} />
       </View>
     );
   },

@@ -147,7 +147,7 @@ module.exports= React.createClass({
       {
         name: 'Log Out',
         onPress: () => {
-          this.props.navigator.push({
+          this.props.navigator.replace({
             name: 'landing',
             component: Landing
           });

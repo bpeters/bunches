@@ -7,6 +7,7 @@ var Avatar = require('../elements/avatar');
 var Timer = require('../elements/timer');
 var Counter = require('../elements/counter');
 var PopImage = require('../elements/popImage');
+var Message = require('../elements/message');
 
 var defaultStyles = require('../styles');
 
@@ -95,14 +96,8 @@ var Styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderLeftWidth: 1,
     borderRightWidth: 1,
-  },
-  message: {
-    marginLeft: 16,
-    marginTop: 16,
-    marginRight: 16,
-    fontSize: 14,
-    fontFamily: 'Roboto-Light',
-    color: defaultStyles.dark,
+    paddingLeft: 16,
+    paddingTop: 16,
   },
 });
 
@@ -126,9 +121,7 @@ module.exports = React.createClass({
   renderMessage: function (message) {
     return (
       <View style={Styles.rowMessage}>
-        <Text style={Styles.message}>
-          {message}
-        </Text>
+        <Message message={message} />
       </View>
     );
   },

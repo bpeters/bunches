@@ -12,9 +12,11 @@ var {
   TouchableOpacity,
   ScrollView,
   Text,
+  ListView,
 } = React;
 
 var IconButton = require('../elements/iconButton');
+var MentionContainer = require('./mentionContainer');
 
 var Styles = StyleSheet.create({
   scroll: {
@@ -69,12 +71,14 @@ module.exports = React.createClass({
     chat: React.PropTypes.object,
     createMessage: React.PropTypes.func,
     createChat: React.PropTypes.func,
-    height: React.PropTypes.number,
     onPress: React.PropTypes.func,
+    getUsers: React.PropTypes.func,
+    clearUsers: React.PropTypes.func,
   },
   getInitialState: function () {
     return {
       message: null,
+      mention: null,
     };
   },
   inputFocused: function (refName) {
@@ -91,6 +95,24 @@ module.exports = React.createClass({
       this.refs.scrollView.getScrollResponder().scrollTo(0, 0);
     }, 50);
   },
+  onChangeText: function (message) {
+
+    var words = _.words(message, /[^, ]+/g);
+    var mention;
+
+    if (_.includes(words[words.length - 1], '@')) {
+      mention = words[words.length - 1];
+
+      this.props.getUsers(_.trimLeft(mention, '@'));
+    } else {
+      this.props.clearUsers();
+    }
+
+    this.setState({
+      message: message,
+      mention: mention,
+    });
+  },
   addChatMessage: function() {
 
     if (this.props.createMessage) {
@@ -105,6 +127,24 @@ module.exports = React.createClass({
       message: null
     });
   },
+  onPressMention: function (mention) {
+    var message = _.clone(this.state.message) + mention.handle + ' ';
+
+    this.setState({
+      message: message,
+      mention: null,
+    });
+
+    this.props.clearUsers();
+  },
+  renderMentions: function () {
+    return (
+      <MentionContainer
+        store={this.props.store}
+        onPressMention={this.onPressMention}
+      />
+    );
+  },
   render: function() {
     return (
       <ScrollView
@@ -114,11 +154,12 @@ module.exports = React.createClass({
         scrollEnabled={false}
       >
         {this.props.children}
+        {this.state.mention ? this.renderMentions() : null}
         <View ref='chat' style={Styles.body}>
           <View style={Styles.wrap}>
             <TextInput
               style={Styles.input}
-              onChangeText={(message) => this.setState({message})}
+              onChangeText={(message) => {this.onChangeText(message)}}
               onSubmitEditing={() => {
                 if (_.trim(this.state.message)) {
                   this.addChatMessage();
