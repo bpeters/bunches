@@ -274,6 +274,10 @@ module.exports = {
     });
   },
   createImageMessage: function (chat, photo) {
+    this.setState({
+      loading: true,
+    });
+
     this.uploadImage(photo)
       .then((image) => {
         this.createMessage(chat, {

@@ -8,6 +8,7 @@ var NavBar = require('../components/navBar');
 var NavBarChat = require('../components/navBarChat');
 var ChatContainer = require('../components/chatContainer');
 var ChatBar = require('../components/chatBar');
+var Success = require('../elements/success');
 
 var defaultStyles = require('../styles');
 
@@ -41,6 +42,12 @@ var Styles = StyleSheet.create({
     top: defaultStyles.navBarHeight + defaultStyles.navBarHeight - 28,
     right: (defaultStyles.bodyWidth / 2) - 28,
   },
+  successView: {
+    position: 'absolute',
+    backgroundColor: 'transparent',
+    top: defaultStyles.navBarHeight + defaultStyles.navBarHeight - 28,
+    left: (defaultStyles.bodyWidth / 2) - 28
+  },
 });
 
 module.exports = React.createClass({
@@ -66,6 +73,17 @@ module.exports = React.createClass({
     return (
       <View style={Styles.loadingView}>
         <Loading />
+      </View>
+    );
+  },
+  renderSuccess: function () {
+    setTimeout(() => {
+      this.props.actions.clearSuccess();
+    }, 3000);
+
+    return (
+      <View style={Styles.successView}>
+        <Success />
       </View>
     );
   },
@@ -125,6 +143,7 @@ module.exports = React.createClass({
           </ChatContainer>
         </ChatBar>
         {this.props.store.loading ? this.renderLoading() : null}
+        {this.props.store.success ? this.renderSuccess() : null}
       </View>
     );
   }
