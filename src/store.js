@@ -343,13 +343,13 @@ module.exports = {
             })
             .dispatch()
             .then(() => {
+              user.objectId = user.id;
               this.initStore(user);
 
               this.store.user = user;
               this.store.bunch = bunch;
 
-              this.esIndexUser({
-                user_id: user.id,
+              this.esIndexUser(user.id, {
                 name: params.name,
                 handle: params.username,
               })
@@ -422,12 +422,28 @@ module.exports = {
       ParseReact.Mutation.Set(this.state.user, changes)
       .dispatch()
       .then((user) => {
-        this.store.user = user;
-        this.setState({
-          user: this.store.user,
-          loading: false,
-          success: true,
-        });
+
+        if (field === 'handle') {
+          this.esUpdateUser(user.objectId, {
+            'handle': value
+          })
+          .then(() => {
+            this.store.user = user;
+            this.setState({
+              user: this.store.user,
+              loading: false,
+              success: true,
+            });
+          });
+        } else {
+          this.store.user = user;
+          this.setState({
+            user: this.store.user,
+            loading: false,
+            success: true,
+          });
+        }
+
       }, (err) => {
         this.handleParseError(err);
       });
@@ -530,10 +546,18 @@ module.exports = {
 
     return query.find();
   },
-  esIndexUser: function (body) {
-    return fetch(config.elasticsearch.url + '/bunches/users/', {
+  esIndexUser: function (id, body) {
+    return fetch(config.elasticsearch.url + '/bunches/users/'+ id, {
       method: 'POST',
       body: JSON.stringify(body),
+    });
+  },
+  esUpdateUser: function (id, changes) {
+    return fetch(config.elasticsearch.url + '/bunches/users/' + id + '/_update', {
+      method: 'POST',
+      body: JSON.stringify({
+        doc : changes
+      }),
     });
   },
   esSearchUsers: function (query) {
