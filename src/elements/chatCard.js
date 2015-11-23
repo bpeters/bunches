@@ -34,7 +34,7 @@ var Styles = StyleSheet.create({
     borderTopWidth: 1,
     borderLeftWidth: 1,
     borderRightWidth: 1,
-    flex:1,
+    flex: 1,
     flexDirection:'row',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
@@ -86,7 +86,6 @@ var Styles = StyleSheet.create({
     borderRightWidth: 1,
   },
   rowMessage: {
-    height: 56,
     backgroundColor: defaultStyles.white,
     borderBottomLeftRadius: 4,
     borderBottomRightRadius: 4,
@@ -98,6 +97,7 @@ var Styles = StyleSheet.create({
     borderRightWidth: 1,
     paddingLeft: 16,
     paddingTop: 16,
+    paddingBottom: 16,
   },
 });
 
