@@ -573,7 +573,8 @@ module.exports = {
         query : {
           multi_match : {
             query : query,
-            fields: ['name', 'handle']
+            fields: ['name', 'handle'],
+            fuzziness: 'AUTO',
           }
         }
       }

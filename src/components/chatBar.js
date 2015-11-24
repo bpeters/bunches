@@ -128,7 +128,11 @@ module.exports = React.createClass({
     });
   },
   onPressMention: function (mention) {
-    var message = _.clone(this.state.message) + mention.handle + ' ';
+
+    var message = _.clone(this.state.message);
+    var end = message.indexOf(this.state.mention);
+
+    message = message.substring(0, end) + '@' + mention.handle + ' ';
 
     this.setState({
       message: message,
