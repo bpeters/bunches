@@ -114,6 +114,7 @@ module.exports = React.createClass({
     messages: React.PropTypes.array,
     getProfileChats: React.PropTypes.func,
     queryUser: React.PropTypes.func,
+    onPressMention: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -159,7 +160,10 @@ module.exports = React.createClass({
   renderMessage: function (message) {
     return (
       <View style={Styles.chat}>
-        <Message message={message} />
+        <Message
+          message={message}
+          onPressMention={this.props.onPressMention}
+        />
       </View>
     );
   },

@@ -38,6 +38,7 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     message: React.PropTypes.string,
+    onPressMention: React.PropTypes.func,
   },
   onPressLink: function (word) {
     LinkingIOS.openURL(word);
@@ -52,7 +53,7 @@ module.exports = React.createClass({
     var message = _.map(words, (word) => {
       if (_.includes(word, '@')) {
         return (
-          <Text style={Styles.mention}>
+          <Text style={Styles.mention} onPress={() => {this.props.onPressMention(word)}}>
             {word + ' '}
           </Text>
         );

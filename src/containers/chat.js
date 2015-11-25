@@ -10,6 +10,8 @@ var ChatContainer = require('../components/chatContainer');
 var ChatBar = require('../components/chatBar');
 var Success = require('../elements/success');
 
+var ChatStore = require('../stores/chat');
+
 var defaultStyles = require('../styles');
 
 var {
@@ -51,12 +53,16 @@ var Styles = StyleSheet.create({
 });
 
 module.exports = React.createClass({
+  mixins: [ChatStore],
   propTypes: {
     navigator: React.PropTypes.object,
     route: React.PropTypes.object,
     store: React.PropTypes.object,
     actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
+  },
+  getInitialState: function() {
+    return this.store;
   },
   onCameraActionButtonPress: function (chat) {
     this.props.navigator.push({
@@ -121,6 +127,7 @@ module.exports = React.createClass({
           store={this.props.store}
           getUsers={this.props.actions.getUsers}
           clearUsers={this.props.actions.clearUsers}
+          mention={this.state.mention}
         >
           <ChatContainer
             user={this.props.store.user}
@@ -128,6 +135,7 @@ module.exports = React.createClass({
             navigator={this.props.navigator}
             getProfileChats={this.props.actions.getProfileChats}
             queryUser={this.props.actions.queryUser}
+            onPressMention={this.actions.setMention}
           >
             <NavBar
               title={title}
