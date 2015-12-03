@@ -14,6 +14,7 @@ var Splash = require('./elements/splash');
 var {
   View,
   Navigator,
+  AppStateIOS,
 } = React;
 
 module.exports= React.createClass({
@@ -26,6 +27,7 @@ module.exports= React.createClass({
   },
   componentDidMount: function () {
     this.initStore(this.props.user);
+    AppStateIOS.addEventListener('change', this.refreshUserStatus);
   },
   renderScene: function(route, navigator) {
     var Component = route.component;

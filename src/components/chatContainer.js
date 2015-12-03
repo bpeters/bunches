@@ -191,6 +191,7 @@ module.exports = React.createClass({
           <Avatar
             onPress={() => this.onAvatarPress(rowData)}
             imageURL={rowData.userImageURL}
+            online={rowData.online}
           />
           <View style={Styles.info}>
             <View style={Styles.user}>

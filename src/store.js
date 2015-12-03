@@ -67,8 +67,9 @@ module.exports = {
         .then((result) => {
           this.store.chats = result;
 
-          this.listenToFirebase();
+          this.listenToChats();
           this.refreshUserChats();
+          this.refreshUserStatus();
         }, (err) => {
           this.handleParseError(err);
       });
@@ -90,6 +91,39 @@ module.exports = {
     };
 
     this.setState(this.store);
+  },
+  deleteUserStatus: function(){
+    var url = config.firebase.url + '/bunch/' + this.store.bunch.id + '/status/';
+    var ref = new Firebase(url);
+    var uid = this.store.user.objectId;
+    var bunchId = this.store.bunch.id;
+    var keys = [];
+      ref.once('value', function(snapshot){
+        snapshot.forEach(function(snap) {
+          if(snap.val() == uid){
+            keys.push(snap.key());
+          }
+        })
+      })
+    _.forEach(keys, function(k){
+      console.log(k);
+      var url = config.firebase.url + '/bunch/' + bunchId + '/status/' + k;
+      var ref = new Firebase(url);
+      ref.remove();
+    })
+  },
+  addUserStatus: function () {
+    var url = config.firebase.url + '/bunch/' + this.store.bunch.id + '/status/';
+    var ref = new Firebase(url);
+    var uid = this.store.user.objectId;
+    ref.push(uid);
+  },
+  refreshUserStatus: function (currentAppState){
+    if(currentAppState == 'background'){
+      this.deleteUserStatus();
+    } else {
+      this.addUserStatus()
+    }
   },
   refreshChats: function () {
     return this.queryChats(this.store.bunch)
@@ -161,11 +195,13 @@ module.exports = {
         console.log(err);
       });
   },
-  listenToFirebase: function () {
+  listenToChats: function () {
     var url = config.firebase.url + '/bunch/' + this.store.bunch.id;
 
     new Firebase(url).on('value', (snapshot) => {
       var data = snapshot.val().chat;
+
+      var status = snapshot.val().status;
 
       this.refreshChats()
         .then(() => {
@@ -181,6 +217,13 @@ module.exports = {
 
                 if (!_.find(messages, {'key' : k})) {
                   v.key = k;
+
+                  // Check user online/offline status
+                  _.forEach(status, (i,j) => {
+                    if(v.uid == i){
+                      v.online = true;
+                    } 
+                  })
 
                   //this.setItem(key, k);
                   messages.push(v);
@@ -403,6 +446,7 @@ module.exports = {
   },
   logoutUser: function () {
     Parse.User.logOut();
+    this.deleteUserStatus();
     this.tearDownStore();
   },
   checkUsername: function (username) {
