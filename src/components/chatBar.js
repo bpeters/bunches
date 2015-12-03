@@ -74,6 +74,7 @@ module.exports = React.createClass({
     onPress: React.PropTypes.func,
     getUsers: React.PropTypes.func,
     clearUsers: React.PropTypes.func,
+    mention: React.PropTypes.string,
   },
   getInitialState: function () {
     return {
