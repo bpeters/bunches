@@ -34,6 +34,27 @@ function calcPowerScore (chat, messages) {
   return Math.round(100 * score);
 }
 
+function handleNotification (message, user) {
+
+  var words = _.words(message.message, /[^, ]+/g);
+
+  var mention = _.find(words, (word) => {
+    return _.includes(word, '@');
+  });
+
+  mention = mention ? mention.substring(1, mention.length) : null;
+
+  if (user.objectId !== message.uid) {
+    message.new = true;
+  }
+
+  if (mention === user.handle) {
+    message.notify = true;
+  }
+
+  return message;
+}
+
 module.exports = {
   store: {
     user: null,
@@ -181,6 +202,8 @@ module.exports = {
 
                 if (!_.find(messages, {'key' : k})) {
                   v.key = k;
+
+                  v = handleNotification(v, this.store.user);
 
                   //this.setItem(key, k);
                   messages.push(v);
