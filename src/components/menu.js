@@ -2,10 +2,11 @@
 
 var React = require('react-native');
 var _ = require('lodash');
-var moment = require('moment');
 
-var Landing = require('../containers/landing');
 var Settings = require('../containers/settings');
+var Avatar = require('../elements/avatar');
+var IconButton = require('../elements/iconButton');
+var EnlargePhoto = require('../containers/enlargePhoto');
 
 var defaultStyles = require('../styles');
 
@@ -19,13 +20,42 @@ var {
 
 var Styles = StyleSheet.create({
   body: {
-    backgroundColor: defaultStyles.medium,
+    backgroundColor: defaultStyles.dark,
     height: defaultStyles.window.height,
     width: defaultStyles.bodyWidth,
     paddingBottom: 16,
   },
+  profile: {
+    marginTop: 16,
+    marginLeft: 16,
+    width: defaultStyles.bodyWidth - 32 - 16 - 16 - 24,
+    borderBottomColor: defaultStyles.darkHighlight,
+    borderBottomWidth: 2,
+    paddingBottom: 16,
+  },
+  profileInfo: {
+    flexDirection: 'row',
+  },
+  info: {
+    marginLeft: 16,
+  },
+  iconView: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  name: {
+    fontSize: 14,
+    fontFamily: 'Roboto-Medium',
+    color: defaultStyles.gray,
+    marginBottom: 8,
+  },
+  handle: {
+    fontSize: 14,
+    fontFamily: 'Roboto-Regular',
+    color: defaultStyles.darkMedium,
+  },
   list: {
-    marginTop: 0,
+    height: defaultStyles.window.height - 78,
   },
   row: {
     flexDirection: 'row',
@@ -37,7 +67,8 @@ var Styles = StyleSheet.create({
   rowText: {
     flex: 1,
     fontSize: 14,
-    color: defaultStyles.light,
+    fontFamily: 'Roboto-Regular',
+    color: defaultStyles.gray,
   },
   section: {
     flexDirection: 'row',
@@ -50,15 +81,14 @@ var Styles = StyleSheet.create({
   sectionText: {
     flex: 1,
     fontSize: 14,
-    fontWeight: 'bold',
-    color: defaultStyles.light,
+    fontFamily: 'Roboto-Regular',
+    color: defaultStyles.darkMedium,
   },
 });
 
 module.exports= React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
-    user: React.PropTypes.object,
     actions: React.PropTypes.object,
     store: React.PropTypes.object,
   },
@@ -69,6 +99,13 @@ module.exports= React.createClass({
         sectionHeaderHasChanged: (s1, s2) => s1 !== s2
       }),
     };
+  },
+  onPress: function () {
+    this.props.navigator.push({
+      name: 'settings',
+      component: Settings,
+      hasSideMenu: true,
+    });
   },
   onPressRow: function (rowData) {
     var Bunch = require('../containers/bunch');
@@ -88,6 +125,16 @@ module.exports= React.createClass({
         chatId: rowData.id,
       });
     }
+  },
+  onAvatarPress: function () {
+    var imageURL = this.props.store.user.image.url();
+
+    this.props.navigator.push({
+      name: "enlarge photo",
+      component: EnlargePhoto,
+      hasSideMenu: false,
+      photo: imageURL,
+    });
   },
   renderRow: function(rowData) {
     var name = _.get(rowData, 'attributes.name') || _.get(rowData, 'name');
@@ -133,30 +180,34 @@ module.exports= React.createClass({
       })
       .value();
 
-    dataBlob['Account'] = [
-      {
-        name: 'Settings',
-        onPress: () => {
-          this.props.navigator.push({
-            name: 'settings',
-            component: Settings,
-            hasSideMenu: true,
-          });
-        }
-      },
-      {
-        name: 'Log Out',
-        onPress: () => {
-          this.props.navigator.replace({
-            name: 'landing',
-            component: Landing
-          });
-        }
-      },
-    ];
+    var user = this.props.store.user;
 
     return (
       <View style={Styles.body}>
+        <View style={Styles.profile}>
+          <View style={Styles.profileInfo}>
+            <Avatar
+              onPress={() => this.onAvatarPress()}
+              imageURL={_.get(user, 'image') ? user.image.url() : ''}
+            />
+            <View style={Styles.info}>
+              <Text style={Styles.name}>
+                {_.get(user, 'name')}
+              </Text>
+              <Text style={Styles.handle}>
+                {'@' + _.get(user, 'handle')}
+              </Text>
+            </View>
+            <View style={Styles.iconView}>
+              <IconButton
+                onPress={this.onPress}
+                icon='material|settings'
+                size={24}
+                color={defaultStyles.darkMedium}
+              />
+            </View>
+          </View>
+        </View>
         <ListView
           style={Styles.list}
           dataSource={this.state.dataSource.cloneWithRowsAndSections(dataBlob)}

@@ -385,12 +385,14 @@ module.exports = {
 
     Parse.User.logIn(email, password, {
       success: (user) => {
-        this.initStore(user);
+        var newUser = _.assign(user, user.attributes);
 
-        this.store.user = user;
+        this.initStore(newUser);
+
+        this.store.user = newUser;
 
         this.setState({
-          user: this.store.user,
+          user: this.store.newUser,
           loading: false,
         });
       },

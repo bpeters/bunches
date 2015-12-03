@@ -6,6 +6,7 @@ var _ = require('lodash');
 var NavBar = require('../components/navBar');
 var Button = require('../elements/button');
 var Success = require('../elements/success');
+var Landing = require('../containers/landing');
 
 var defaultStyles = require('../styles');
 
@@ -200,6 +201,13 @@ module.exports = React.createClass({
     }
 
   },
+  onlogOut: function () {
+    this.props.navigator.replace({
+      name: 'landing',
+      component: Landing,
+      hasSideMenu: false,
+    })
+  },
   renderIcon: function() {
     return (
       <Icon
@@ -240,7 +248,7 @@ module.exports = React.createClass({
   },
   renderButton: function () {
     return (
-      <View style={Styles.buttonView}>
+      <View>
         <Button
           onPress={this.onUpdateAccount}
           title='SAVE'
@@ -307,8 +315,16 @@ module.exports = React.createClass({
             value={this.state.password}
             secureTextEntry={true}
           />
+          {this.props.store.loading ? null : this.renderButton()}
         </View>
-        {this.props.store.loading ? this.renderLoading() : this.renderButton()}
+          <View style={Styles.buttonView}>
+            <Button
+              onPress={this.onlogOut}
+              title='LOG OUT'
+              color={defaultStyles.blue}
+            />
+          </View>
+        {this.props.store.loading ? this.renderLoading() : null}
         {this.props.store.success ? this.renderSuccess() : null}
       </View>
     );

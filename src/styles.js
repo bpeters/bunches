@@ -22,8 +22,12 @@ module.exports = {
   yellow: '#F9CA6B',
   green: '#02D04E',
   background: '#F1F5F7',
-  light: '#FAFAFA',
-  white: '#ffffff',
-  dark: '#2e2e2e',
   medium: '#b4b4b4',
+  light: '#FAFAFA',
+
+  dark: '#222222',
+  darkMedium: '#5F5F5F',
+  darkHighlight: '#1E1E1E',
+  gray: '#A8A7A4',
+  white: '#FFFFFF',
 };

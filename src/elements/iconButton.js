@@ -18,6 +18,7 @@ module.exports = React.createClass({
     onPress: React.PropTypes.func,
     icon: React.PropTypes.string,
     size: React.PropTypes.number,
+    color: React.PropTypes.string,
   },
   render: function() {
 
@@ -33,7 +34,7 @@ module.exports = React.createClass({
         <Icon
           name={this.props.icon}
           size={this.props.size || 24}
-          color='#ffffff'
+          color={this.props.color || defaultStyles.white}
           style={Styles.icon}
         />
       </TouchableOpacity>
