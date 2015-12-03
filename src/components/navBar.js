@@ -96,7 +96,7 @@ var NavBar = React.createClass({
 });
 
 NavBar.contextTypes = {
-  menuActions: React.PropTypes.object.isRequired
+  menuActions: React.PropTypes.object
 };
 
 module.exports = NavBar;

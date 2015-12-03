@@ -49,22 +49,22 @@ module.exports = React.createClass({
 
      var urlRegex = new RegExp(urlExpression);
 
-    var message = _.map(words, (word) => {
+    var message = _.map(words, (word, i) => {
       if (_.includes(word, '@')) {
         return (
-          <Text style={Styles.mention}>
+          <Text key={i} style={Styles.mention}>
             {word + ' '}
           </Text>
         );
       } else if (word.match(urlRegex)) {
         return (
-          <Text style={Styles.link} onPress={() => {this.onPressLink(word)}}>
+          <Text key={i} style={Styles.link} onPress={() => {this.onPressLink(word)}}>
             {word + ' '}
           </Text>
         );
       } else {
         return (
-          <Text style={Styles.word}>
+          <Text key={i} style={Styles.word}>
             {word + ' '}
           </Text>
         );

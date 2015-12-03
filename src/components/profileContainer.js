@@ -38,7 +38,7 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
-    chats: React.PropTypes.object,
+    chats: React.PropTypes.array,
   },
   getInitialState: function() {
     return {
