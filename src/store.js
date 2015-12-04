@@ -13,6 +13,7 @@ var nouns = require('./assets/nouns');
 
 var {
   AsyncStorage,
+  AppStateIOS,
 } = React;
 
 function calcPowerScore (chat, messages) {
@@ -69,7 +70,7 @@ module.exports = {
 
           this.listenToChats();
           this.refreshUserChats();
-          this.refreshUserStatus();
+          this.listenToUserStatus();
         }, (err) => {
           this.handleParseError(err);
       });
@@ -92,38 +93,37 @@ module.exports = {
 
     this.setState(this.store);
   },
+  listenToUserStatus: function (currentAppState){
+
+    AppStateIOS.addEventListener('change', (currentAppState) => {
+      if (currentAppState === 'background'){
+        this.deleteUserStatus();
+      } else {
+        this.addUserStatus()
+      }
+    });
+
+  },
   deleteUserStatus: function(){
     var url = config.firebase.url + '/bunch/' + this.store.bunch.id + '/status/';
-    var ref = new Firebase(url);
+    var getStatus = new Firebase(url);
     var uid = this.store.user.objectId;
     var bunchId = this.store.bunch.id;
-    var keys = [];
-      ref.once('value', function(snapshot){
-        snapshot.forEach(function(snap) {
-          if(snap.val() == uid){
-            keys.push(snap.key());
-          }
-        })
+
+    getStatus.once('value', (snapshot) => {
+      _.forEach(snapshot, (snap) => {
+        if (snap.val() === uid) {
+          new Firebase(config.firebase.url + '/bunch/' + bunchId + '/status/' + snap.key())
+            .remove();
+        }
       })
-    _.forEach(keys, function(k){
-      console.log(k);
-      var url = config.firebase.url + '/bunch/' + bunchId + '/status/' + k;
-      var ref = new Firebase(url);
-      ref.remove();
-    })
+    });
   },
   addUserStatus: function () {
     var url = config.firebase.url + '/bunch/' + this.store.bunch.id + '/status/';
     var ref = new Firebase(url);
     var uid = this.store.user.objectId;
     ref.push(uid);
-  },
-  refreshUserStatus: function (currentAppState){
-    if(currentAppState == 'background'){
-      this.deleteUserStatus();
-    } else {
-      this.addUserStatus()
-    }
   },
   refreshChats: function () {
     return this.queryChats(this.store.bunch)
@@ -219,11 +219,11 @@ module.exports = {
                   v.key = k;
 
                   // Check user online/offline status
-                  _.forEach(status, (i,j) => {
-                    if(v.uid == i){
+                  _.forEach(status, (i, j) => {
+                    if (v.uid === i){
                       v.online = true;
-                    } 
-                  })
+                    }
+                  });
 
                   //this.setItem(key, k);
                   messages.push(v);
