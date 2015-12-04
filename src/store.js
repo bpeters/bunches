@@ -98,7 +98,6 @@ module.exports = {
   listenToUserStatus: function () {
 
     AppStateIOS.addEventListener('change', (currentAppState) => {
-        console.log(currentAppState);
       if (currentAppState === 'background'){
         this.deleteUserStatus();
       } else {
