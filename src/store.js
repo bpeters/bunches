@@ -254,9 +254,13 @@ module.exports = {
             .map((message) => {
 
               _.forEach(message.messages, (m) => {
+                var set;
                 _.forEach(status, (i, j) => {
                   if (m.uid === i) {
                     m.online = true;
+                    set = true;
+                  } else if (!set) {
+                    m.online = false;
                   }
                 });
               });

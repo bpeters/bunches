@@ -72,16 +72,18 @@ module.exports = React.createClass({
   },
   renderStatus: function() {
     var color = defaultStyles.medium;
-    if(this.props.online){
+
+    if (this.props.online) {
       color = defaultStyles.green;
     }
+
     return (
       <View 
         style={[Styles.status, {
           backgroundColor: color,
         }]}
       />
-    )
+    );
   },
   render: function() {
     return (

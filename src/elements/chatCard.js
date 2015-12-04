@@ -144,7 +144,7 @@ module.exports = React.createClass({
         mostRecentMessage = message.message;
       }
 
-      if (user.id == message.uid && message.online) {
+      if (user.id === message.uid && message.online) {
         onlineStatus = message.online;
       }
 
