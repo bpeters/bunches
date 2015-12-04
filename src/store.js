@@ -360,6 +360,7 @@ module.exports = {
       messenger.push({
         uid: user.objectId || user.id,
         name: user.name,
+        handle: user.handle,
         username: user.username,
         userImageURL: user.image ? user.image.url() : null,
         imageURL: options.image ? options.image.url() : null,

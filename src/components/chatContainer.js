@@ -105,7 +105,11 @@ var Styles = StyleSheet.create({
   imageWrap: {
     paddingTop: 16,
     width: defaultStyles.bodyWidth - 16 - 40 - 16 - 16,
-  }
+  },
+  handle: {
+    marginLeft: 5,
+    color: defaultStyles.medium,
+  },
 });
 
 module.exports = React.createClass({
@@ -197,6 +201,9 @@ module.exports = React.createClass({
             <View style={Styles.user}>
               <Text style={Styles.name}>
                 {rowData.name || 'Anon'}
+              </Text>
+              <Text style={Styles.handle}>
+                {rowData.handle ? '@' + rowData.handle : ''}
               </Text>
               <View style={Styles.date}>
                 <Text style={Styles.time}>
