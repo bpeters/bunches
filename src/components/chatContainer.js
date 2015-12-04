@@ -252,8 +252,6 @@ module.exports = React.createClass({
       };
     });
 
-    console.log(messages);
-
     return (
       <View style={Styles.container}>
         <ListView
