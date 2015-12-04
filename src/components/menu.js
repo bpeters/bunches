@@ -238,8 +238,10 @@ module.exports = React.createClass({
 
     dataBlob['Chats'] = _.filter(this.props.store.messages, (message) => {
       var userIds = _.pluck(message.messages, 'uid');
-      return _.indexOf(userIds, user.objectId) >= 0;
+      return _.indexOf(userIds, (user.objectId || user.id)) >= 0;
     });
+
+    console.log(this.props.store.messages, dataBlob['Chats']);
 
     return (
       <View style={Styles.body}>

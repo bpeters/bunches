@@ -37,20 +37,22 @@ function calcPowerScore (chat, messages) {
 
 function handleNotification (message, user) {
 
-  var words = _.words(message.message, /[^, ]+/g);
+  if (user) {
+    var words = _.words(message.message, /[^, ]+/g);
 
-  var mention = _.find(words, (word) => {
-    return _.includes(word, '@');
-  });
+    var mention = _.find(words, (word) => {
+      return _.includes(word, '@');
+    });
 
-  mention = mention ? mention.substring(1, mention.length) : null;
+    mention = mention ? mention.substring(1, mention.length) : null;
 
-  if (user.objectId !== message.uid) {
-    message.new = true;
-  }
+    if (user.objectId !== message.uid) {
+      message.new = true;
+    }
 
-  if (mention === user.handle) {
-    message.notify = true;
+    if (mention === user.handle) {
+      message.notify = true;
+    }
   }
 
   return message;
@@ -74,11 +76,11 @@ module.exports = {
   initStore: function (user) {
     if (user) {
 
+      this.store.user = user;
+
       this.setState({
         loading: true,
       });
-
-      this.store.user = user;
 
       this.queryMainBunch(user)
         .then((result) => {
@@ -455,6 +457,8 @@ module.exports = {
     Parse.User.logIn(email, password, {
       success: (user) => {
         var newUser = _.assign(user, user.attributes);
+
+        console.log(newUser);
 
         this.initStore(newUser);
       },
