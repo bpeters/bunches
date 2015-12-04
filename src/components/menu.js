@@ -146,6 +146,8 @@ module.exports = React.createClass({
         hasSideMenu: true,
         chatId: rowData.id,
       });
+
+      this.props.actions.clearNotifications(rowData.id);
     }
   },
   onAvatarPress: function () {
@@ -179,11 +181,19 @@ module.exports = React.createClass({
       </TouchableOpacity>
     );
   },
+  renderCount: function (newCount) {
+    return (
+      <View style={Styles.rowCount}>
+        <Text style={Styles.rowCountText}>
+          {newCount}
+        </Text>
+      </View>
+    );
+  },
   renderChat: function (rowData) {
     var name = _.get(rowData, 'chat.attributes.name');
     var newCount = _.get(rowData, 'newCount');
 
-    console.log(newCount);
     return (
       <TouchableOpacity onPress={() => {
         if (rowData.onPress) {
@@ -197,11 +207,7 @@ module.exports = React.createClass({
             <Text style={rowData.mention ? Styles.rowTextBold : Styles.rowText }>
               {name}
             </Text>
-            <View style={Styles.rowCount}>
-              <Text style={Styles.rowCountText}>
-                {newCount}
-              </Text>
-            </View>
+            {newCount ? this.renderCount(newCount) : null}
           </View>
         </View>
       </TouchableOpacity>
@@ -230,21 +236,10 @@ module.exports = React.createClass({
 
     dataBlob['Bunches'] = [this.props.store.bunch];
 
-    dataBlob['Chats'] = _.chain(this.props.store.messages)
-      .filter((message) => {
-        var userIds = _.pluck(message.messages, 'uid');
-        return _.indexOf(userIds, user.objectId) >= 0;
-      })
-      .map((message) => {
-        message.newCount = _.sum(message.messages, (message) => {
-          return message.new ? 1 : 0;
-        });
-
-        message.mention = !!_.find(message.messages, {'notify' : true});
-
-        return message;
-      })
-      .value();
+    dataBlob['Chats'] = _.filter(this.props.store.messages, (message) => {
+      var userIds = _.pluck(message.messages, 'uid');
+      return _.indexOf(userIds, user.objectId) >= 0;
+    });
 
     return (
       <View style={Styles.body}>

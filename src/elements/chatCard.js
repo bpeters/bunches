@@ -96,6 +96,7 @@ var Styles = StyleSheet.create({
     borderLeftWidth: 1,
     borderRightWidth: 1,
     paddingLeft: 16,
+    paddingRight: 16,
     paddingTop: 16,
     paddingBottom: 16,
   },

@@ -195,33 +195,6 @@ module.exports = {
         });
     }
   },
-  getItem: function (key) {
-    return AsyncStorage.getItem(key)
-      .then((value) => {
-        return value
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  },
-  setItem: function (key, value) {
-    return AsyncStorage.setItem(key, value)
-      .then((result) => {
-        return;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  },
-  removeItem: function (key) {
-    return AsyncStorage.removeItem(key)
-      .then((result) => {
-        return;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  },
   listenToChats: function () {
     var url = config.firebase.url + '/bunch/' + this.store.bunch.id;
 
@@ -276,6 +249,9 @@ module.exports = {
           this.store.messages = _.chain(this.store.messages)
             .map((message) => {
 
+              var newCount = 0;
+              var mention;
+
               _.forEach(message.messages, (m) => {
                 var set;
                 _.forEach(status, (i, j) => {
@@ -286,7 +262,18 @@ module.exports = {
                     m.online = false;
                   }
                 });
+
+                if (m.notify) {
+                  mention = true;
+                }
+
+                if (m.new) {
+                  newCount ++;
+                }
               });
+
+              message.newCount = newCount;
+              message.mention = mention;
 
               return message;
             })
@@ -588,6 +575,19 @@ module.exports = {
       users: this.store.users
     });
   },
+  clearNotifications: function (chatId) {
+
+    _.forEach(this.store.messages, (message) => {
+      if (message.id === chatId) {
+        message.mention = false;
+        message.newCount = 0;
+      }
+    });
+
+    this.setState({
+      messages: this.store.messages
+    });
+  },
   queryUser: function (id) {
     var query = new Parse.Query('User');
 
@@ -668,5 +668,32 @@ module.exports = {
       method: 'POST',
       body: JSON.stringify(body),
     });
+  },
+  getItem: function (key) {
+    return AsyncStorage.getItem(key)
+      .then((value) => {
+        return value
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
+  setItem: function (key, value) {
+    return AsyncStorage.setItem(key, value)
+      .then((result) => {
+        return;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
+  removeItem: function (key) {
+    return AsyncStorage.removeItem(key)
+      .then((result) => {
+        return;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   },
 }
