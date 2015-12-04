@@ -99,7 +99,7 @@ module.exports = {
       if (currentAppState === 'background'){
         this.deleteUserStatus();
       } else {
-        this.addUserStatus()
+        this.addUserStatus(this.store.user.objectId);
       }
     });
 
@@ -119,10 +119,9 @@ module.exports = {
       })
     });
   },
-  addUserStatus: function () {
+  addUserStatus: function (uid) {
     var url = config.firebase.url + '/bunch/' + this.store.bunch.id + '/status/';
     var ref = new Firebase(url);
-    var uid = this.store.user.objectId;
     ref.push(uid);
   },
   refreshChats: function () {
@@ -202,6 +201,8 @@ module.exports = {
       var data = snapshot.val().chat;
 
       var status = snapshot.val().status;
+
+      console.log(status);
 
       this.refreshChats()
         .then(() => {
