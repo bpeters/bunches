@@ -34,12 +34,23 @@ var Styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
   },
+  status: {
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    borderWidth: 1,
+    borderColor: defaultStyles.white,
+  },
 });
 
 module.exports = React.createClass({
   propTypes: {
     onPress: React.PropTypes.func,
     imageURL: React.PropTypes.string,
+    online: React.PropTypes.bool,
   },
   renderIcon: function() {
     return (
@@ -59,12 +70,28 @@ module.exports = React.createClass({
       />
     );
   },
+  renderStatus: function() {
+    var color = defaultStyles.medium;
+
+    if (this.props.online) {
+      color = defaultStyles.green;
+    }
+
+    return (
+      <View 
+        style={[Styles.status, {
+          backgroundColor: color,
+        }]}
+      />
+    );
+  },
   render: function() {
     return (
       <TouchableOpacity onPress={this.props.onPress}>
         <View style={Styles.body}>
           {this.props.imageURL ? this.renderImage() : this.renderIcon()}
         </View>
+        {this.renderStatus()}
       </TouchableOpacity>
     );
   }

@@ -128,9 +128,11 @@ module.exports = React.createClass({
   render: function() {
 
     var rowData = this.props.rowData;
+    var user = rowData.chat.get('createdBy');
 
     var mostRecentImage;
     var mostRecentMessage;
+    var onlineStatus;
 
     _.forEach(rowData.messages, (message) => {
 
@@ -142,9 +144,11 @@ module.exports = React.createClass({
         mostRecentMessage = message.message;
       }
 
-    });
+      if (user.id === message.uid && message.online) {
+        onlineStatus = message.online;
+      }
 
-    var user = rowData.chat.get('createdBy');
+    });
 
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => this.props.onPressRow(rowData)}>
@@ -153,6 +157,7 @@ module.exports = React.createClass({
             <Avatar
               onPress={() => this.props.onAvatarPress(rowData)}
               imageURL={user.attributes.image ? user.attributes.image.url() : null}
+              online={onlineStatus}
             />
             <View style={Styles.info}>
               <View style={Styles.infoBar}>
