@@ -29,5 +29,6 @@ module.exports = {
   darkMedium: '#5F5F5F',
   darkHighlight: '#1E1E1E',
   gray: '#A8A7A4',
+  grayLight: '#D8D7D3',
   white: '#FFFFFF',
 };

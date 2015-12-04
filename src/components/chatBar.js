@@ -26,13 +26,9 @@ var Styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     height: defaultStyles.chatBarHeight,
-    backgroundColor: defaultStyles.blue,
-    shadowOpacity: 0.5,
-    shadowRadius: 2,
-    shadowOffset: {
-      width: 0,
-      height: -1
-    },
+    backgroundColor: defaultStyles.white,
+    borderTopWidth: 1,
+    borderTopColor: defaultStyles.grayLight,
   },
   wrap: {
     flexDirection: 'row',
@@ -40,28 +36,25 @@ var Styles = StyleSheet.create({
     top: 6,
     width: defaultStyles.bodyWidth - 12,
     height: defaultStyles.chatBarHeight - 12,
-    borderColor: defaultStyles.blue,
-    borderWidth: 1,
-    borderRadius: 2,
-    backgroundColor: defaultStyles.blue,
+    alignItems: 'center',
   },
   input : {
     alignItems: 'flex-start',
     fontFamily: 'Roboto-Light',
     color: defaultStyles.dark,
     paddingLeft: 12,
-    width: defaultStyles.bodyWidth - 12 - 56,
+    width: defaultStyles.bodyWidth - 12 - 44,
     height: defaultStyles.chatBarHeight - 12 - 2,
-    borderBottomWidth: 0,
     borderWidth: 0,
     backgroundColor: defaultStyles.white,
   },
   iconView : {
-    paddingTop: 4,
-    paddingLeft: 8,
-    flex: 1,
+    borderRadius: 22,
+    backgroundColor: defaultStyles.blue,
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
     alignItems: 'center',
-    alignSelf:'flex-start',
   },
 });
 
@@ -175,12 +168,14 @@ module.exports = React.createClass({
               underlineColorAndroid={defaultStyles.light}
               clearButtonMode='while-editing'
               returnKeyType='send'
+              placeholder='Write a message ...'
+              placeholderTextColor={defaultStyles.dark}
             />
             <View style={Styles.iconView}>
               <IconButton
                 onPress={this.props.onPress}
                 icon='material|camera'
-                size={36}
+                size={24}
               />
             </View>
           </View>
