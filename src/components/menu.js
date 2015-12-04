@@ -62,6 +62,7 @@ var Styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 40,
+    width: defaultStyles.bodyWidth - 32 - 16 - 24,
     paddingLeft: 30,
   },
   rowText: {
@@ -69,6 +70,27 @@ var Styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Roboto-Regular',
     color: defaultStyles.gray,
+    justifyContent: 'center',
+  },
+  rowTextBold: {
+    flex: 1,
+    fontSize: 14,
+    fontFamily: 'Roboto-Bold',
+    color: defaultStyles.white,
+  },
+  rowCount: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: defaultStyles.blue,
+    height: 20,
+    borderRadius: 10,
+    paddingLeft: 8,
+    paddingRight: 8,
+  },
+  rowCountText: {
+    fontSize: 14,
+    fontFamily: 'Roboto-Bold',
+    color: defaultStyles.white,
   },
   section: {
     flexDirection: 'row',
@@ -86,7 +108,7 @@ var Styles = StyleSheet.create({
   },
 });
 
-module.exports= React.createClass({
+module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     actions: React.PropTypes.object,
@@ -124,6 +146,8 @@ module.exports= React.createClass({
         hasSideMenu: true,
         chatId: rowData.id,
       });
+
+      this.props.actions.clearNotifications(rowData.id);
     }
   },
   onAvatarPress: function () {
@@ -136,7 +160,7 @@ module.exports= React.createClass({
       photo: imageURL,
     });
   },
-  renderRow: function(rowData) {
+  renderBunch: function (rowData) {
     var name = _.get(rowData, 'attributes.name') || _.get(rowData, 'name');
 
     return (
@@ -157,6 +181,45 @@ module.exports= React.createClass({
       </TouchableOpacity>
     );
   },
+  renderCount: function (newCount) {
+    return (
+      <View style={Styles.rowCount}>
+        <Text style={Styles.rowCountText}>
+          {newCount}
+        </Text>
+      </View>
+    );
+  },
+  renderChat: function (rowData) {
+    var name = _.get(rowData, 'chat.attributes.name');
+    var newCount = _.get(rowData, 'newCount');
+
+    return (
+      <TouchableOpacity onPress={() => {
+        if (rowData.onPress) {
+          rowData.onPress();
+        } else {
+          this.onPressRow(rowData.chat);
+        }
+      }}>
+        <View>
+          <View style={Styles.row}>
+            <Text style={rowData.mention ? Styles.rowTextBold : Styles.rowText }>
+              {name}
+            </Text>
+            {newCount ? this.renderCount(newCount) : null}
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  },
+  renderRow: function (rowData) {
+    if (_.get(rowData, 'chat')) {
+      return this.renderChat(rowData);
+    } else {
+      return this.renderBunch(rowData);
+    }
+  },
   renderSectionHeader: function(sectionData, sectionID) {
     return (
       <View style={Styles.section}>
@@ -169,18 +232,14 @@ module.exports= React.createClass({
   render: function() {
     var dataBlob = {}
 
+    var user = this.props.store.user;
+
     dataBlob['Bunches'] = [this.props.store.bunch];
 
-    dataBlob['Chats'] = _.chain(this.props.store.userChats)
-      .map((chat) => {
-        return chat.get('chat');
-      })
-      .uniq((chat) => {
-        return chat.id
-      })
-      .value();
-
-    var user = this.props.store.user;
+    dataBlob['Chats'] = _.filter(this.props.store.messages, (message) => {
+      var userIds = _.pluck(message.messages, 'uid');
+      return _.indexOf(userIds, user.objectId) >= 0;
+    });
 
     return (
       <View style={Styles.body}>
