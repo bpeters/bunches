@@ -71,6 +71,8 @@ module.exports = {
           this.listenToChats();
           this.refreshUserChats();
           this.listenToUserStatus();
+
+          this.addUserStatus();
         }, (err) => {
           this.handleParseError(err);
       });
@@ -93,36 +95,42 @@ module.exports = {
 
     this.setState(this.store);
   },
-  listenToUserStatus: function (currentAppState){
+  listenToUserStatus: function () {
 
     AppStateIOS.addEventListener('change', (currentAppState) => {
+        console.log(currentAppState);
       if (currentAppState === 'background'){
         this.deleteUserStatus();
       } else {
-        this.addUserStatus(this.store.user.objectId);
+        this.addUserStatus();
       }
     });
 
   },
-  deleteUserStatus: function(){
-    var url = config.firebase.url + '/bunch/' + this.store.bunch.id + '/status/';
-    var getStatus = new Firebase(url);
-    var uid = this.store.user.objectId;
-    var bunchId = this.store.bunch.id;
+  deleteUserStatus: function() {
+    if (this.store.user) {
+      var url = config.firebase.url + '/bunch/' + this.store.bunch.id + '/status/';
+      var getStatus = new Firebase(url);
+      var uid = this.store.user.objectId;
+      var bunchId = this.store.bunch.id;
 
-    getStatus.once('value', (snapshot) => {
-      _.forEach(snapshot, (snap) => {
-        if (snap.val() === uid) {
-          new Firebase(config.firebase.url + '/bunch/' + bunchId + '/status/' + snap.key())
-            .remove();
-        }
-      })
-    });
+      getStatus.once('value', (snapshot) => {
+
+        _.forEach(snapshot.val(), (value, key) => {
+          if (value === uid) {
+            new Firebase(config.firebase.url + '/bunch/' + bunchId + '/status/' + key)
+              .remove();
+          }
+        });
+
+      });
+    }
   },
-  addUserStatus: function (uid) {
+  addUserStatus: function () {
     var url = config.firebase.url + '/bunch/' + this.store.bunch.id + '/status/';
     var ref = new Firebase(url);
-    ref.push(uid);
+
+    ref.push(this.store.user.objectId || this.store.user.id);
   },
   refreshChats: function () {
     return this.queryChats(this.store.bunch)
@@ -202,8 +210,6 @@ module.exports = {
 
       var status = snapshot.val().status;
 
-      console.log(status);
-
       this.refreshChats()
         .then(() => {
 
@@ -218,13 +224,6 @@ module.exports = {
 
                 if (!_.find(messages, {'key' : k})) {
                   v.key = k;
-
-                  // Check user online/offline status
-                  _.forEach(status, (i, j) => {
-                    if (v.uid === i){
-                      v.online = true;
-                    }
-                  });
 
                   //this.setItem(key, k);
                   messages.push(v);
@@ -253,6 +252,18 @@ module.exports = {
           });
 
           this.store.messages = _.chain(this.store.messages)
+            .map((message) => {
+
+              _.forEach(message.messages, (m) => {
+                _.forEach(status, (i, j) => {
+                  if (m.uid === i) {
+                    m.online = true;
+                  }
+                });
+              });
+
+              return message;
+            })
             .sortBy((message) => {
               return message.score;
             })
@@ -432,15 +443,6 @@ module.exports = {
         var newUser = _.assign(user, user.attributes);
 
         this.initStore(newUser);
-
-        this.store.user = newUser;
-
-        this.setState({
-          user: this.store.user,
-          loading: false,
-        });
-
-        this.addUserStatus(this.store.user.objectId);
       },
       error: (user, err) => {
         this.handleParseError(err);
