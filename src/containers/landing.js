@@ -20,6 +20,10 @@ var Styles = StyleSheet.create({
     alignItems: 'stretch',
     backgroundColor: defaultStyles.white,
   },
+  image: {
+    marginTop: 200,
+    alignSelf: 'center'
+  },
   buttonView: {
     position: 'absolute',
     bottom: 16,
@@ -54,6 +58,10 @@ module.exports = React.createClass({
   render: function() {
     return (
       <View style={Styles.view}>
+        <Image
+          style={Styles.image}
+          source={require('../assets/logo.png')}
+        />
         <View style={Styles.buttonView}>
           <Button
             onPress={this.onLoginPress}
