@@ -11,17 +11,6 @@ import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 
-// Added for camera
-import com.facebook.react.CompositeReactPackage;
-import com.lwansbrough.ReactCamera.ReactCameraPackage;
-
-
-
-import com.smixx.reactnativeicons.ReactNativeIcons;  // <--- import
-import java.util.Arrays; // <--- import this if you want to specify which fonts to load
-import com.smixx.reactnativeicons.IconFont; // <--- import this if you want to specify which fonts to load
-
-
 public class MainActivity extends Activity implements DefaultHardwareBackBtnHandler {
 
     private ReactInstanceManager mReactInstanceManager;
@@ -37,8 +26,6 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
                 .setBundleAssetName("index.android.bundle")
                 .setJSMainModuleName("index.android")
                 .addPackage(new MainReactPackage())
-                .addPackage(new ReactCameraPackage(this))
-                .addPackage(new ReactNativeIcons()) 
                 .setUseDeveloperSupport(BuildConfig.DEBUG)
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();
@@ -55,6 +42,15 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
             return true;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+      if (mReactInstanceManager != null) {
+        mReactInstanceManager.onBackPressed();
+      } else {
+        super.onBackPressed();
+      }
     }
 
     @Override
@@ -76,7 +72,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
         super.onResume();
 
         if (mReactInstanceManager != null) {
-            mReactInstanceManager.onResume(this);
+            mReactInstanceManager.onResume(this, this);
         }
     }
 }
