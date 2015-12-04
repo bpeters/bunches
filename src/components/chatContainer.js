@@ -237,7 +237,10 @@ module.exports = React.createClass({
     var messages = _.cloneDeep(this.props.messages);
 
     _.forEach(this.props.messages, (message, i) => {
-      if (i === 0) {
+      if (i === 0 && messages[i+1] !== message.uid) {
+        userId = message.uid;
+        messages[key]['squash'] = squash.reverse();
+      } else if (i === 0) {
         userId = message.uid;
       } else if (i === messages.length - 1) {
         squash.push(message.message);
