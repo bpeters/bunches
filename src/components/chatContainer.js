@@ -167,14 +167,17 @@ module.exports = React.createClass({
       </View>
     );
   },
-  renderNew: function (message) {
-    return (
-      <View style={Styles.chat}>
-        <Text style={Styles.chatText}>
-          Started Chat
-        </Text>
-      </View>
-    );
+  renderSquash: function (squash) {
+
+    var messages = _.map(squash, (message, i) => {
+      return (
+        <View key={i} style={Styles.chat}>
+          <Message message={message} />
+        </View>
+      );
+    });
+
+    return messages;
   },
   renderChatRow: function(rowData) {
     if(rowData.breaker){
@@ -189,7 +192,7 @@ module.exports = React.createClass({
           <View style={Styles.line}></View>
         </View>
       );
-    } else {
+    } else if (rowData.squash || rowData.imageURL) {
       return (
         <View style={Styles.row}>
           <Avatar
@@ -211,11 +214,14 @@ module.exports = React.createClass({
                 </Text>
               </View>
             </View>
-            {rowData.message ? this.renderMessage(rowData.message) : this.renderNew()}
+            {!_.isEmpty(rowData.squash) ? this.renderSquash(rowData.squash) : null}
+            {rowData.message ? this.renderMessage(rowData.message) : null}
             {rowData.imageURL ? this.renderImage(rowData.imageURL) : null}
           </View>
         </View>
       );
+    } else {
+      return null;
     }
   },
   renderChatFooter: function () {
@@ -224,11 +230,35 @@ module.exports = React.createClass({
     );
   },
   render: function() {
+
+    var userId;
+    var key = 0;
+    var squash = [];
+    var messages = _.cloneDeep(this.props.messages);
+
+    _.forEach(this.props.messages, (message, i) => {
+      if (i === 0) {
+        userId = message.uid;
+      } else if (i === messages.length - 1) {
+        squash.push(message.message);
+        messages[key]['squash'] = squash.reverse();
+      } else if (userId === message.uid) {
+        squash.push(message.message);
+      } else {
+        messages[key]['squash'] = squash.reverse();
+        userId = message.uid;
+        key = i;
+        squash = [];
+      };
+    });
+
+    console.log(messages);
+
     return (
       <View style={Styles.container}>
         <ListView
           renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
-          dataSource={this.state.dataSource.cloneWithRows(this.props.messages)}
+          dataSource={this.state.dataSource.cloneWithRows(messages)}
           renderRow={this.renderChatRow}
           renderFooter={this.renderChatFooter}
         />

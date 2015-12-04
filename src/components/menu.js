@@ -241,8 +241,6 @@ module.exports = React.createClass({
       return _.indexOf(userIds, (user.objectId || user.id)) >= 0;
     });
 
-    console.log(this.props.store.messages, dataBlob['Chats']);
-
     return (
       <View style={Styles.body}>
         <View style={Styles.profile}>

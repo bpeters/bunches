@@ -22,10 +22,7 @@ module.exports = React.createClass({
   render: function() {
     return (
       <View style={Styles.view}>
-        <Image
-          style={Styles.image}
-          source={require('image!splash')}
-        />
+
       </View>
     );
   }
