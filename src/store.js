@@ -436,9 +436,11 @@ module.exports = {
         this.store.user = newUser;
 
         this.setState({
-          user: this.store.newUser,
+          user: this.store.user,
           loading: false,
         });
+
+        this.addUserStatus(this.store.user.objectId);
       },
       error: (user, err) => {
         this.handleParseError(err);
