@@ -121,6 +121,8 @@ module.exports = React.createClass({
           store={this.props.store}
           getUsers={this.props.actions.getUsers}
           clearUsers={this.props.actions.clearUsers}
+          addTyper={this.props.actions.addTyper}
+          deleteTyper={this.props.actions.deleteTyper}
         >
           <ChatContainer
             user={this.props.store.user}

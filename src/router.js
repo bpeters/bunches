@@ -46,6 +46,8 @@ module.exports= React.createClass({
       getUsers: this.getUsers,
       clearUsers: this.clearUsers,
       clearNotifications: this.clearNotifications,
+      addTyper: this.addTyper,
+      deleteTyper: this.deleteTyper,
     };
 
     if (route.hasSideMenu) {

@@ -67,12 +67,15 @@ module.exports = React.createClass({
     onPress: React.PropTypes.func,
     getUsers: React.PropTypes.func,
     clearUsers: React.PropTypes.func,
+    addTyper: React.PropTypes.func,
+    deleteTyper: React.PropTypes.func,
   },
   getInitialState: function () {
     return {
       message: null,
       mention: null,
     };
+
   },
   inputFocused: function (refName) {
     setTimeout(() => {
@@ -82,11 +85,13 @@ module.exports = React.createClass({
         true
       );
     }, 50);
+    this.props.addTyper(this.props.chat);
   },
   inputBlured: function (refName) {
     setTimeout(() => {
       this.refs.scrollView.getScrollResponder().scrollTo(0, 0);
     }, 50);
+    this.props.deleteTyper(this.props.chat);
   },
   onChangeText: function (message) {
 

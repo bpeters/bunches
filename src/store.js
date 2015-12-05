@@ -198,6 +198,7 @@ module.exports = {
     }
   },
   listenToChats: function () {
+
     var url = config.firebase.url + '/bunch/' + this.store.bunch.id;
 
     new Firebase(url).on('value', (snapshot) => {
@@ -389,6 +390,28 @@ module.exports = {
       });
 
     });
+  },
+  addTyper: function (chat) {
+    var url = config.firebase.url + '/bunch/' + this.store.bunch.id + '/chat/' + (chat.objectId || chat.id) + '/typer/';
+    var ref = new Firebase(url);
+    ref.push({'uid' : this.store.user.objectId || this.store.user.id, 'handle' : this.store.user.handle});
+  },
+  deleteTyper: function(chat) {
+    if (this.store.user) {
+      var url = config.firebase.url + '/bunch/' + this.store.bunch.id + '/chat/' + (chat.objectId || chat.id) + '/typer/';
+      var getTypers = new Firebase(url);
+      var uid = this.store.user.objectId;
+      var bunchId = this.store.bunch.id;
+
+      getTypers.once('value', (snapshot) => {
+        _.forEach(snapshot.val(), (value, key) => {
+          if (value.uid === uid) {
+            new Firebase(config.firebase.url + '/bunch/' + this.store.bunch.id + '/chat/' + (chat.objectId || chat.id) + '/typer/' + key)
+              .remove();
+          }
+        });
+      });
+    }
   },
   createUser: function (params) {
     this.setState({

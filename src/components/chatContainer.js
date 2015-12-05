@@ -79,28 +79,16 @@ var Styles = StyleSheet.create({
     paddingTop: 8,
     paddingRight: 16,
   },
-  break: {
+  typing: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingLeft: 10,
-    paddingRight: 10,
+    padding: 10,
+    backgroundColor: defaultStyles.light,
   },
-  line: {
-    height: 1,
-    backgroundColor: defaultStyles.medium,
-    flex:1,
-  },
-  breakView: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingLeft: 5,
-    paddingRight: 5,
-  },
-  breakText: {
+  typingText: {
     color: defaultStyles.medium,
-    fontSize: 15,
   },
   imageWrap: {
     paddingTop: 16,
@@ -180,16 +168,29 @@ module.exports = React.createClass({
     return messages;
   },
   renderChatRow: function(rowData) {
-    if(rowData.breaker){
+    
+    if(rowData.key === 'typer'){
+      var handles = [];
+      _.forEach(rowData, (user, i) => {
+        if(user.handle){
+          handles.push(user.handle);
+        }
+      });
+      var str = '';
+      if(handles.length){
+        if(handles.length == 1){
+          str = '@' + handles[0] + ' is typing...';
+        } else if (handles.length == 2){
+          str = '@' + handles[0] + ' and 1 other are typing...';
+        } else {
+          str = '@' + handles[0] + ' and ' + (handles.length - 1).toString() + ' others are typing...';
+        }
+      }
       return (
-        <View style={Styles.break}>
-          <View style={Styles.line}></View>
-          <View style={Styles.breakView}>
-            <Text style={Styles.breakText}>
-              {rowData.breaker}
-            </Text>
-          </View>
-          <View style={Styles.line}></View>
+        <View style={Styles.typing}>
+          <Text style={Styles.typingText}>
+            {str}
+          </Text>
         </View>
       );
     } else if (rowData.squash || rowData.imageURL) {
@@ -237,6 +238,7 @@ module.exports = React.createClass({
     var messages = _.cloneDeep(this.props.messages);
 
     _.forEach(this.props.messages, (message, i) => {
+
       if (i === 0 && messages[i+1] !== message.uid) {
         userId = message.uid;
         messages[key]['squash'] = squash.reverse();
