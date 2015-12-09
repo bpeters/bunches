@@ -134,11 +134,26 @@ module.exports = React.createClass({
 
     this.props.clearUsers();
   },
+  onPressMentionClose: function () {
+    
+    var message = _.clone(this.state.message);
+    var end = message.indexOf('@');
+
+    message = message.substring(0, end);
+
+    this.setState({
+      message: message,
+      mention: null,
+    });
+
+    this.props.clearUsers();
+  },
   renderMentions: function () {
     return (
       <MentionContainer
         store={this.props.store}
         onPressMention={this.onPressMention}
+        onPressMentionClose={this.onPressMentionClose}
       />
     );
   },

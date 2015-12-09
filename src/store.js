@@ -398,10 +398,10 @@ module.exports = {
 
     var user = new Parse.User();
 
-    user.set('username', params.email);
+    user.set('username', params.email.toLowerCase());
     user.set('password', params.password);
-    user.set('email', params.email);
-    user.set('handle', params.username);
+    user.set('email', params.email.toLowerCase());
+    user.set('handle', params.username.toLowerCase());
     user.set('name', params.name);
 
     user.signUp(null, {
@@ -454,7 +454,7 @@ module.exports = {
       loading: true,
     });
 
-    Parse.User.logIn(email, password, {
+    Parse.User.logIn(email.toLowerCase(), password, {
       success: (user) => {
         var newUser = _.assign(user, user.attributes);
 
