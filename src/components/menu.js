@@ -151,14 +151,17 @@ module.exports = React.createClass({
     }
   },
   onAvatarPress: function () {
-    var imageURL = this.props.store.user.image.url();
+    if (this.props.store.user.image) {
 
-    this.props.navigator.push({
-      name: "enlarge photo",
-      component: EnlargePhoto,
-      hasSideMenu: false,
-      photo: imageURL,
-    });
+      var imageURL = this.props.store.user.image.url();
+
+      this.props.navigator.push({
+        name: "enlarge photo",
+        component: EnlargePhoto,
+        hasSideMenu: false,
+        photo: imageURL,
+      });
+    }
   },
   renderBunch: function (rowData) {
     var name = _.get(rowData, 'attributes.name') || _.get(rowData, 'name');

@@ -61,12 +61,15 @@ module.exports = React.createClass({
 
     var user = rowData.chat.get('createdBy');
 
-    this.props.navigator.push({
-      name: 'enlarge photo',
-      component: EnlargePhoto,
-      hasSideMenu: false,
-      photo: user.attributes.image.url(),
-    });
+    if (user.attributes.image) {
+      this.props.navigator.push({
+        name: 'enlarge photo',
+        component: EnlargePhoto,
+        hasSideMenu: false,
+        photo: user.attributes.image.url(),
+      });
+    }
+
   },
   onPressImage: function (imageURL) {
     this.props.navigator.push({
