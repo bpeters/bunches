@@ -1,20 +1,24 @@
 {
   "name": "bunches",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "node_modules/react-native/packager/packager.sh"
   },
   "dependencies": {
+    "elasticsearch": "^10.0.1",
     "firebase": "^2.3.0",
     "fuzzy": "^0.1.1",
     "lodash": "^3.10.1",
-    "parse": "^1.6.3",
-    "parse-react": "^0.5.0",
-    "react": "^0.13.3",
-    "react-native": "^0.11.2",
-    "react-native-invertible-scroll-view": "^0.1.2",
-    "react-native-side-menu": "^0.14.0",
-    "reflux": "^0.2.12"
+    "moment": "^2.10.6",
+    "parse": "1.6.8",
+    "parse-react": "0.5.0",
+    "react": "0.14.2",
+    "react-native": "0.15.0",
+    "react-native-camera": "^0.3.8",
+    "react-native-icons": "^0.6.3",
+    "react-native-invertible-scroll-view": "0.1.2",
+    "react-native-side-menu": "0.14.3",
+    "rsvp": "^3.1.0"
   }
 }

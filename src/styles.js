@@ -6,258 +6,29 @@ var Dimensions = require('Dimensions');
 var {StyleSheet} = React;
 
 var window = Dimensions.get('window');
-var navBarHeight = 44;
-var bodyHeight = window.height - navBarHeight;
-var white = '#ffffff';
-var light = '#f4f4f4';
-var dark = '#2e2e2e';
-var medium = '#b4b4b4';
+var navBarHeight = 56;
+var chatBarHeight = 56;
+var bodyHeight = window.height;
+var bodyWidth= window.width;
 
-module.exports = StyleSheet.create({
-  app: {
-    flex: 1,
-  },
-  shadow: {
-    shadowColor: dark,
-    shadowOpacity: 0.5,
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-  },
-  menu: {
-    backgroundColor: medium,
-    height: bodyHeight + navBarHeight,
-  },
-  menuRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 40,
-    paddingLeft: 30,
-  },
-  menuRowText: {
-    flex: 1,
-    fontSize: 14,
-    color: light,
-  },
-  menuSection: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 40,
-    paddingLeft: 20,
-    marginTop: 20,
-  },
-  menuSectionText: {
-    flex: 1,
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: light,
-  },
-  splash: {
-    flex: 1,
-    alignItems: 'stretch',
-  },
-  splashImage: {
-    flex: 1,
-  },
-  navBar: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    height: navBarHeight,
-    backgroundColor: light,
-  },
-  navBarLeft: {
-    flex: 1,
-    justifyContent: 'center',
-    height: navBarHeight,
-  },
-  navBarCenter: {
-    flex: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: navBarHeight,
-  },
-  navBarRight: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    height: navBarHeight,
-  },
-  leftNavButton: {
-    left: 20,
-    fontSize: 16,
-    color: dark,
-  },
-  rightNavButton: {
-    right: 20,
-    fontSize: 16,
-    color: dark,
-  },
-  navBarTitle: {
-    fontSize: 18,
-    color: dark,
-  },
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    backgroundColor: white,
-    width: window.width,
-    height: bodyHeight,
-  },
-  footer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    height: 80,
-    top: -80,
-  },
-  body: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-  },
-  formInput: {
-    height: 80,
-    borderColor: light,
-    paddingLeft: 20,
-    borderWidth: 1,
-    fontSize: 18,
-    color: dark,
-  },
-  bigButton: {
-    height: 80,
-    backgroundColor: light,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  bigButtonText: {
-    fontSize: 18,
-    color: dark,
-  },
-  list: {
-    marginTop: 0,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 80,
-    paddingLeft: 20,
-  },
-  rowSeparator: {
-    height: 1,
-    backgroundColor: light,
-  },
-  rowText: {
-    flex: 1,
-    fontSize: 18,
-    color: dark,
-  },
-  switch: {
-    right: 20
-  },
-  channelInfo: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    backgroundColor: white,
-  },
-  channelInfoButton: {
-    flex: 1,
-    height: 40,
-    width: window.width / 3,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: light,
-    borderBottomWidth: 2,
-    borderWidth: 1,
-  },
-  channelInfoText: {
-    color: medium,
-    fontSize: 14,
-  },
-  channel: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    backgroundColor: white,
-    height: bodyHeight - 80,
-  },
-  channelList: {
-    marginTop: 0,
-  },
-  channelRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 40,
-    paddingLeft: 20,
-  },
-  channelUser: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
-    paddingLeft: 20,
-  },
-  channelUserText: {
-    flex: 1,
-    fontSize: 14,
-    color: dark,
-    fontWeight: 'bold',
-  },
-  channelRowText: {
-    flex: 1,
-    fontSize: 14,
-    color: dark,
-    paddingLeft: 20,
-  },
-  channelInputBox: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    backgroundColor: white,
-    borderColor: light,
-    borderWidth: 2,
-  },
-  channelInput: {
-    height: 40,
-    width: window.width - 60,
-    paddingLeft: 20,
-    fontSize: 18,
-    color: dark,
-    backgroundColor: white,
-  },
-  channelSendButton: {
-    flex: 1,
-    height: 40,
-    width: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: light,
-    borderLeftWidth: 2,
-  },
-  channelSendText: {
-    color: medium,
-  },
-  channelInfoHighlight: {
-    fontWeight: 'bold',
-    color: dark,
-  },
-  picker: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: light,
-  },
-});
+module.exports = {
+  window: window,
+  navBarHeight: navBarHeight,
+  chatBarHeight: chatBarHeight,
+  bodyHeight: bodyHeight,
+  bodyWidth: bodyWidth,
+  blue: '#ED3D96',
+  red: '#03A9F4',
+  yellow: '#F9CA6B',
+  green: '#02D04E',
+  background: '#F1F5F7',
+  medium: '#b4b4b4',
+  light: '#FAFAFA',
+
+  dark: '#222222',
+  darkMedium: '#5F5F5F',
+  darkHighlight: '#1E1E1E',
+  gray: '#A8A7A4',
+  grayLight: '#D8D7D3',
+  white: '#FFFFFF',
+};
