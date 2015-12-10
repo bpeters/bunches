@@ -107,6 +107,11 @@ module.exports = React.createClass({
       .value()
       .reverse();
 
+    var typers = _.find(this.props.store.typers, {'id' : chatId}) || {
+      chatId: null,
+      users: [],
+    };
+
     var title = this.props.store.bunch.attributes.name;
 
     return (
@@ -123,10 +128,12 @@ module.exports = React.createClass({
           clearUsers={this.props.actions.clearUsers}
           addTyper={this.props.actions.addTyper}
           deleteTyper={this.props.actions.deleteTyper}
+          forChat={true}
         >
           <ChatContainer
             user={this.props.store.user}
             messages={messages}
+            typers={typers}
             navigator={this.props.navigator}
             getProfileChats={this.props.actions.getProfileChats}
             queryUser={this.props.actions.queryUser}

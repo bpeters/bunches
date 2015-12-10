@@ -168,24 +168,56 @@ module.exports = React.createClass({
     return messages;
   },
   renderChatRow: function(rowData) {
-    
-    if(rowData.key === 'typer'){
-      var handles = [];
-      _.forEach(rowData, (user, i) => {
-        if(user.handle){
-          handles.push(user.handle);
-        }
-      });
-      var str = '';
-      if(handles.length){
-        if(handles.length == 1){
-          str = '@' + handles[0] + ' is typing...';
-        } else if (handles.length == 2){
-          str = '@' + handles[0] + ' and 1 other are typing...';
-        } else {
-          str = '@' + handles[0] + ' and ' + (handles.length - 1).toString() + ' others are typing...';
-        }
+    return (
+      <View style={Styles.row}>
+        <Avatar
+          onPress={() => this.onAvatarPress(rowData)}
+          imageURL={rowData.userImageURL}
+          online={rowData.online}
+        />
+        <View style={Styles.info}>
+          <View style={Styles.user}>
+            <Text style={Styles.name}>
+              {rowData.name || 'Anon'}
+            </Text>
+            <Text style={Styles.handle}>
+              {rowData.handle ? '@' + rowData.handle : ''}
+            </Text>
+            <View style={Styles.date}>
+              <Text style={Styles.time}>
+                {moment(rowData.time).format("h:mm a")}
+              </Text>
+            </View>
+          </View>
+          {!_.isEmpty(rowData.squash) ? this.renderSquash(rowData.squash) : null}
+          {rowData.message ? this.renderMessage(rowData.message) : null}
+          {rowData.imageURL ? this.renderImage(rowData.imageURL) : null}
+        </View>
+      </View>
+    );
+  },
+  renderChatFooter: function () {
+    return (
+      <View style={Styles.gap} />
+    );
+  },
+  renderChatHeader: function () {
+    var typers = _.cloneDeep(this.props.typers);
+    var handles = _.pluck(typers.users, 'handle');
+
+    var str = '';
+
+    if (handles.length) {
+      if (handles.length === 1) {
+        str = '@' + handles[0] + ' is typing...';
+      } else if (handles.length === 2){
+        str = '@' + handles[0] + ' and 1 other are typing...';
+      } else {
+        str = '@' + handles[0] + ' and ' + (handles.length - 1).toString() + ' others are typing...';
       }
+    }
+
+    if (str) {
       return (
         <View style={Styles.typing}>
           <Text style={Styles.typingText}>
@@ -193,42 +225,10 @@ module.exports = React.createClass({
           </Text>
         </View>
       );
-    } else if (rowData.squash || rowData.imageURL) {
-      return (
-        <View style={Styles.row}>
-          <Avatar
-            onPress={() => this.onAvatarPress(rowData)}
-            imageURL={rowData.userImageURL}
-            online={rowData.online}
-          />
-          <View style={Styles.info}>
-            <View style={Styles.user}>
-              <Text style={Styles.name}>
-                {rowData.name || 'Anon'}
-              </Text>
-              <Text style={Styles.handle}>
-                {rowData.handle ? '@' + rowData.handle : ''}
-              </Text>
-              <View style={Styles.date}>
-                <Text style={Styles.time}>
-                  {moment(rowData.time).format("h:mm a")}
-                </Text>
-              </View>
-            </View>
-            {!_.isEmpty(rowData.squash) ? this.renderSquash(rowData.squash) : null}
-            {rowData.message ? this.renderMessage(rowData.message) : null}
-            {rowData.imageURL ? this.renderImage(rowData.imageURL) : null}
-          </View>
-        </View>
-      );
     } else {
       return null;
     }
-  },
-  renderChatFooter: function () {
-    return (
-      <View style={Styles.gap} />
-    );
+
   },
   render: function() {
 
@@ -264,6 +264,7 @@ module.exports = React.createClass({
           dataSource={this.state.dataSource.cloneWithRows(messages)}
           renderRow={this.renderChatRow}
           renderFooter={this.renderChatFooter}
+          renderHeader={this.renderChatHeader}
         />
         {this.props.children}
       </View>
