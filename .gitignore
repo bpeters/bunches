@@ -35,3 +35,4 @@ npm-debug.log
 
 # config
 src/config/default.js
+ios/bunches/AppDelegate.m
