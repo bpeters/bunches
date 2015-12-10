@@ -21,6 +21,8 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		8903CCB21C19E7CE00F83CFE /* libCodePush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8903CCA51C19E7BA00F83CFE /* libCodePush.a */; };
+		8903CCB41C19E8A100F83CFE /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8903CCB31C19E8A100F83CFE /* libz.tbd */; };
 		89C5D65D1C193DE5005DFCD6 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 89C5D65C1C193DE5005DFCD6 /* main.jsbundle */; };
 		89D3B54F1C11630F00004F20 /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D3B54E1C1162F900004F20 /* libRCTCamera.a */; };
 		89D3B5561C1163A400004F20 /* libReactNativeIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D3B5551C11639200004F20 /* libReactNativeIcons.a */; };
@@ -115,6 +117,13 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
+		8903CCA41C19E7BA00F83CFE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8903CCA01C19E7BA00F83CFE /* CodePush.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = CodePush;
+		};
 		89D3B54D1C1162F900004F20 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 89D3B5491C1162F900004F20 /* RCTCamera.xcodeproj */;
@@ -151,6 +160,8 @@
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		8903CCA01C19E7BA00F83CFE /* CodePush.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CodePush.xcodeproj; path = "../node_modules/react-native-code-push/CodePush.xcodeproj"; sourceTree = "<group>"; };
+		8903CCB31C19E8A100F83CFE /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		89C5D65C1C193DE5005DFCD6 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		89D3B5491C1162F900004F20 /* RCTCamera.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RCTCamera.xcodeproj"; sourceTree = "<group>"; };
 		89D3B5501C11639200004F20 /* ReactNativeIcons.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeIcons.xcodeproj; path = "../node_modules/react-native-icons/ios/ReactNativeIcons.xcodeproj"; sourceTree = "<group>"; };
@@ -194,6 +205,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8903CCB41C19E8A100F83CFE /* libz.tbd in Frameworks */,
+				8903CCB21C19E7CE00F83CFE /* libCodePush.a in Frameworks */,
 				89D3B5561C1163A400004F20 /* libReactNativeIcons.a in Frameworks */,
 				89D3B54F1C11630F00004F20 /* libRCTCamera.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -316,6 +329,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				8903CCA01C19E7BA00F83CFE /* CodePush.xcodeproj */,
 				89D3B5501C11639200004F20 /* ReactNativeIcons.xcodeproj */,
 				89D3B5491C1162F900004F20 /* RCTCamera.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -343,6 +357,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				8903CCB31C19E8A100F83CFE /* libz.tbd */,
 				89C5D65C1C193DE5005DFCD6 /* main.jsbundle */,
 				89D3B5A41C1168AB00004F20 /* FAKFontAwesome.h */,
 				89D3B5A51C1168AB00004F20 /* FAKFontAwesome.m */,
@@ -380,6 +395,14 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* bunches.app */,
 				00E356EE1AD99517003FC87E /* bunchesTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8903CCA11C19E7BA00F83CFE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8903CCA51C19E7BA00F83CFE /* libCodePush.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -481,6 +504,10 @@
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
+				{
+					ProductGroup = 8903CCA11C19E7BA00F83CFE /* Products */;
+					ProjectRef = 8903CCA01C19E7BA00F83CFE /* CodePush.xcodeproj */;
+				},
 				{
 					ProductGroup = 00C302A81ABCB8CE00DB3ED1 /* Products */;
 					ProjectRef = 00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */;
@@ -607,6 +634,13 @@
 			fileType = archive.ar;
 			path = libRCTText.a;
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8903CCA51C19E7BA00F83CFE /* libCodePush.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libCodePush.a;
+			remoteRef = 8903CCA41C19E7BA00F83CFE /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		89D3B54E1C1162F900004F20 /* libRCTCamera.a */ = {
@@ -751,6 +785,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
+					"$(SRCROOT)/../node_modules/react-native-code-push/**",
 				);
 				INFOPLIST_FILE = bunches/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
@@ -773,6 +808,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
+					"$(SRCROOT)/../node_modules/react-native-code-push/**",
 				);
 				INFOPLIST_FILE = bunches/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
