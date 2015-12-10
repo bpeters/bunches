@@ -17,12 +17,12 @@
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
 		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		89C5D65D1C193DE5005DFCD6 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 89C5D65C1C193DE5005DFCD6 /* main.jsbundle */; };
+		89C5D6A01C197022005DFCD6 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB61A68108700A75B9A /* Info.plist */; };
 		89D3B54F1C11630F00004F20 /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D3B54E1C1162F900004F20 /* libRCTCamera.a */; };
 		89D3B5561C1163A400004F20 /* libReactNativeIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D3B5551C11639200004F20 /* libReactNativeIcons.a */; };
 		89D3B55F1C11644C00004F20 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B55A1C11644C00004F20 /* Roboto-Bold.ttf */; };
@@ -30,22 +30,7 @@
 		89D3B5611C11644C00004F20 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B55C1C11644C00004F20 /* Roboto-Medium.ttf */; };
 		89D3B5621C11644C00004F20 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B55D1C11644C00004F20 /* Roboto-Regular.ttf */; };
 		89D3B5631C11644C00004F20 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B55E1C11644C00004F20 /* Roboto-Thin.ttf */; };
-		89D3B5B91C1168AB00004F20 /* FAKFontAwesome.h in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5A41C1168AB00004F20 /* FAKFontAwesome.h */; };
-		89D3B5BA1C1168AB00004F20 /* FAKFontAwesome.m in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5A51C1168AB00004F20 /* FAKFontAwesome.m */; };
-		89D3B5BB1C1168AB00004F20 /* FAKFoundationIcons.h in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5A61C1168AB00004F20 /* FAKFoundationIcons.h */; };
-		89D3B5BC1C1168AB00004F20 /* FAKFoundationIcons.m in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5A71C1168AB00004F20 /* FAKFoundationIcons.m */; };
-		89D3B5BD1C1168AB00004F20 /* FAKIcon.h in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5A81C1168AB00004F20 /* FAKIcon.h */; };
-		89D3B5BE1C1168AB00004F20 /* FAKIcon.m in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5A91C1168AB00004F20 /* FAKIcon.m */; };
-		89D3B5BF1C1168AB00004F20 /* FAKIonIcons.h in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5AA1C1168AB00004F20 /* FAKIonIcons.h */; };
-		89D3B5C01C1168AB00004F20 /* FAKIonIcons.m in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5AB1C1168AB00004F20 /* FAKIonIcons.m */; };
-		89D3B5C11C1168AB00004F20 /* FAKMaterial.h in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5AC1C1168AB00004F20 /* FAKMaterial.h */; };
-		89D3B5C21C1168AB00004F20 /* FAKMaterial.m in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5AD1C1168AB00004F20 /* FAKMaterial.m */; };
-		89D3B5C31C1168AB00004F20 /* FAKOcticons.h in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5AE1C1168AB00004F20 /* FAKOcticons.h */; };
-		89D3B5C41C1168AB00004F20 /* FAKOcticons.m in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5AF1C1168AB00004F20 /* FAKOcticons.m */; };
-		89D3B5C51C1168AB00004F20 /* FAKZocial.h in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5B01C1168AB00004F20 /* FAKZocial.h */; };
-		89D3B5C61C1168AB00004F20 /* FAKZocial.m in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5B11C1168AB00004F20 /* FAKZocial.m */; };
 		89D3B5C71C1168AB00004F20 /* FontAwesome.otf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5B21C1168AB00004F20 /* FontAwesome.otf */; };
-		89D3B5C81C1168AB00004F20 /* FontAwesomeKit.h in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5B31C1168AB00004F20 /* FontAwesomeKit.h */; };
 		89D3B5C91C1168AB00004F20 /* foundation-icons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5B41C1168AB00004F20 /* foundation-icons.ttf */; };
 		89D3B5CA1C1168AB00004F20 /* ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5B51C1168AB00004F20 /* ionicons.ttf */; };
 		89D3B5CB1C1168AB00004F20 /* Material-Design-Iconic-Font.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5B61C1168AB00004F20 /* Material-Design-Iconic-Font.ttf */; };
@@ -161,7 +146,6 @@
 		13B07F961A680F5B00A75B9A /* bunches.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bunches.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = bunches/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = bunches/AppDelegate.m; sourceTree = "<group>"; };
-		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = bunches/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = bunches/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = bunches/main.m; sourceTree = "<group>"; };
@@ -309,7 +293,6 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
 			name = bunches;
@@ -475,12 +458,15 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = WVEZYEL28X;
 					};
 				};
 			};
@@ -652,27 +638,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				89D3B5B91C1168AB00004F20 /* FAKFontAwesome.h in Resources */,
-				89D3B5BA1C1168AB00004F20 /* FAKFontAwesome.m in Resources */,
-				89D3B5BB1C1168AB00004F20 /* FAKFoundationIcons.h in Resources */,
-				89D3B5BC1C1168AB00004F20 /* FAKFoundationIcons.m in Resources */,
-				89D3B5BD1C1168AB00004F20 /* FAKIcon.h in Resources */,
-				89D3B5BE1C1168AB00004F20 /* FAKIcon.m in Resources */,
 				89C5D65D1C193DE5005DFCD6 /* main.jsbundle in Resources */,
-				89D3B5BF1C1168AB00004F20 /* FAKIonIcons.h in Resources */,
-				89D3B5C01C1168AB00004F20 /* FAKIonIcons.m in Resources */,
-				89D3B5C11C1168AB00004F20 /* FAKMaterial.h in Resources */,
-				89D3B5C21C1168AB00004F20 /* FAKMaterial.m in Resources */,
-				89D3B5C31C1168AB00004F20 /* FAKOcticons.h in Resources */,
-				89D3B5C41C1168AB00004F20 /* FAKOcticons.m in Resources */,
-				89D3B5C51C1168AB00004F20 /* FAKZocial.h in Resources */,
-				89D3B5C61C1168AB00004F20 /* FAKZocial.m in Resources */,
 				89D3B5C71C1168AB00004F20 /* FontAwesome.otf in Resources */,
-				89D3B5C81C1168AB00004F20 /* FontAwesomeKit.h in Resources */,
 				89D3B5C91C1168AB00004F20 /* foundation-icons.ttf in Resources */,
 				89D3B5CA1C1168AB00004F20 /* ionicons.ttf in Resources */,
 				89D3B5CB1C1168AB00004F20 /* Material-Design-Iconic-Font.ttf in Resources */,
 				89D3B5CC1C1168AB00004F20 /* octicons.ttf in Resources */,
+				89C5D6A01C197022005DFCD6 /* Info.plist in Resources */,
 				89D3B5CD1C1168AB00004F20 /* zocial-regular-webfont.ttf in Resources */,
 				89D3B5631C11644C00004F20 /* Roboto-Thin.ttf in Resources */,
 				89D3B5621C11644C00004F20 /* Roboto-Regular.ttf in Resources */,
@@ -680,7 +652,6 @@
 				89D3B5611C11644C00004F20 /* Roboto-Medium.ttf in Resources */,
 				89D3B5601C11644C00004F20 /* Roboto-Light.ttf in Resources */,
 				89D3B55F1C11644C00004F20 /* Roboto-Bold.ttf in Resources */,
-				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -731,18 +702,6 @@
 		};
 /* End PBXTargetDependency section */
 
-/* Begin PBXVariantGroup section */
-		13B07FB11A68108700A75B9A /* LaunchScreen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				13B07FB21A68108700A75B9A /* Base */,
-			);
-			name = LaunchScreen.xib;
-			path = bunches;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -759,6 +718,7 @@
 				INFOPLIST_FILE = bunchesTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/bunches.app/bunches";
 			};
@@ -776,6 +736,7 @@
 				INFOPLIST_FILE = bunchesTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/bunches.app/bunches";
 			};
@@ -785,6 +746,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -792,9 +755,12 @@
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 				);
 				INFOPLIST_FILE = bunches/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = io.bunches.dope.bunches;
 				PRODUCT_NAME = bunches;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -802,6 +768,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -809,9 +777,12 @@
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 				);
 				INFOPLIST_FILE = bunches/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = io.bunches.dope.bunches;
 				PRODUCT_NAME = bunches;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -835,6 +806,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -854,7 +826,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -894,7 +866,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
