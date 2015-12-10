@@ -23,6 +23,8 @@
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8903CCB21C19E7CE00F83CFE /* libCodePush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8903CCA51C19E7BA00F83CFE /* libCodePush.a */; };
 		8903CCB41C19E8A100F83CFE /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8903CCB31C19E8A100F83CFE /* libz.tbd */; };
+		8994A4481C1A422B005B1F9C /* libRCTRemotePushManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8994A4471C1A421D005B1F9C /* libRCTRemotePushManager.a */; };
+		8994A44B1C1A434C005B1F9C /* RemotePushDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8994A44A1C1A434C005B1F9C /* RemotePushDelegate.m */; };
 		89C5D65D1C193DE5005DFCD6 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 89C5D65C1C193DE5005DFCD6 /* main.jsbundle */; };
 		89D3B54F1C11630F00004F20 /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D3B54E1C1162F900004F20 /* libRCTCamera.a */; };
 		89D3B5561C1163A400004F20 /* libReactNativeIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D3B5551C11639200004F20 /* libReactNativeIcons.a */; };
@@ -124,6 +126,13 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = CodePush;
 		};
+		8994A4461C1A421D005B1F9C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8994A4421C1A421D005B1F9C /* RCTRemotePushManager.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 48DDA26A1B0A1157004C75B0;
+			remoteInfo = RCTRemotePushManager;
+		};
 		89D3B54D1C1162F900004F20 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 89D3B5491C1162F900004F20 /* RCTCamera.xcodeproj */;
@@ -162,6 +171,9 @@
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8903CCA01C19E7BA00F83CFE /* CodePush.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CodePush.xcodeproj; path = "../node_modules/react-native-code-push/CodePush.xcodeproj"; sourceTree = "<group>"; };
 		8903CCB31C19E8A100F83CFE /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		8994A4421C1A421D005B1F9C /* RCTRemotePushManager.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTRemotePushManager.xcodeproj; path = "../node_modules/react-native-remote-push/RCTRemotePushManager.xcodeproj"; sourceTree = "<group>"; };
+		8994A4491C1A434C005B1F9C /* RemotePushDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemotePushDelegate.h; sourceTree = "<group>"; };
+		8994A44A1C1A434C005B1F9C /* RemotePushDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemotePushDelegate.m; sourceTree = "<group>"; };
 		89C5D65C1C193DE5005DFCD6 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		89D3B5491C1162F900004F20 /* RCTCamera.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RCTCamera.xcodeproj"; sourceTree = "<group>"; };
 		89D3B5501C11639200004F20 /* ReactNativeIcons.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeIcons.xcodeproj; path = "../node_modules/react-native-icons/ios/ReactNativeIcons.xcodeproj"; sourceTree = "<group>"; };
@@ -205,6 +217,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8994A4481C1A422B005B1F9C /* libRCTRemotePushManager.a in Frameworks */,
 				8903CCB41C19E8A100F83CFE /* libz.tbd in Frameworks */,
 				8903CCB21C19E7CE00F83CFE /* libCodePush.a in Frameworks */,
 				89D3B5561C1163A400004F20 /* libReactNativeIcons.a in Frameworks */,
@@ -329,6 +342,9 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				8994A4491C1A434C005B1F9C /* RemotePushDelegate.h */,
+				8994A44A1C1A434C005B1F9C /* RemotePushDelegate.m */,
+				8994A4421C1A421D005B1F9C /* RCTRemotePushManager.xcodeproj */,
 				8903CCA01C19E7BA00F83CFE /* CodePush.xcodeproj */,
 				89D3B5501C11639200004F20 /* ReactNativeIcons.xcodeproj */,
 				89D3B5491C1162F900004F20 /* RCTCamera.xcodeproj */,
@@ -403,6 +419,14 @@
 			isa = PBXGroup;
 			children = (
 				8903CCA51C19E7BA00F83CFE /* libCodePush.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8994A4431C1A421D005B1F9C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8994A4471C1A421D005B1F9C /* libRCTRemotePushManager.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -533,6 +557,10 @@
 					ProjectRef = 00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */;
 				},
 				{
+					ProductGroup = 8994A4431C1A421D005B1F9C /* Products */;
+					ProjectRef = 8994A4421C1A421D005B1F9C /* RCTRemotePushManager.xcodeproj */;
+				},
+				{
 					ProductGroup = 139105B71AF99BAD00B5F7CC /* Products */;
 					ProjectRef = 139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */;
 				},
@@ -643,6 +671,13 @@
 			remoteRef = 8903CCA41C19E7BA00F83CFE /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		8994A4471C1A421D005B1F9C /* libRCTRemotePushManager.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTRemotePushManager.a;
+			remoteRef = 8994A4461C1A421D005B1F9C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		89D3B54E1C1162F900004F20 /* libRCTCamera.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -719,6 +754,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8994A44B1C1A434C005B1F9C /* RemotePushDelegate.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -780,6 +816,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -793,6 +830,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = io.bunches.dope.bunches;
 				PRODUCT_NAME = bunches;
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -803,6 +841,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -816,6 +855,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = io.bunches.dope.bunches;
 				PRODUCT_NAME = bunches;
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
