@@ -12,7 +12,7 @@ var {
   Text,
 } = React;
 
-var Styles = StyleSheet.create({  
+var Styles = StyleSheet.create({
   image: {
     height: 176,
   },
