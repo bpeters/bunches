@@ -458,8 +458,6 @@ module.exports = {
       success: (user) => {
         var newUser = _.assign(user, user.attributes);
 
-        console.log(newUser);
-
         this.initStore(newUser);
       },
       error: (user, err) => {
@@ -498,7 +496,7 @@ module.exports = {
 
         if (field === 'handle') {
           this.esUpdateUser(user.objectId, {
-            'handle': value
+            'handle': value.toLowerCase()
           })
           .then(() => {
             this.store.user = user;

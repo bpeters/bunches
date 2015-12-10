@@ -35,7 +35,7 @@ var Styles = StyleSheet.create({
     backgroundColor: defaultStyles.dark,
   },
   row: {
-    padding: 8,
+    padding: 12,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -59,10 +59,6 @@ var Styles = StyleSheet.create({
     height: 18,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  loadMore: {
-    marginTop: 16,
-    marginBottom: 16,
   },
 });
 
