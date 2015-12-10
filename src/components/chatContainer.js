@@ -168,33 +168,37 @@ module.exports = React.createClass({
     return messages;
   },
   renderChatRow: function(rowData) {
-    return (
-      <View style={Styles.row}>
-        <Avatar
-          onPress={() => this.onAvatarPress(rowData)}
-          imageURL={rowData.userImageURL}
-          online={rowData.online}
-        />
-        <View style={Styles.info}>
-          <View style={Styles.user}>
-            <Text style={Styles.name}>
-              {rowData.name || 'Anon'}
-            </Text>
-            <Text style={Styles.handle}>
-              {rowData.handle ? '@' + rowData.handle : ''}
-            </Text>
-            <View style={Styles.date}>
-              <Text style={Styles.time}>
-                {moment(rowData.time).format("h:mm a")}
+    if (rowData.squash || rowData.imageURL) {
+      return (
+        <View style={Styles.row}>
+          <Avatar
+            onPress={() => this.onAvatarPress(rowData)}
+            imageURL={rowData.userImageURL}
+            online={rowData.online}
+          />
+          <View style={Styles.info}>
+            <View style={Styles.user}>
+              <Text style={Styles.name}>
+                {rowData.name || 'Anon'}
               </Text>
+              <Text style={Styles.handle}>
+                {rowData.handle ? '@' + rowData.handle : ''}
+              </Text>
+              <View style={Styles.date}>
+                <Text style={Styles.time}>
+                  {moment(rowData.time).format("h:mm a")}
+                </Text>
+              </View>
             </View>
+            {!_.isEmpty(rowData.squash) ? this.renderSquash(rowData.squash) : null}
+            {rowData.message ? this.renderMessage(rowData.message) : null}
+            {rowData.imageURL ? this.renderImage(rowData.imageURL) : null}
           </View>
-          {!_.isEmpty(rowData.squash) ? this.renderSquash(rowData.squash) : null}
-          {rowData.message ? this.renderMessage(rowData.message) : null}
-          {rowData.imageURL ? this.renderImage(rowData.imageURL) : null}
         </View>
-      </View>
-    );
+      );
+    } else {
+      return null;
+    }
   },
   renderChatFooter: function () {
     return (
@@ -202,8 +206,14 @@ module.exports = React.createClass({
     );
   },
   renderChatHeader: function () {
+
     var typers = _.cloneDeep(this.props.typers);
-    var handles = _.pluck(typers.users, 'handle');
+    var handles = _.chain(typers.users)
+      .pluck('handle')
+      .filter((i) => {
+        return i !== this.props.user.handle
+      })
+      .value();
 
     var str = '';
 
@@ -238,7 +248,6 @@ module.exports = React.createClass({
     var messages = _.cloneDeep(this.props.messages);
 
     _.forEach(this.props.messages, (message, i) => {
-
       if (i === 0 && messages[i+1] !== message.uid) {
         userId = message.uid;
         messages[key]['squash'] = squash.reverse();

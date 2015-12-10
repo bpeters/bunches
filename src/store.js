@@ -173,8 +173,6 @@ module.exports = {
         });
       }
 
-      console.log(typers);
-
       this.store.typers = typers;
 
       this.setState({
