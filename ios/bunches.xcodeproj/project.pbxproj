@@ -22,6 +22,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		89C5D65D1C193DE5005DFCD6 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 89C5D65C1C193DE5005DFCD6 /* main.jsbundle */; };
 		89D3B54F1C11630F00004F20 /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D3B54E1C1162F900004F20 /* libRCTCamera.a */; };
 		89D3B5561C1163A400004F20 /* libReactNativeIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D3B5551C11639200004F20 /* libReactNativeIcons.a */; };
 		89D3B55F1C11644C00004F20 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B55A1C11644C00004F20 /* Roboto-Bold.ttf */; };
@@ -167,6 +168,7 @@
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		89C5D65C1C193DE5005DFCD6 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		89D3B5491C1162F900004F20 /* RCTCamera.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RCTCamera.xcodeproj"; sourceTree = "<group>"; };
 		89D3B5501C11639200004F20 /* ReactNativeIcons.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeIcons.xcodeproj; path = "../node_modules/react-native-icons/ios/ReactNativeIcons.xcodeproj"; sourceTree = "<group>"; };
 		89D3B55A1C11644C00004F20 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
@@ -359,6 +361,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				89C5D65C1C193DE5005DFCD6 /* main.jsbundle */,
 				89D3B5A41C1168AB00004F20 /* FAKFontAwesome.h */,
 				89D3B5A51C1168AB00004F20 /* FAKFontAwesome.m */,
 				89D3B5A61C1168AB00004F20 /* FAKFoundationIcons.h */,
@@ -655,6 +658,7 @@
 				89D3B5BC1C1168AB00004F20 /* FAKFoundationIcons.m in Resources */,
 				89D3B5BD1C1168AB00004F20 /* FAKIcon.h in Resources */,
 				89D3B5BE1C1168AB00004F20 /* FAKIcon.m in Resources */,
+				89C5D65D1C193DE5005DFCD6 /* main.jsbundle in Resources */,
 				89D3B5BF1C1168AB00004F20 /* FAKIonIcons.h in Resources */,
 				89D3B5C01C1168AB00004F20 /* FAKIonIcons.m in Resources */,
 				89D3B5C11C1168AB00004F20 /* FAKMaterial.h in Resources */,
@@ -798,6 +802,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEAD_CODE_STRIPPING = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
