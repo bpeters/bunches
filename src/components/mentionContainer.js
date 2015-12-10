@@ -11,6 +11,10 @@ var ChatCard = require('../elements/chatCard');
 var defaultStyles = require('../styles');
 
 var {
+  Icon,
+} = require('react-native-icons');
+
+var {
   View,
   TouchableOpacity,
   Text,
@@ -26,13 +30,14 @@ var Styles = StyleSheet.create({
     width: defaultStyles.bodyWidth,
     borderTopColor: defaultStyles.dark,
     borderTopWidth: 1,
-    backgroundColor: defaultStyles.white,
-  },
-  row: {
-    width: defaultStyles.bodyWidth,
     borderBottomColor: defaultStyles.medium,
     borderBottomWidth: 1,
-    padding: 8,
+    backgroundColor: defaultStyles.dark,
+  },
+  row: {
+    padding: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   rowText: {
     flexDirection: 'row',
@@ -40,16 +45,20 @@ var Styles = StyleSheet.create({
   },
   handle: {
     fontFamily: 'Roboto-Bold',
-    color: defaultStyles.dark,
+    color: defaultStyles.light,
   },
   name: {
-    marginLeft: 16,
+    marginLeft: 5,
     fontFamily: 'Roboto-Regular',
     color: defaultStyles.medium,
   },
-  loadMore: {
-    marginTop: 16,
-    marginBottom: 16,
+  icon: {
+    borderRadius: 9,
+    backgroundColor: defaultStyles.blue,
+    width: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
@@ -57,6 +66,7 @@ module.exports = React.createClass({
   propTypes: {
     store: React.PropTypes.object,
     onPressMention: React.PropTypes.func,
+    onPressMentionClose: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -81,10 +91,17 @@ module.exports = React.createClass({
       </TouchableOpacity>
     );
   },
-  renderChatFooter: function () {
+  renderChatHeader: function() {
     return (
-      <View style={Styles.loadMore}>
-
+      <View style={Styles.row}>
+        <TouchableOpacity onPress={() => this.props.onPressMentionClose()}>
+          <Icon
+            name='material|close'
+            size={14}
+            color={defaultStyles.white}
+            style={Styles.icon}
+          />
+        </TouchableOpacity>
       </View>
     );
   },
@@ -92,9 +109,10 @@ module.exports = React.createClass({
     return (
       <View style={Styles.container}>
         <ListView
+          horizontal={true}
           dataSource={this.state.dataSource.cloneWithRows(this.props.store.users)}
           renderRow={this.renderChatRow}
-          renderFooter={this.renderChatFooter}
+          renderHeader={this.renderChatHeader}
           automaticallyAdjustContentInsets={false}
         />
       </View>

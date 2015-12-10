@@ -12,11 +12,7 @@ var {
   Text,
 } = React;
 
-var Styles = StyleSheet.create({  
-  imageView: {
-    height: 176,
-    backgroundColor: defaultStyles.green,
-  },
+var Styles = StyleSheet.create({
   image: {
     height: 176,
   },
@@ -35,27 +31,17 @@ module.exports = React.createClass({
     photo: React.PropTypes.string,
   },
   render: function() {
-    if (this.props.photo) {
-      return (
-        <View>
-          <TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
-            <Image
-              source={{
-                uri: this.props.photo,
-              }}
-              style={Styles.image}
-            /> 
-          </TouchableOpacity>
-        </View>
-      );
-    } else {
-      return (
-        <View style={Styles.imageView}>
-          <Text style={Styles.imageText}>
-            (Optional) Add Photo
-          </Text>
-        </View>
-      );
-    }
+    return (
+      <View>
+        <TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
+          <Image
+            source={{
+              uri: this.props.photo,
+            }}
+            style={Styles.image}
+          /> 
+        </TouchableOpacity>
+      </View>
+    );
   }
 });

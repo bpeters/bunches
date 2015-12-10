@@ -6,6 +6,7 @@
     "start": "node_modules/react-native/packager/packager.sh"
   },
   "dependencies": {
+    "elasticsearch": "^10.0.1",
     "firebase": "^2.3.0",
     "fuzzy": "^0.1.1",
     "lodash": "^3.10.1",
