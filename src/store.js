@@ -75,7 +75,7 @@ function handleNotification (message, user) {
 }
 
 module.exports = {
-  store: storeDefaults,
+  store: _.cloneDeep(storeDefaults),
   initStore: function (user) {
     if (user) {
 
@@ -105,7 +105,7 @@ module.exports = {
     }
   },
   tearDownStore: function () {
-    this.store = storeDefaults;
+    this.store = _.cloneDeep(storeDefaults);
 
     this.setState(this.store);
   },
@@ -453,10 +453,11 @@ module.exports = {
             })
             .dispatch()
             .then(() => {
-              user.objectId = user.id;
-              this.initStore(user);
+              var newUser = _.assign(user, user.attributes);
+              newUser.objectId = user.id;
 
-              this.store.user = user;
+              this.initStore(newUser);
+
               this.store.bunch = bunch;
 
               this.esIndexUser(user.id, {
@@ -465,8 +466,8 @@ module.exports = {
               })
               .then(() => {
                 this.setState({
-                  user: this.store.user,
                   bunch: this.store.bunch,
+                  user: newUser,
                   loading: false,
                 });
               });
@@ -493,7 +494,7 @@ module.exports = {
       success: (user) => {
         var newUser = _.assign(user, user.attributes);
 
-        user.objectId = user.id;
+        newUser.objectId = user.id;
 
         this.initStore(newUser);
       },
