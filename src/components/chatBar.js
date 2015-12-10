@@ -67,6 +67,9 @@ module.exports = React.createClass({
     onPress: React.PropTypes.func,
     getUsers: React.PropTypes.func,
     clearUsers: React.PropTypes.func,
+    addTyper: React.PropTypes.func,
+    deleteTyper: React.PropTypes.func,
+    forChat: React.PropTypes.bool,
   },
   getInitialState: function () {
     return {
@@ -82,11 +85,19 @@ module.exports = React.createClass({
         true
       );
     }, 50);
+
+    if (this.props.forChat) {
+      this.props.addTyper(this.props.chat.objectId || this.props.chat.id);
+    }
   },
   inputBlured: function (refName) {
     setTimeout(() => {
       this.refs.scrollView.getScrollResponder().scrollTo(0, 0);
     }, 50);
+
+    if (this.props.forChat) {
+      this.props.deleteTyper(this.props.chat.objectId || this.props.chat.id);
+    }
   },
   onChangeText: function (message) {
 

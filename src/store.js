@@ -16,6 +16,22 @@ var {
   AppStateIOS,
 } = React;
 
+var storeDefaults = {
+  user: null,
+  bunch: null,
+  chats: [],
+  users: [],
+  userChats: [],
+  messages: [],
+  newChat: null,
+  error: null,
+  loading: false,
+  success: false,
+  profileUser: null,
+  profileMessages: [],
+  typers: [],
+};
+
 function calcPowerScore (chat, messages) {
   var userCount = _.chain(messages)
     .pluck('uid.objectId')
@@ -59,20 +75,7 @@ function handleNotification (message, user) {
 }
 
 module.exports = {
-  store: {
-    user: null,
-    bunch: null,
-    chats: [],
-    users: [],
-    userChats: [],
-    messages: [],
-    newChat: null,
-    error: null,
-    loading: false,
-    success: false,
-    profileUser: null,
-    profileMessages: [],
-  },
+  store: storeDefaults,
   initStore: function (user) {
     if (user) {
 
@@ -92,8 +95,8 @@ module.exports = {
           this.store.chats = result;
 
           this.listenToChats();
-          this.refreshUserChats();
           this.listenToUserStatus();
+          this.listenToTyper();
 
           this.addUserStatus();
         }, (err) => {
@@ -102,19 +105,7 @@ module.exports = {
     }
   },
   tearDownStore: function () {
-    this.store = {
-      user: null,
-      bunch: null,
-      chats: [],
-      userChats: [],
-      messages: [],
-      newChat: null,
-      error: null,
-      loading: false,
-      success: false,
-      profileUser: null,
-      profileMessages: [],
-    };
+    this.store = storeDefaults;
 
     this.setState(this.store);
   },
@@ -129,18 +120,23 @@ module.exports = {
     });
 
   },
+  addUserStatus: function () {
+    var url = config.firebase.url + '/bunch/' + this.store.bunch.id + '/status/';
+    var ref = new Firebase(url);
+
+    ref.push(this.store.user.objectId || this.store.user.id);
+  },
   deleteUserStatus: function() {
     if (this.store.user) {
       var url = config.firebase.url + '/bunch/' + this.store.bunch.id + '/status/';
       var getStatus = new Firebase(url);
-      var uid = this.store.user.objectId;
-      var bunchId = this.store.bunch.id;
+      var uid = this.store.user.objectId || this.store.user.id;
 
       getStatus.once('value', (snapshot) => {
 
         _.forEach(snapshot.val(), (value, key) => {
           if (value === uid) {
-            new Firebase(config.firebase.url + '/bunch/' + bunchId + '/status/' + key)
+            new Firebase(url + '/' + key)
               .remove();
           }
         });
@@ -148,36 +144,76 @@ module.exports = {
       });
     }
   },
-  addUserStatus: function () {
-    var url = config.firebase.url + '/bunch/' + this.store.bunch.id + '/status/';
+  listenToTyper: function () {
+
+    var url = config.firebase.url + '/typers/bunch/' + this.store.bunch.id;
+
+    new Firebase(url).on('value', (snapshot) => {
+      var data = snapshot.val();
+
+      var typers = [];
+
+      if (data) {
+        _.forEach(data.chat, (value, key) => {
+          if (_.find(this.store.chats, {'id' : key})) {
+
+            var users = [];
+
+            _.forEach(value, (v, k) => {
+              users.push(v);
+            });
+
+            if (!_.isEmpty(users)) {
+              typers.push({
+                id: key,
+                users: users,
+              });
+            }
+          }
+        });
+      }
+
+      this.store.typers = typers;
+
+      this.setState({
+        typers: this.store.typers
+      });
+
+    });
+
+  },
+  addTyper: function (chatId) {
+    var url = config.firebase.url + '/typers/bunch/' + this.store.bunch.id + '/chat/' + chatId;
     var ref = new Firebase(url);
 
-    ref.push(this.store.user.objectId || this.store.user.id);
+    ref.push({
+      'uid' : this.store.user.objectId || this.store.user.id,
+      'handle' : this.store.user.handle
+    });
+  },
+  deleteTyper: function (chatId) {
+    if (this.store.user) {
+      var url = config.firebase.url + '/typers/bunch/' + this.store.bunch.id + '/chat/' + chatId;
+      var getTypers = new Firebase(url);
+      var uid = this.store.user.objectId || this.store.user.id;
+
+      getTypers.once('value', (snapshot) => {
+
+        _.forEach(snapshot.val(), (value, key) => {
+          if (value.uid === uid) {
+            new Firebase(url + '/' + key)
+              .remove();
+          }
+        });
+
+      });
+    }
   },
   refreshChats: function () {
     return this.queryChats(this.store.bunch)
       .then((result) => {
         this.store.chats = result;
 
-        return;
-      }, (err) => {
-        this.handleParseError(err);
-    });
-  },
-  refreshUserChats: function () {
-    return this.queryUserChats()
-      .then((result) => {
-
-        var chatIds = _.pluck(this.store.chats, 'id');
-
-        var userChats = _.filter(result, (chat) => {
-          return _.indexOf(chatIds, chat.get('chat').id) >= 0;
-        });
-
-        this.store.userChats = userChats;
-        this.setState({
-          userChats: this.store.userChats
-        });
         return;
       }, (err) => {
         this.handleParseError(err);
@@ -198,6 +234,7 @@ module.exports = {
     }
   },
   listenToChats: function () {
+
     var url = config.firebase.url + '/bunch/' + this.store.bunch.id;
 
     new Firebase(url).on('value', (snapshot) => {
@@ -369,8 +406,6 @@ module.exports = {
     })
     .dispatch()
     .then((chat) => {
-
-      this.refreshUserChats();
 
       messenger.push({
         uid: user.objectId || user.id,
