@@ -493,6 +493,8 @@ module.exports = {
       success: (user) => {
         var newUser = _.assign(user, user.attributes);
 
+        user.objectId = user.id;
+
         this.initStore(newUser);
       },
       error: (user, err) => {
@@ -525,7 +527,9 @@ module.exports = {
     });
 
     var setUser = (changes) => {
-      ParseReact.Mutation.Set(this.state.user, changes)
+      console.log(this.store.user);
+
+      ParseReact.Mutation.Set(this.store.user, changes)
       .dispatch()
       .then((user) => {
 
