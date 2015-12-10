@@ -37,8 +37,6 @@
 		<string>Roboto-Regular.ttf</string>
 		<string>Robot-Thin.ttf</string>
 	</array>
-	<key>UILaunchStoryboardName</key>
-	<string>MainStoryboard</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

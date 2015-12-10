@@ -22,7 +22,6 @@
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		89C5D65D1C193DE5005DFCD6 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 89C5D65C1C193DE5005DFCD6 /* main.jsbundle */; };
-		89C5D6A01C197022005DFCD6 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB61A68108700A75B9A /* Info.plist */; };
 		89D3B54F1C11630F00004F20 /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D3B54E1C1162F900004F20 /* libRCTCamera.a */; };
 		89D3B5561C1163A400004F20 /* libReactNativeIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D3B5551C11639200004F20 /* libReactNativeIcons.a */; };
 		89D3B55F1C11644C00004F20 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B55A1C11644C00004F20 /* Roboto-Bold.ttf */; };
@@ -644,7 +643,6 @@
 				89D3B5CA1C1168AB00004F20 /* ionicons.ttf in Resources */,
 				89D3B5CB1C1168AB00004F20 /* Material-Design-Iconic-Font.ttf in Resources */,
 				89D3B5CC1C1168AB00004F20 /* octicons.ttf in Resources */,
-				89C5D6A01C197022005DFCD6 /* Info.plist in Resources */,
 				89D3B5CD1C1168AB00004F20 /* zocial-regular-webfont.ttf in Resources */,
 				89D3B5631C11644C00004F20 /* Roboto-Thin.ttf in Resources */,
 				89D3B5621C11644C00004F20 /* Roboto-Regular.ttf in Resources */,
