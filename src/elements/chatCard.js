@@ -95,7 +95,7 @@ var Styles = StyleSheet.create({
     borderRightWidth: 1,
     paddingLeft: 16,
     paddingRight: 16,
-    paddingTop: 16,
+    paddingTop: 8,
     paddingBottom: 16,
   },
   imageView: {
