@@ -29,6 +29,12 @@ var Styles = StyleSheet.create({
     width: defaultStyles.bodyWidth - 32,
     marginTop: 16,
     marginLeft: 16,
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    shadowOffset: {
+      width: 0,
+      height: -2
+    },
   },
   rowHeader: {
     backgroundColor: defaultStyles.white,
