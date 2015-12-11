@@ -14,7 +14,6 @@ var {
   Icon,
 } = require('react-native-icons');
 
-
 var defaultStyles = require('../styles');
 
 var {
@@ -153,7 +152,6 @@ module.exports = React.createClass({
     onPressImage: React.PropTypes.func,
     rowData: React.PropTypes.object,
   },
-
   getInitialState: function() {
     return {
       dataSource: new ListView.DataSource({
@@ -163,9 +161,11 @@ module.exports = React.createClass({
   },
   renderCarousel: function(images) {
     var x = 0;
-    if(images.length > 1){
+
+    if (images.length > 1){
       x = 70;
     }
+
     return (
       <View style={Styles.imageView}>
         <ListView
@@ -189,7 +189,7 @@ module.exports = React.createClass({
           style={Styles.icon}
         />
       </View>
-    )
+    );
   },
   renderImage: function (rowData) {
     return (
@@ -205,7 +205,8 @@ module.exports = React.createClass({
     var lastTwo = messages.slice(messages.length - 2);
     var msgs = _.map(lastTwo, (message) => {
       return this.renderMessage(message);
-    })
+    });
+
     return msgs;
   },
   renderMessage: function (message) {
@@ -226,10 +227,9 @@ module.exports = React.createClass({
         </View>
         <Message message={message.message} />
       </View>
-    )
+    );
   },
   render: function() {
-
     var rowData = this.props.rowData;
     var user = rowData.chat.get('createdBy');
 
@@ -278,7 +278,6 @@ module.exports = React.createClass({
               </View>
             </View>
           </View>
-          
           {mostRecentImages.length ? this.renderCarousel(mostRecentImages.reverse()) : null}
           {mostRecentMessages.length ? this.renderLastTwoMessages(mostRecentMessages) : null}
           <Timer
