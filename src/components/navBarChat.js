@@ -82,7 +82,7 @@ module.exports = React.createClass({
         <Timer
           expiration={this.props.expiration}
           created={this.props.created}
-          color={defaultStyles.blue}
+          view='chat'
           width={defaultStyles.bodyWidth}
         />
       </View>

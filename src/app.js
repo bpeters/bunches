@@ -3,6 +3,7 @@
 var React = require('react-native');
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
+var CodePush = require("react-native-code-push");
 var config = require('./config/default');
 
 var Router = require('./router');
@@ -16,6 +17,9 @@ module.exports= React.createClass({
     return {
       user: ParseReact.currentUser
     };
+  },
+  componentDidMount: function () {
+    CodePush.sync({ updateDialog: true, installMode: CodePush.InstallMode.IMMEDIATE });
   },
   render: function() {
     if (this.data.user !== undefined) {

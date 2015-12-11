@@ -19,8 +19,8 @@ module.exports = React.createClass({
   propTypes: {
     expiration: React.PropTypes.instanceOf(Date),
     created: React.PropTypes.instanceOf(Date),
-    color: React.PropTypes.string,
     width: React.PropTypes.number,
+    view: React.PropTypes.string,
   },
   render: function() {
     var now = new Date().getTime();
@@ -32,18 +32,48 @@ module.exports = React.createClass({
       color = defaultStyles.yellow;
     } 
     if (percent <= 0.25) {
-      color = defaultStyles.blue;
+      color = defaultStyles.red;
+    }
+
+    // if in chat view
+    var heightContainer = 5;
+    var backgroundColor = defaultStyles.blue;
+    var borderRadius = 0;
+    var barRadius = 0;
+    var margin = 0;
+    var borderColor = defaultStyles.blue;
+    var borderWidth = 0;
+
+    // if in bunch view
+    if(this.props.view === 'bunch'){
+      heightContainer = 10;
+      backgroundColor = defaultStyles.white;
+      borderRadius = 4;
+      barRadius = 3;
+      margin = 5;
+      borderColor = defaultStyles.light;
+      borderWidth = 1;
     }
 
     return (
       <View 
-        style={[Styles.bar, {
-          backgroundColor: this.props.color,
-        }]}>
+        style={{
+          backgroundColor: backgroundColor,
+          height: heightContainer,
+          borderBottomLeftRadius: borderRadius,
+          borderBottomRightRadius: borderRadius,
+          borderLeftColor: borderColor,
+          borderRightColor: borderColor,
+          borderLeftWidth: borderWidth,
+          borderRightWidth: borderWidth,
+        }}>
         <View 
           style={[Styles.bar, {
             width: width,
-            backgroundColor: color
+            backgroundColor: color,
+            borderRadius: barRadius,
+            marginLeft: margin,
+            marginRight: margin,
           }]}
         >
         </View>

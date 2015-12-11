@@ -159,8 +159,9 @@ module.exports = React.createClass({
 
     var messages = _.map(squash, (message, i) => {
       return (
-        <View key={i} style={Styles.chat}>
-          <Message message={message} />
+        <View key={i}>
+          {message.message ? this.renderMessage(message.message) : null}
+          {message.imageURL ? this.renderImage(message.imageURL) : null}
         </View>
       );
     });
@@ -168,37 +169,33 @@ module.exports = React.createClass({
     return messages;
   },
   renderChatRow: function(rowData) {
-    if (rowData.squash || rowData.imageURL) {
-      return (
-        <View style={Styles.row}>
-          <Avatar
-            onPress={() => this.onAvatarPress(rowData)}
-            imageURL={rowData.userImageURL}
-            online={rowData.online}
-          />
-          <View style={Styles.info}>
-            <View style={Styles.user}>
-              <Text style={Styles.name}>
-                {rowData.name || 'Anon'}
+    return (
+      <View style={Styles.row}>
+        <Avatar
+          onPress={() => this.onAvatarPress(rowData)}
+          imageURL={rowData.userImageURL}
+          online={rowData.online}
+        />
+        <View style={Styles.info}>
+          <View style={Styles.user}>
+            <Text style={Styles.name}>
+              {rowData.name || 'Anon'}
+            </Text>
+            <Text style={Styles.handle}>
+              {rowData.handle ? '@' + rowData.handle : ''}
+            </Text>
+            <View style={Styles.date}>
+              <Text style={Styles.time}>
+                {moment(rowData.time).format("h:mm a")}
               </Text>
-              <Text style={Styles.handle}>
-                {rowData.handle ? '@' + rowData.handle : ''}
-              </Text>
-              <View style={Styles.date}>
-                <Text style={Styles.time}>
-                  {moment(rowData.time).format("h:mm a")}
-                </Text>
-              </View>
             </View>
-            {!_.isEmpty(rowData.squash) ? this.renderSquash(rowData.squash) : null}
-            {rowData.message ? this.renderMessage(rowData.message) : null}
-            {rowData.imageURL ? this.renderImage(rowData.imageURL) : null}
           </View>
+          {rowData.message ? this.renderMessage(rowData.message) : null}
+          {rowData.imageURL ? this.renderImage(rowData.imageURL) : null}
+          {!_.isEmpty(rowData.squash) ? this.renderSquash(rowData.squash) : null}
         </View>
-      );
-    } else {
-      return null;
-    }
+      </View>
+    );
   },
   renderChatFooter: function () {
     return (
@@ -242,35 +239,27 @@ module.exports = React.createClass({
   },
   render: function() {
 
-    var userId;
-    var key = 0;
+    var userId = null;
+    var key = -1;
     var squash = [];
-    var messages = _.cloneDeep(this.props.messages);
+    var messages = _.cloneDeep(this.props.messages).reverse();
 
-    _.forEach(this.props.messages, (message, i) => {
-      if (i === 0 && messages[i+1] !== message.uid) {
-        userId = message.uid;
-        messages[key]['squash'] = squash.reverse();
-      } else if (i === 0) {
-        userId = message.uid;
-      } else if (i === messages.length - 1) {
-        squash.push(message.message);
-        messages[key]['squash'] = squash.reverse();
-      } else if (userId === message.uid) {
-        squash.push(message.message);
+    _.forEach(messages, (message, i) => {
+      if (userId === message.uid) {
+        squash[key].squash.push(message);
       } else {
-        messages[key]['squash'] = squash.reverse();
+        key++;
         userId = message.uid;
-        key = i;
-        squash = [];
-      };
+        squash.push(message);
+        squash[key]['squash'] = [];
+      }
     });
 
     return (
       <View style={Styles.container}>
         <ListView
           renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
-          dataSource={this.state.dataSource.cloneWithRows(messages)}
+          dataSource={this.state.dataSource.cloneWithRows(squash.reverse())}
           renderRow={this.renderChatRow}
           renderFooter={this.renderChatFooter}
           renderHeader={this.renderChatHeader}
