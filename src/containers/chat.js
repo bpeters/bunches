@@ -9,6 +9,7 @@ var NavBarChat = require('../components/navBarChat');
 var ChatContainer = require('../components/chatContainer');
 var ChatBar = require('../components/chatBar');
 var Success = require('../elements/success');
+var Timer = require('../elements/timer');
 
 var defaultStyles = require('../styles');
 
@@ -146,8 +147,12 @@ module.exports = React.createClass({
             <NavBarChat
               title={chatAttributes.name}
               onBackPress={this.onBackPress}
+            />
+            <Timer
               expiration={moment(chatAttributes.expirationDate).toDate()}
               created={moment(chatAttributes.createdAt).toDate()}
+              view='bunch'
+              width={defaultStyles.bodyWidth}
             />
           </ChatContainer>
         </ChatBar>
