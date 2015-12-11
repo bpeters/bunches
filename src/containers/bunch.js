@@ -32,7 +32,7 @@ if (Platform.OS === 'android') {
 
 var Styles = StyleSheet.create({
   body: {
-    backgroundColor: defaultStyles.background,
+    backgroundColor: defaultStyles.grayLight,
     height: defaultStyles.bodyHeight,
   },
   loadingView: {
