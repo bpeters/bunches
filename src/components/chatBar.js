@@ -56,6 +56,12 @@ var Styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  iconContainer : {
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 module.exports = React.createClass({
@@ -75,6 +81,9 @@ module.exports = React.createClass({
     return {
       message: null,
       mention: null,
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2
+      }),
     };
   },
   inputFocused: function (refName) {
@@ -162,6 +171,33 @@ module.exports = React.createClass({
 
     this.props.clearUsers();
   },
+  renderIcon: function(rowData){
+    return (
+      <View style={Styles.iconView}>
+      <IconButton
+        onPress={rowData.action}
+        icon={rowData.icon}
+        size={24}
+      />
+      </View>
+    )
+  },
+  renderIcons: function() {
+    var icons = [
+      {icon: 'material|camera', action: this.props.onPress},
+      {icon: 'material|collection-image', action: this.props.onPress}
+    ];
+    return (
+      <View style={Styles.iconContainer}>
+        <ListView
+          dataSource={this.state.dataSource.cloneWithRows(icons)}
+          renderRow={this.renderIcon}
+          showsVerticalScrollIndicator={false}
+          automaticallyAdjustContentInsets={false}
+        />
+      </View>
+    );
+  },
   renderMentions: function () {
     return (
       <MentionContainer
@@ -200,13 +236,7 @@ module.exports = React.createClass({
               placeholder='Write a message ...'
               placeholderTextColor={defaultStyles.dark}
             />
-            <View style={Styles.iconView}>
-              <IconButton
-                onPress={this.props.onPress}
-                icon='material|camera'
-                size={24}
-              />
-            </View>
+            {this.renderIcons()}
           </View>
         </View>
       </ScrollView>
