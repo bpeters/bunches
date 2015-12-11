@@ -152,7 +152,7 @@ module.exports = React.createClass({
               expiration={moment(chatAttributes.expirationDate).toDate()}
               created={moment(chatAttributes.createdAt).toDate()}
               view='bunch'
-              width={defaultStyles.bodyWidth}
+              width={defaultStyles.bodyWidth - 20}
             />
           </ChatContainer>
         </ChatBar>
