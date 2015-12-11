@@ -185,6 +185,7 @@ module.exports = React.createClass({
   renderIcons: function() {
     var icons = [
       {icon: 'material|camera', action: this.props.onPress},
+      {icon: 'material|mood', action: this.props.onPress},
       {icon: 'material|collection-image', action: this.props.onPress}
     ];
     return (
