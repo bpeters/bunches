@@ -130,6 +130,7 @@ module.exports = React.createClass({
   },
   getInitialState: function(){
     return {
+      name: null,
       username: null,
       password: null,
       image: null,
@@ -197,6 +198,13 @@ module.exports = React.createClass({
       this.props.actions.updateUser('image', this.state.image);
       this.setState({
         image: null,
+      });
+    }
+
+    if (this.state.name) {
+      this.props.actions.updateUser('name', this.state.name);
+      this.setState({
+        name: null,
       });
     }
 
@@ -295,6 +303,15 @@ module.exports = React.createClass({
               </Text>
             </View>
           </View>
+          <Text style={Styles.label}>
+            Full Name
+          </Text>
+          <TextInput
+            style={Styles.input}
+            onChangeText={(name) => this.setState({name})}
+            value={this.state.name}
+            placeholder={user.name}
+          />
           <Text style={Styles.label}>
             Username
           </Text>

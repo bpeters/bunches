@@ -3,7 +3,6 @@
 var React = require('react-native');
 
 var IconButton = require('../elements/iconButton');
-var Timer = require('../elements/timer');
 var Counter = require('../elements/counter');
 
 var defaultStyles = require('../styles');
@@ -59,8 +58,6 @@ module.exports = React.createClass({
   propTypes: {
     title: React.PropTypes.string,
     onBackPress: React.PropTypes.func,
-    expiration: React.PropTypes.instanceOf(Date),
-    created: React.PropTypes.instanceOf(Date),
   },
   render: function() {
     return (
@@ -79,12 +76,6 @@ module.exports = React.createClass({
           </View>
           <View style={Styles.right}></View>
         </View>
-        <Timer
-          expiration={this.props.expiration}
-          created={this.props.created}
-          view='chat'
-          width={defaultStyles.bodyWidth}
-        />
       </View>
     );
   }

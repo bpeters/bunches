@@ -173,6 +173,7 @@ module.exports = React.createClass({
           dataSource={this.state.dataSource.cloneWithRows(images)}
           renderRow={this.renderImage}
           showsHorizontalScrollIndicator={false}
+          automaticallyAdjustContentInsets={false}
           contentOffset={{x: x, y: 0}}
         />
         {images.length > 1 ? this.renderMultipleImage() : null}
