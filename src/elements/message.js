@@ -47,7 +47,7 @@ module.exports = React.createClass({
 
     var urlExpression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
 
-     var urlRegex = new RegExp(urlExpression);
+    var urlRegex = new RegExp(urlExpression);
 
     var message = _.map(words, (word, i) => {
       if (_.includes(word, '@')) {
