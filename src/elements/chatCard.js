@@ -27,13 +27,14 @@ var {
 var Styles = StyleSheet.create({
   row: {
     width: defaultStyles.bodyWidth - 32,
-    marginTop: 16,
+    marginTop: 8,
+    marginBottom: 8,
     marginLeft: 16,
-    shadowOpacity: 0.5,
-    shadowRadius: 2,
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
     shadowOffset: {
       width: 0,
-      height: -2
+      height: 0
     },
   },
   rowHeader: {
