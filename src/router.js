@@ -48,6 +48,7 @@ module.exports= React.createClass({
       clearNotifications: this.clearNotifications,
       addTyper: this.addTyper,
       deleteTyper: this.deleteTyper,
+      switchBunches: this.switchBunches,
     };
 
     if (route.hasSideMenu) {

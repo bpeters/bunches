@@ -134,6 +134,9 @@ module.exports = React.createClass({
     var Chat = require('../containers/chat');
 
     if (rowData.className === 'Bunch') {
+
+      this.props.actions.switchBunches(rowData);
+
       this.props.navigator.replace({
         name: 'bunch',
         component: Bunch,

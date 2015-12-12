@@ -55,8 +55,8 @@ module.exports = {
 
           return Query.chats(this.store.bunch)
         })
-        .then((result) => {
-          this.store.chats = result;
+        .then((chats) => {
+          this.store.chats = chats;
 
           this.listenToChats();
           this.listenToUserStatus();
@@ -72,6 +72,21 @@ module.exports = {
     this.store = _.cloneDeep(storeDefaults);
 
     this.setState(this.store);
+  },
+  switchBunches: function (bunch) {
+    this.stopListeningToChats();
+    this.store.bunch = bunch;
+    this.store.chats = [];
+    this.store.messages = [];
+
+    Query.chats(this.store.bunch)
+      .then((chats) => {
+        this.store.chats = chats;
+
+        this.listenToChats();
+      }, (err) => {
+        this.handleParseError(err);
+      });
   },
   refreshChats: function () {
     return Query.chats(this.store.bunch)

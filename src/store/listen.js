@@ -154,10 +154,20 @@ module.exports = {
     }
   },
   listenToChats: function () {
-
     var url = config.firebase.url + '/bunch/' + this.store.bunch.id;
 
-    new Firebase(url).on('value', (snapshot) => {
+    new Firebase(url).on('value', this.prepareMessages);
+  },
+  stopListeningToChats: function () {
+    var url = config.firebase.url + '/bunch/' + this.store.bunch.id;
+
+    new Firebase(url).off('value', this.prepareMessages);
+  },
+  prepareMessages: function (snapshot) {
+    console.log(snapshot.val());
+
+    if (snapshot.val()) {
+
       var data = snapshot.val().chat;
 
       var status = snapshot.val().status;
@@ -249,6 +259,14 @@ module.exports = {
           });
 
         });
-    });
+    } else {
+      this.setState({
+        messages: this.store.messages,
+        chats: this.store.chats,
+        bunch: this.store.bunch,
+        user: this.store.user,
+        loading: false,
+      });
+    }
   },
 }
