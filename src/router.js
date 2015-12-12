@@ -3,7 +3,7 @@
 var React = require('react-native');
 var _ = require('lodash');
 
-var Store = require('./store');
+var Store = require('./store/index');
 
 var Landing = require('./containers/landing');
 var Bunch = require('./containers/bunch');

@@ -237,7 +237,7 @@ module.exports = React.createClass({
 
     var user = this.props.store.user;
 
-    dataBlob['Bunches'] = [this.props.store.bunch];
+    dataBlob['Bunches'] = this.props.store.bunches;
 
     dataBlob['Chats'] = _.filter(this.props.store.messages, (message) => {
       var userIds = _.pluck(message.messages, 'uid');

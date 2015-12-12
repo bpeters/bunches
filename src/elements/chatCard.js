@@ -211,15 +211,15 @@ module.exports = React.createClass({
   },
   renderLastTwoMessages: function(messages) {
     var lastTwo = messages.slice(messages.length - 2);
-    var msgs = _.map(lastTwo, (message) => {
-      return this.renderMessage(message);
+    var msgs = _.map(lastTwo, (message, i) => {
+      return this.renderMessage(message, i);
     });
 
     return msgs;
   },
-  renderMessage: function (message) {
+  renderMessage: function (message, i) {
     return (
-      <View style={Styles.rowMessage}>
+      <View key={i} style={Styles.rowMessage}>
         <View style={Styles.user}>
           <Text style={Styles.name}>
             {message.name || 'Anon'}
