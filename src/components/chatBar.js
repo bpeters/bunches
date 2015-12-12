@@ -43,16 +43,15 @@ var Styles = StyleSheet.create({
     fontFamily: 'Roboto-Light',
     color: defaultStyles.dark,
     paddingLeft: 12,
-    width: defaultStyles.bodyWidth - 12 - 44,
+    width: defaultStyles.bodyWidth - 12 - 44 - 44,
     height: defaultStyles.chatBarHeight - 12 - 2,
     borderWidth: 0,
     backgroundColor: defaultStyles.white,
   },
   iconView : {
-    borderRadius: 22,
-    backgroundColor: defaultStyles.blue,
-    width: 44,
-    height: 44,
+    width: 24,
+    height: 24,
+    margin:10,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -61,6 +60,18 @@ var Styles = StyleSheet.create({
     height: 44,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  button: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textSend: {
+    color: defaultStyles.blue,
+    fontWeight: 'bold',
+    fontFamily: 'Roboto-Regular',
   },
 });
 
@@ -81,6 +92,10 @@ module.exports = React.createClass({
     return {
       message: null,
       mention: null,
+      buttonText: 'send',
+      chatText: 'Write a message...',
+      activeIcon: 0,
+      editable: true,
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2
       }),
@@ -174,19 +189,69 @@ module.exports = React.createClass({
   renderIcon: function(rowData){
     return (
       <View style={Styles.iconView}>
-      <IconButton
-        onPress={rowData.action}
-        icon={rowData.icon}
-        size={24}
-      />
+        <IconButton
+          onPress={rowData.action}
+          icon={rowData.icon}
+          size={24}
+          color={defaultStyles.blue}
+        />
       </View>
     )
+  },
+  updateChatBar: function(visibleRows, changedRows) {
+    if(visibleRows.s1){
+      _.forEach(visibleRows.s1, (val, key) => {
+        if(key !== this.state.activeIcon){
+          var a, b, c;
+          switch (key) {
+            case '0':
+              a = 'Send';
+              b = 'Take a picture...';
+              c = true;
+              break;
+            case '1':
+              a = 'Post';
+              b = 'Lemme take a selfie...';
+              c = true;
+              break;
+            case '2':
+              a = 'Post';
+              b = 'Post a picture you have...';
+              c = true;
+              break;
+            case '3':
+              a = 'Join';
+              b = 'Join a bunch based upon location...';
+              c = false;
+              break;
+            case '4':
+              a = 'Join';
+              b = 'Drop into a random bunch...';
+              c = false;
+              break;
+            default:
+              a = 'Send';
+              b = 'Write a message...';
+              c = true;
+              break;
+          }
+          this.setState({
+            buttonText: a,
+            chatText: b,
+            editable: c,
+            activeIcon: key
+          })
+        }
+      })
+    }
   },
   renderIcons: function() {
     var icons = [
       {icon: 'material|camera', action: this.props.onPress},
       {icon: 'material|mood', action: this.props.onPress},
-      {icon: 'material|collection-image', action: this.props.onPress}
+      {icon: 'material|collection-image', action: this.props.onPress},
+      {icon: 'material|globe', action: this.props.onPress},
+      {icon: 'foundation|die-five', action: this.props.onPress}
     ];
     return (
       <View style={Styles.iconContainer}>
@@ -195,6 +260,8 @@ module.exports = React.createClass({
           renderRow={this.renderIcon}
           showsVerticalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
+          removeClippedSubviews={false}
+          onChangeVisibleRows={this.updateChatBar}
         />
       </View>
     );
@@ -220,6 +287,7 @@ module.exports = React.createClass({
         {this.state.mention ? this.renderMentions() : null}
         <View ref='chat' style={Styles.body}>
           <View style={Styles.wrap}>
+          {this.renderIcons()}
             <TextInput
               style={Styles.input}
               onChangeText={(message) => {this.onChangeText(message)}}
@@ -234,10 +302,15 @@ module.exports = React.createClass({
               underlineColorAndroid={defaultStyles.light}
               clearButtonMode='while-editing'
               returnKeyType='send'
-              placeholder='Write a message ...'
+              placeholder={this.state.chatText}
               placeholderTextColor={defaultStyles.dark}
+              editable={this.state.editable}
             />
-            {this.renderIcons()}
+            <View style={Styles.button}>
+              <Text style={Styles.textSend}>
+                {this.state.buttonText.toUpperCase()}
+              </Text>
+            </View>
           </View>
         </View>
       </ScrollView>
