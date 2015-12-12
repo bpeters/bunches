@@ -420,4 +420,7 @@ module.exports = {
       messages: this.store.messages
     });
   },
+  queryUser: function (id) {
+    return Query.user(id);
+  },
 }

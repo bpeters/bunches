@@ -164,7 +164,6 @@ module.exports = {
     new Firebase(url).off('value', this.prepareMessages);
   },
   prepareMessages: function (snapshot) {
-    console.log(snapshot.val());
 
     if (snapshot.val()) {
 
