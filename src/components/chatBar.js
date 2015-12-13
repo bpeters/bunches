@@ -17,6 +17,7 @@ var {
 
 var IconButton = require('../elements/iconButton');
 var MentionContainer = require('./mentionContainer');
+var CameraRollContainer = require('./cameraRollContainer');
 
 var Styles = StyleSheet.create({
   scroll: {
@@ -82,6 +83,7 @@ module.exports = React.createClass({
     createChat: React.PropTypes.func,
     onCameraPress: React.PropTypes.func,
     onSelfiePress: React.PropTypes.func,
+    onPressCameraRollPhoto: React.PropTypes.func,
     getUsers: React.PropTypes.func,
     clearUsers: React.PropTypes.func,
     addTyper: React.PropTypes.func,
@@ -202,8 +204,21 @@ module.exports = React.createClass({
     }
 
     this.setState({
-      inputShow:!this.state.inputShow
+      inputShow:!this.state.inputShow,
+      cameraRoll: false
     });
+  },
+  onCameraRollPress: function() {
+    this.setState({
+      cameraRoll:!this.state.cameraRoll
+    });
+  },
+  onPressCameraRollPhoto: function (photo) {
+    this.setState({
+      cameraRoll:!this.state.cameraRoll
+    });
+
+    this.props.onPressCameraRollPhoto(photo);
   },
   renderChat: function() {
     var textInputBackIcon = {icon: 'material|chevron-left', onPress: this.toggleTextInput};
@@ -250,7 +265,7 @@ module.exports = React.createClass({
       {icon: 'ion|compose', onPress: this.toggleTextInput},
       {icon: 'material|camera', onPress: this.props.onCameraPress},
       {icon: 'fontawesome|smile-o', onPress: this.props.onSelfiePress},
-      {icon: 'ion|images', onPress: this.props.onCameraRollPress}
+      {icon: 'ion|images', onPress: this.onCameraRollPress}
     ];
 
     return (
@@ -277,6 +292,15 @@ module.exports = React.createClass({
       />
     );
   },
+  renderCameraRoll: function () {
+    return (
+      <CameraRollContainer
+        store={this.props.store}
+        onPressCameraRollClose={this.onCameraRollPress}
+        onPressCameraRollPhoto={this.onPressCameraRollPhoto}
+      />
+    );
+  },
   render: function() {
     return (
       <ScrollView
@@ -287,6 +311,7 @@ module.exports = React.createClass({
       >
         {this.props.children}
         {this.state.mention ? this.renderMentions() : null}
+        {this.state.cameraRoll ? this.renderCameraRoll() : null}
         <View ref='chat' style={Styles.body}>
           {this.state.inputShow ? this.renderChat() : this.renderIcons()}
         </View>

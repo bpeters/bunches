@@ -101,6 +101,7 @@ module.exports = React.createClass({
     this.refs.cam.capture({
       target: Camera.constants.CaptureTarget.memory
     }, (err, image) => {
+      console.log(image);
       this.setState({
         photo: image,
         preview: true
@@ -197,7 +198,6 @@ module.exports = React.createClass({
     );
   },
   render: function() {
-    console.log(this.state.cameraType);
     return (
       <View style={Styles.overall}>
         {this.state.preview ? this.renderPreview() : this.renderCamera()}

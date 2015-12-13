@@ -31,10 +31,10 @@ var Styles = StyleSheet.create({
     marginBottom: 8,
     marginLeft: 16,
     shadowOpacity: 0.3,
-    shadowRadius: 3,
+    shadowRadius: 2,
     shadowOffset: {
       width: 0,
-      height: 0
+      height: 2
     },
   },
   rowHeader: {

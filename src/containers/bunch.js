@@ -7,6 +7,7 @@ var moment = require('moment');
 var NavBar = require('../components/navBar');
 var BunchContainer = require('../components/bunchContainer');
 var ChatBar = require('../components/chatBar');
+var PhotoPreview = require('./photoPreview');
 
 var defaultStyles = require('../styles');
 
@@ -16,7 +17,6 @@ var {
   Platform,
   Text,
   ListView,
-  ScrollView,
 } = React;
 
 var AddPhoto;
@@ -60,8 +60,13 @@ module.exports = React.createClass({
       orientation: orientation,
     });
   },
-  onCameraRollPress: function () {
-    console.log('camera roll');
+  onPressCameraRollPhoto: function (image) {
+    this.props.navigator.push({
+      name: "photo preview",
+      component: PhotoPreview,
+      hasSideMenu: false,
+      photo: image,
+    });
   },
   createChat: function (message) {
     var Chat = require('./chat');
@@ -104,8 +109,8 @@ module.exports = React.createClass({
           onSelfiePress={() => {
             this.onCameraActionButtonPress('front')}
           }
-          onCameraRollPress={() => {
-            this.onCameraRollPress()}
+          onPressCameraRollPhoto={(image) => {
+            this.onPressCameraRollPhoto(image)}
           }
           store={this.props.store}
           getUsers={this.props.actions.getUsers}

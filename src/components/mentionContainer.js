@@ -3,11 +3,6 @@
 var React = require('react-native');
 var _ = require('lodash');
 
-var Chat = require('../containers/chat');
-var EnlargePhoto = require('../containers/enlargePhoto');
-var Profile = require('../containers/profile');
-var ChatCard = require('../elements/chatCard');
-
 var defaultStyles = require('../styles');
 
 var {
@@ -20,7 +15,6 @@ var {
   Text,
   ListView,
   StyleSheet,
-  Image,
 } = React;
 
 var Styles = StyleSheet.create({
