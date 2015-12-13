@@ -15,6 +15,9 @@ var {
   Text,
   ListView,
   StyleSheet,
+  Image,
+  CameraRoll,
+  NativeModules,
 } = React;
 
 var Styles = StyleSheet.create({
@@ -29,22 +32,15 @@ var Styles = StyleSheet.create({
     backgroundColor: defaultStyles.dark,
   },
   row: {
-    padding: 12,
     flexDirection: 'row',
     alignItems: 'center',
+    padding: 4,
   },
-  rowText: {
-    flexDirection: 'row',
-    alignItems: 'flex-start'
-  },
-  handle: {
-    fontFamily: 'Roboto-Bold',
-    color: defaultStyles.light,
-  },
-  name: {
-    marginLeft: 5,
-    fontFamily: 'Roboto-Regular',
-    color: defaultStyles.medium,
+  image: {
+    width: 100,
+    height: 100,
+    borderWidth: 2,
+    borderColor: defaultStyles.white,
   },
   icon: {
     borderRadius: 9,
@@ -59,28 +55,51 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     store: React.PropTypes.object,
-    onPressMention: React.PropTypes.func,
-    onPressMentionClose: React.PropTypes.func,
+    onPressCameraRollClose: React.PropTypes.func,
+    onPressCameraRollPhoto: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
+      images: [],
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2
       }),
     };
   },
+  componentDidMount: function () {
+    var fetchParams = {
+      first: 25,
+    };
+
+    CameraRoll.getPhotos(fetchParams, this.storeImages, this.logImageError);
+  },
+  storeImages: function (data) {
+    var assets = data.edges;
+    var images = assets.map( asset => asset.node.image );
+
+    this.setState({
+      images: images,
+    });
+  },
+  logImageError: function (err) {
+    console.log(err);
+  },
+  onPressPhoto: function (rowData) {
+    var image = rowData.uri.replace('file://', '');
+
+    NativeModules.ReadImageData.readImage(image, (image64) => {
+      console.log('data:image/jpeg;base64,' + image64);
+      this.props.onPressCameraRollPhoto('data:image/jpeg;base64,' + image64)
+    });
+  },
   renderChatRow: function(rowData) {
     return (
-      <TouchableOpacity onPress={() => this.props.onPressMention(rowData)}>
+      <TouchableOpacity onPress={() => {this.onPressPhoto(rowData)}}>
         <View style={Styles.row}>
-          <View style={Styles.rowText}>
-            <Text style={Styles.handle}>
-              {'@' + rowData.handle}
-            </Text>
-            <Text style={Styles.name}>
-              {rowData.name}
-            </Text>
-          </View>
+          <Image
+            style={Styles.image}
+            source={{ uri: rowData.uri }}
+          />
         </View>
       </TouchableOpacity>
     );
@@ -88,7 +107,7 @@ module.exports = React.createClass({
   renderChatHeader: function() {
     return (
       <View style={Styles.row}>
-        <TouchableOpacity onPress={() => this.props.onPressMentionClose()}>
+        <TouchableOpacity onPress={() => this.props.onPressCameraRollClose()}>
           <Icon
             name='material|close'
             size={14}
@@ -104,7 +123,7 @@ module.exports = React.createClass({
       <View style={Styles.container}>
         <ListView
           horizontal={true}
-          dataSource={this.state.dataSource.cloneWithRows(this.props.store.mentions)}
+          dataSource={this.state.dataSource.cloneWithRows(this.state.images)}
           renderRow={this.renderChatRow}
           renderHeader={this.renderChatHeader}
           keyboardShouldPersistTaps={true}
