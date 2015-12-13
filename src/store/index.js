@@ -193,7 +193,7 @@ module.exports = {
         username: user.username,
         userImageURL: user.image ? user.image.url() : null,
         imageURL: options.image ? options.image.url() : null,
-        message: options.message || 'Added Photo',
+        message: options.message,
         time: new Date().getTime(),
       });
 

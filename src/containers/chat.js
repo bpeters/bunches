@@ -10,6 +10,7 @@ var ChatContainer = require('../components/chatContainer');
 var ChatBar = require('../components/chatBar');
 var Success = require('../elements/success');
 var Timer = require('../elements/timer');
+var PhotoPreview = require('./photoPreview');
 
 var defaultStyles = require('../styles');
 
@@ -68,8 +69,14 @@ module.exports = React.createClass({
       orientation: orientation,
     });
   },
-  onCameraRollPress: function () {
-    console.log('camera roll');
+  onPressCameraRollPhoto: function (chat, image) {
+    this.props.navigator.push({
+      name: "photo preview",
+      component: PhotoPreview,
+      hasSideMenu: false,
+      photo: image,
+      chat: chat,
+    });
   },
   onBackPress: function () {
     this.props.navigator.pop();
@@ -131,8 +138,8 @@ module.exports = React.createClass({
           onSelfiePress={() => {
             this.onCameraActionButtonPress(chat,'front')}
           }
-          onCameraRollPress={() => {
-            this.onCameraRollPress()}
+          onPressCameraRollPhoto={(image) => {
+            this.onPressCameraRollPhoto(chat, image)}
           }
           store={this.props.store}
           getUsers={this.props.actions.getUsers}
