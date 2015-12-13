@@ -16,7 +16,6 @@ var {
 module.exports = React.createClass({
   propTypes: {
     onPress: React.PropTypes.func,
-    onLongPress: React.PropTypes.func,
     icon: React.PropTypes.string,
     size: React.PropTypes.number,
     color: React.PropTypes.string,
@@ -31,7 +30,7 @@ module.exports = React.createClass({
     });
 
     return (
-      <TouchableOpacity onPress={this.props.onPress} onLongPress={this.props.onLongPress}>
+      <TouchableOpacity onPress={this.props.onPress}>
         <Icon
           name={this.props.icon}
           size={this.props.size || 24}

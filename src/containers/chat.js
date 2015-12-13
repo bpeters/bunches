@@ -59,13 +59,17 @@ module.exports = React.createClass({
     actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
-  onCameraActionButtonPress: function (chat) {
+  onCameraActionButtonPress: function (chat, orientation) {
     this.props.navigator.push({
       name: "add photo",
       component: AddPhoto,
       hasSideMenu: false,
       chat: chat,
+      orientation: orientation,
     });
+  },
+  onCameraRollPress: function () {
+    console.log('camera roll');
   },
   onBackPress: function () {
     this.props.navigator.pop();
@@ -121,8 +125,14 @@ module.exports = React.createClass({
           user={this.props.store.user}
           chat={chat}
           createMessage={this.props.actions.createMessage}
-          onPress={() => {
-            this.onCameraActionButtonPress(chat)}
+          onCameraPress={() => {
+            this.onCameraActionButtonPress(chat,'back')}
+          }
+          onSelfiePress={() => {
+            this.onCameraActionButtonPress(chat,'front')}
+          }
+          onCameraRollPress={() => {
+            this.onCameraRollPress()}
           }
           store={this.props.store}
           getUsers={this.props.actions.getUsers}

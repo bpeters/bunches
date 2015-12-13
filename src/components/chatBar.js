@@ -49,32 +49,21 @@ var Styles = StyleSheet.create({
     backgroundColor: defaultStyles.white,
   },
   iconView : {
-    // borderRadius: 22,
-    width: 24,
-    height: 24,
-    margin:10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  iconView2 : {
-    borderRadius: 22,
     width: 44,
     height: 44,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: defaultStyles.blue,
-    marginBottom: 5,
   },
   iconContainer : {
-    width: 44,
     height: 44,
-    justifyContent: 'center',
+    flex: 1,
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    flexDirection: 'row',
   },
   button: {
     width: 44,
     height: 44,
-    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -83,33 +72,6 @@ var Styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Roboto-Regular',
   },
-
-
-
-  toolbar: {
-    position: 'absolute',
-    width: 56,
-    backgroundColor: 'transparent',
-    // backgroundColor: defaultStyles.white,
-    bottom: defaultStyles.chatBarHeight - 1,
-    left: 0,
-    // borderTopRightRadius: 4,
-    // borderTopWidth : 1,
-    // borderRightWidth: 1,
-    // borderColor: defaultStyles.grayLight,
-    paddingLeft: 6,
-    paddingRight: 6,
-    // shadowOpacity: 0.5,
-    // shadowRadius: 2,
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2
-    // },
-  },
-
-
-
-
 });
 
 module.exports = React.createClass({
@@ -118,7 +80,8 @@ module.exports = React.createClass({
     chat: React.PropTypes.object,
     createMessage: React.PropTypes.func,
     createChat: React.PropTypes.func,
-    onPress: React.PropTypes.func,
+    onCameraPress: React.PropTypes.func,
+    onSelfiePress: React.PropTypes.func,
     getUsers: React.PropTypes.func,
     clearUsers: React.PropTypes.func,
     addTyper: React.PropTypes.func,
@@ -126,23 +89,11 @@ module.exports = React.createClass({
     forChat: React.PropTypes.bool,
   },
   getInitialState: function () {
+    var a = this.props.forChat ? true : false;
     return {
       message: null,
       mention: null,
-      buttonText: 'send',
-      chatText: 'Write a message...',
-      activeIcon: 0,
-      editable: true,
-      toolbar: false,
-      icons: [
-        {icon: 'material|format-subject', onLongPress: this.toggleToolbar},
-        {icon: 'material|camera', onPress: this.props.onPress, onLongPress: this.toggleToolbar},
-        {icon: 'material|mood', onPress: this.props.onPress, onLongPress: this.toggleToolbar},
-        {icon: 'material|collection-image', onPress: this.props.onPress, onLongPress: this.toggleToolbar}
-      ],
-
-
-
+      inputShow: a,
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2
       }),
@@ -238,7 +189,6 @@ module.exports = React.createClass({
       <View style={Styles.iconView}>
         <IconButton
           onPress={rowData.onPress}
-          onLongPress={rowData.onLongPress}
           icon={rowData.icon}
           size={24}
           color={defaultStyles.blue}
@@ -246,104 +196,69 @@ module.exports = React.createClass({
       </View>
     )
   },
-  renderIcon2: function(rowData){
+  toggleTextInput: function() {
+    this.setState({inputShow:this.state.inputShow === false ? true : false});
+  },
+  renderChat: function() {
+    var a = {icon: 'material|chevron-left', onPress: this.toggleTextInput};
+    var b = this.props.forChat ? 'SEND' : 'CHAT';
+    var c = this.props.forChat ? 'Write a message...' : 'Create a chat...';
+
     return (
-      <View style={Styles.iconView2}>
-        <IconButton
-          onPress={rowData.onPress}
-          onLongPress={rowData.onLongPress}
-          icon={rowData.icon}
-          size={24}
+      <View style={Styles.wrap}>
+        {this.renderIcon(a)}
+        <TextInput
+          style={Styles.input}
+          onChangeText={(message) => {this.onChangeText(message)}}
+          onSubmitEditing={() => {
+            if (_.trim(this.state.message)) {
+              this.addChatMessage();
+            }
+          }}
+          value={this.state.message}
+          onFocus={this.inputFocused.bind(this, 'chat')}
+          onBlur={this.inputBlured.bind(this, 'chat')}
+          underlineColorAndroid={defaultStyles.light}
+          clearButtonMode='while-editing'
+          returnKeyType='send'
+          placeholder={c}
+          placeholderTextColor={defaultStyles.dark}
+          multiline={false}
         />
-      </View>
-    )
-  },
-  updateChatBar: function(visibleRows, changedRows) {
-    if(visibleRows.s1){
-      _.forEach(visibleRows.s1, (val, key) => {
-        if(key !== this.state.activeIcon){
-          var a, b, c;
-          switch (key) {
-            case '0':
-              a = 'Chat';
-              b = 'Write a message ...';
-              c = true;
-              break;
-            case '1':
-              a = 'Send';
-              b = 'Take a picture...';
-              c = true;
-              break;
-            case '2':
-              a = 'Post';
-              b = 'Lemme take a selfie...';
-              c = true;
-              break;
-            case '3':
-              a = 'Post';
-              b = 'Post a picture you have...';
-              c = true;
-              break;
-            case '4':
-              a = 'Join';
-              b = 'Join a bunch based upon location...';
-              c = false;
-              break;
-            case '5':
-              a = 'Join';
-              b = 'Drop into a random bunch...';
-              c = false;
-              break;
-            default:
-              a = 'Send';
-              b = 'Write a message...';
-              c = true;
-              break;
-          }
-          this.setState({
-            buttonText: a,
-            chatText: b,
-            editable: c,
-            activeIcon: key
-          })
-        }
-      })
-    }
-  },
-
-  toggleToolbar: function() {
-    this.setState({ toolbar: this.state.toolbar === false ? true : false});
-  },
-
-
-
-  // toggleToolbar: function() {
-  //   (this.state.)
-  //   this.setState({
-  //     toolbar: true,
-  //   })
-  // },
-  renderToolbar: function() {
-    var icons = _.map(this.state.icons, (icon) => {
-      return this.renderIcon2(icon);
-    });
-    return (
-      <View style={Styles.toolbar}>
-        {icons}
+        <TouchableOpacity onPress={() => {
+            if (_.trim(this.state.message)) {
+              this.addChatMessage();
+            }
+          }}>
+          <View style={Styles.button}>
+            <Text style={Styles.textSend}>
+              {b}
+            </Text>
+          </View>
+        </TouchableOpacity>
       </View>
     )
   },
   renderIcons: function() {
+    var icons = [
+      {icon: 'ion|compose', onPress: this.toggleTextInput},
+      {icon: 'material|camera', onPress: this.props.onCameraPress},
+      {icon: 'fontawesome|smile-o', onPress: this.props.onSelfiePress},
+      {icon: 'ion|images', onPress: this.props.onCameraRollPress}
+    ];
+
     return (
-      <View style={Styles.iconContainer}>
-        <ListView
-          dataSource={this.state.dataSource.cloneWithRows(this.state.icons)}
-          renderRow={this.renderIcon}
-          showsVerticalScrollIndicator={false}
-          automaticallyAdjustContentInsets={false}
-          removeClippedSubviews={false}
-          onChangeVisibleRows={this.updateChatBar}
-        />
+      <View style={Styles.wrap}>
+        <View style={Styles.iconContainer}>
+          <ListView
+            horizontal={true}
+            dataSource={this.state.dataSource.cloneWithRows(icons)}
+            renderRow={this.renderIcon}
+            showsHorizontalScrollIndicator={false}
+            automaticallyAdjustContentInsets={false}
+            removeClippedSubviews={false}
+          />
+        </View>
       </View>
     );
   },
@@ -367,41 +282,8 @@ module.exports = React.createClass({
         {this.props.children}
         {this.state.mention ? this.renderMentions() : null}
         <View ref='chat' style={Styles.body}>
-
-          
-
-          <View style={Styles.wrap}>
-          {this.renderIcons()}
-            <TextInput
-              style={Styles.input}
-              onChangeText={(message) => {this.onChangeText(message)}}
-              onSubmitEditing={() => {
-                if (_.trim(this.state.message)) {
-                  this.addChatMessage();
-                }
-              }}
-              value={this.state.message}
-              onFocus={this.inputFocused.bind(this, 'chat')}
-              onBlur={this.inputBlured.bind(this, 'chat')}
-              underlineColorAndroid={defaultStyles.light}
-              clearButtonMode='while-editing'
-              returnKeyType='send'
-              placeholder={this.state.chatText}
-              placeholderTextColor={defaultStyles.dark}
-              editable={this.state.editable}
-              multiline={false}
-            />
-            <View style={Styles.button}>
-              <Text style={Styles.textSend}>
-                {this.state.buttonText.toUpperCase()}
-              </Text>
-            </View>
-          </View>
+          {this.state.inputShow ? this.renderChat() : this.renderIcons()}
         </View>
-
-        {this.state.toolbar ? this.renderToolbar() : null}
-
-
       </ScrollView>
     );
   }
