@@ -89,11 +89,11 @@ module.exports = React.createClass({
     forChat: React.PropTypes.bool,
   },
   getInitialState: function () {
-    var a = this.props.forChat ? true : false;
+    var showTextInput = this.props.forChat ? true : false;
     return {
       message: null,
       mention: null,
-      inputShow: a,
+      inputShow: showTextInput,
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2
       }),
@@ -200,13 +200,13 @@ module.exports = React.createClass({
     this.setState({inputShow:this.state.inputShow === false ? true : false});
   },
   renderChat: function() {
-    var a = {icon: 'material|chevron-left', onPress: this.toggleTextInput};
-    var b = this.props.forChat ? 'SEND' : 'CHAT';
-    var c = this.props.forChat ? 'Write a message...' : 'Create a chat...';
+    var textInputBackIcon = {icon: 'material|chevron-left', onPress: this.toggleTextInput};
+    var textInputButtonText = this.props.forChat ? 'SEND' : 'CHAT';
+    var textInputPlaceholder = this.props.forChat ? 'Write a message...' : 'Create a chat...';
 
     return (
       <View style={Styles.wrap}>
-        {this.renderIcon(a)}
+        {this.renderIcon(textInputBackIcon)}
         <TextInput
           style={Styles.input}
           onChangeText={(message) => {this.onChangeText(message)}}
@@ -221,7 +221,7 @@ module.exports = React.createClass({
           underlineColorAndroid={defaultStyles.light}
           clearButtonMode='while-editing'
           returnKeyType='send'
-          placeholder={c}
+          placeholder={textInputPlaceholder}
           placeholderTextColor={defaultStyles.dark}
           multiline={false}
         />
@@ -232,7 +232,7 @@ module.exports = React.createClass({
           }}>
           <View style={Styles.button}>
             <Text style={Styles.textSend}>
-              {b}
+              {textInputButtonText}
             </Text>
           </View>
         </TouchableOpacity>
