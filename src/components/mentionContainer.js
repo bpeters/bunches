@@ -110,9 +110,10 @@ module.exports = React.createClass({
       <View style={Styles.container}>
         <ListView
           horizontal={true}
-          dataSource={this.state.dataSource.cloneWithRows(this.props.store.users)}
+          dataSource={this.state.dataSource.cloneWithRows(this.props.store.mentions)}
           renderRow={this.renderChatRow}
           renderHeader={this.renderChatHeader}
+          keyboardShouldPersistTaps={true}
           automaticallyAdjustContentInsets={false}
         />
       </View>
