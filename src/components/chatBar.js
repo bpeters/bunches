@@ -43,18 +43,34 @@ var Styles = StyleSheet.create({
     fontFamily: 'Roboto-Light',
     color: defaultStyles.dark,
     paddingLeft: 12,
-    width: defaultStyles.bodyWidth - 12 - 44,
+    width: defaultStyles.bodyWidth - 12 - 44 - 44,
     height: defaultStyles.chatBarHeight - 12 - 2,
     borderWidth: 0,
     backgroundColor: defaultStyles.white,
   },
   iconView : {
-    borderRadius: 22,
-    backgroundColor: defaultStyles.blue,
     width: 44,
     height: 44,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  iconContainer : {
+    height: 44,
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  button: {
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textSend: {
+    color: defaultStyles.blue,
+    fontWeight: 'bold',
+    fontFamily: 'Roboto-Regular',
   },
 });
 
@@ -64,7 +80,8 @@ module.exports = React.createClass({
     chat: React.PropTypes.object,
     createMessage: React.PropTypes.func,
     createChat: React.PropTypes.func,
-    onPress: React.PropTypes.func,
+    onCameraPress: React.PropTypes.func,
+    onSelfiePress: React.PropTypes.func,
     getUsers: React.PropTypes.func,
     clearUsers: React.PropTypes.func,
     addTyper: React.PropTypes.func,
@@ -72,9 +89,14 @@ module.exports = React.createClass({
     forChat: React.PropTypes.bool,
   },
   getInitialState: function () {
+    var a = this.props.forChat ? true : false;
     return {
       message: null,
       mention: null,
+      inputShow: a,
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2
+      }),
     };
   },
   inputFocused: function (refName) {
@@ -162,6 +184,84 @@ module.exports = React.createClass({
 
     this.props.clearUsers();
   },
+  renderIcon: function(rowData){
+    return (
+      <View style={Styles.iconView}>
+        <IconButton
+          onPress={rowData.onPress}
+          icon={rowData.icon}
+          size={24}
+          color={defaultStyles.blue}
+        />
+      </View>
+    )
+  },
+  toggleTextInput: function() {
+    this.setState({inputShow:this.state.inputShow === false ? true : false});
+  },
+  renderChat: function() {
+    var a = {icon: 'material|chevron-left', onPress: this.toggleTextInput};
+    var b = this.props.forChat ? 'SEND' : 'CHAT';
+    var c = this.props.forChat ? 'Write a message...' : 'Create a chat...';
+
+    return (
+      <View style={Styles.wrap}>
+        {this.renderIcon(a)}
+        <TextInput
+          style={Styles.input}
+          onChangeText={(message) => {this.onChangeText(message)}}
+          onSubmitEditing={() => {
+            if (_.trim(this.state.message)) {
+              this.addChatMessage();
+            }
+          }}
+          value={this.state.message}
+          onFocus={this.inputFocused.bind(this, 'chat')}
+          onBlur={this.inputBlured.bind(this, 'chat')}
+          underlineColorAndroid={defaultStyles.light}
+          clearButtonMode='while-editing'
+          returnKeyType='send'
+          placeholder={c}
+          placeholderTextColor={defaultStyles.dark}
+          multiline={false}
+        />
+        <TouchableOpacity onPress={() => {
+            if (_.trim(this.state.message)) {
+              this.addChatMessage();
+            }
+          }}>
+          <View style={Styles.button}>
+            <Text style={Styles.textSend}>
+              {b}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    )
+  },
+  renderIcons: function() {
+    var icons = [
+      {icon: 'ion|compose', onPress: this.toggleTextInput},
+      {icon: 'material|camera', onPress: this.props.onCameraPress},
+      {icon: 'fontawesome|smile-o', onPress: this.props.onSelfiePress},
+      {icon: 'ion|images', onPress: this.props.onCameraRollPress}
+    ];
+
+    return (
+      <View style={Styles.wrap}>
+        <View style={Styles.iconContainer}>
+          <ListView
+            horizontal={true}
+            dataSource={this.state.dataSource.cloneWithRows(icons)}
+            renderRow={this.renderIcon}
+            showsHorizontalScrollIndicator={false}
+            automaticallyAdjustContentInsets={false}
+            removeClippedSubviews={false}
+          />
+        </View>
+      </View>
+    );
+  },
   renderMentions: function () {
     return (
       <MentionContainer
@@ -182,32 +282,7 @@ module.exports = React.createClass({
         {this.props.children}
         {this.state.mention ? this.renderMentions() : null}
         <View ref='chat' style={Styles.body}>
-          <View style={Styles.wrap}>
-            <TextInput
-              style={Styles.input}
-              onChangeText={(message) => {this.onChangeText(message)}}
-              onSubmitEditing={() => {
-                if (_.trim(this.state.message)) {
-                  this.addChatMessage();
-                }
-              }}
-              value={this.state.message}
-              onFocus={this.inputFocused.bind(this, 'chat')}
-              onBlur={this.inputBlured.bind(this, 'chat')}
-              underlineColorAndroid={defaultStyles.light}
-              clearButtonMode='while-editing'
-              returnKeyType='send'
-              placeholder='Write a message ...'
-              placeholderTextColor={defaultStyles.dark}
-            />
-            <View style={Styles.iconView}>
-              <IconButton
-                onPress={this.props.onPress}
-                icon='material|camera'
-                size={24}
-              />
-            </View>
-          </View>
+          {this.state.inputShow ? this.renderChat() : this.renderIcons()}
         </View>
       </ScrollView>
     );
