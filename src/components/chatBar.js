@@ -49,11 +49,21 @@ var Styles = StyleSheet.create({
     backgroundColor: defaultStyles.white,
   },
   iconView : {
+    // borderRadius: 22,
     width: 24,
     height: 24,
     margin:10,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  iconView2 : {
+    borderRadius: 22,
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: defaultStyles.blue,
+    marginBottom: 5,
   },
   iconContainer : {
     width: 44,
@@ -73,6 +83,33 @@ var Styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Roboto-Regular',
   },
+
+
+
+  toolbar: {
+    position: 'absolute',
+    width: 56,
+    backgroundColor: 'transparent',
+    // backgroundColor: defaultStyles.white,
+    bottom: defaultStyles.chatBarHeight - 1,
+    left: 0,
+    // borderTopRightRadius: 4,
+    // borderTopWidth : 1,
+    // borderRightWidth: 1,
+    // borderColor: defaultStyles.grayLight,
+    paddingLeft: 6,
+    paddingRight: 6,
+    // shadowOpacity: 0.5,
+    // shadowRadius: 2,
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2
+    // },
+  },
+
+
+
+
 });
 
 module.exports = React.createClass({
@@ -96,6 +133,16 @@ module.exports = React.createClass({
       chatText: 'Write a message...',
       activeIcon: 0,
       editable: true,
+      toolbar: false,
+      icons: [
+        {icon: 'material|format-subject', onLongPress: this.toggleToolbar},
+        {icon: 'material|camera', onPress: this.props.onPress, onLongPress: this.toggleToolbar},
+        {icon: 'material|mood', onPress: this.props.onPress, onLongPress: this.toggleToolbar},
+        {icon: 'material|collection-image', onPress: this.props.onPress, onLongPress: this.toggleToolbar}
+      ],
+
+
+
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2
       }),
@@ -190,10 +237,23 @@ module.exports = React.createClass({
     return (
       <View style={Styles.iconView}>
         <IconButton
-          onPress={rowData.action}
+          onPress={rowData.onPress}
+          onLongPress={rowData.onLongPress}
           icon={rowData.icon}
           size={24}
           color={defaultStyles.blue}
+        />
+      </View>
+    )
+  },
+  renderIcon2: function(rowData){
+    return (
+      <View style={Styles.iconView2}>
+        <IconButton
+          onPress={rowData.onPress}
+          onLongPress={rowData.onLongPress}
+          icon={rowData.icon}
+          size={24}
         />
       </View>
     )
@@ -205,26 +265,31 @@ module.exports = React.createClass({
           var a, b, c;
           switch (key) {
             case '0':
+              a = 'Chat';
+              b = 'Write a message ...';
+              c = true;
+              break;
+            case '1':
               a = 'Send';
               b = 'Take a picture...';
               c = true;
               break;
-            case '1':
+            case '2':
               a = 'Post';
               b = 'Lemme take a selfie...';
               c = true;
               break;
-            case '2':
+            case '3':
               a = 'Post';
               b = 'Post a picture you have...';
               c = true;
               break;
-            case '3':
+            case '4':
               a = 'Join';
               b = 'Join a bunch based upon location...';
               c = false;
               break;
-            case '4':
+            case '5':
               a = 'Join';
               b = 'Drop into a random bunch...';
               c = false;
@@ -245,18 +310,34 @@ module.exports = React.createClass({
       })
     }
   },
+
+  toggleToolbar: function() {
+    this.setState({ toolbar: this.state.toolbar === false ? true : false});
+  },
+
+
+
+  // toggleToolbar: function() {
+  //   (this.state.)
+  //   this.setState({
+  //     toolbar: true,
+  //   })
+  // },
+  renderToolbar: function() {
+    var icons = _.map(this.state.icons, (icon) => {
+      return this.renderIcon2(icon);
+    });
+    return (
+      <View style={Styles.toolbar}>
+        {icons}
+      </View>
+    )
+  },
   renderIcons: function() {
-    var icons = [
-      {icon: 'material|camera', action: this.props.onPress},
-      {icon: 'material|mood', action: this.props.onPress},
-      {icon: 'material|collection-image', action: this.props.onPress},
-      {icon: 'material|globe', action: this.props.onPress},
-      {icon: 'foundation|die-five', action: this.props.onPress}
-    ];
     return (
       <View style={Styles.iconContainer}>
         <ListView
-          dataSource={this.state.dataSource.cloneWithRows(icons)}
+          dataSource={this.state.dataSource.cloneWithRows(this.state.icons)}
           renderRow={this.renderIcon}
           showsVerticalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
@@ -286,6 +367,9 @@ module.exports = React.createClass({
         {this.props.children}
         {this.state.mention ? this.renderMentions() : null}
         <View ref='chat' style={Styles.body}>
+
+          
+
           <View style={Styles.wrap}>
           {this.renderIcons()}
             <TextInput
@@ -305,6 +389,7 @@ module.exports = React.createClass({
               placeholder={this.state.chatText}
               placeholderTextColor={defaultStyles.dark}
               editable={this.state.editable}
+              multiline={false}
             />
             <View style={Styles.button}>
               <Text style={Styles.textSend}>
@@ -313,6 +398,10 @@ module.exports = React.createClass({
             </View>
           </View>
         </View>
+
+        {this.state.toolbar ? this.renderToolbar() : null}
+
+
       </ScrollView>
     );
   }
