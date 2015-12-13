@@ -67,7 +67,7 @@ module.exports = React.createClass({
     this.props.navigator.push({
       name: 'profile',
       component: Profile,
-      name: user.attributes.name,
+      username: user.attributes.name,
       handle: user.attributes.handle,
     });
   },
