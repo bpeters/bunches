@@ -175,7 +175,7 @@ module.exports = React.createClass({
     return (
       <ScrollView
         ref='scrollView'
-        keyboardDismissMode='on-drag'
+        keyboardShouldPersistTaps={true}
         style={Styles.scroll}
         scrollEnabled={false}
       >

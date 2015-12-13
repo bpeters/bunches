@@ -113,6 +113,7 @@ module.exports = React.createClass({
           dataSource={this.state.dataSource.cloneWithRows(this.props.store.mentions)}
           renderRow={this.renderChatRow}
           renderHeader={this.renderChatHeader}
+          keyboardShouldPersistTaps={true}
           automaticallyAdjustContentInsets={false}
         />
       </View>
