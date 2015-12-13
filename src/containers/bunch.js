@@ -51,13 +51,17 @@ module.exports = React.createClass({
     actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
-  onCameraActionButtonPress: function () {
+  onCameraActionButtonPress: function (orientation) {
     this.props.navigator.push({
       name: "add photo",
       component: AddPhoto,
       hasSideMenu: false,
       bunch: this.props.store.bunch,
+      orientation: orientation,
     });
+  },
+  onCameraRollPress: function () {
+    console.log('camera roll');
   },
   createChat: function (message) {
     var Chat = require('./chat');
@@ -94,7 +98,15 @@ module.exports = React.createClass({
         <ChatBar
           user={this.props.store.user}
           createChat={this.createChat}
-          onPress={this.onCameraActionButtonPress}
+          onCameraPress={() => {
+            this.onCameraActionButtonPress('back')}
+          }
+          onSelfiePress={() => {
+            this.onCameraActionButtonPress('front')}
+          }
+          onCameraRollPress={() => {
+            this.onCameraRollPress()}
+          }
           store={this.props.store}
           getUsers={this.props.actions.getUsers}
           clearUsers={this.props.actions.clearUsers}
