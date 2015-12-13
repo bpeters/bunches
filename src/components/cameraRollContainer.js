@@ -88,7 +88,6 @@ module.exports = React.createClass({
     var image = rowData.uri.replace('file://', '');
 
     NativeModules.ReadImageData.readImage(image, (image64) => {
-      console.log('data:image/jpeg;base64,' + image64);
       this.props.onPressCameraRollPhoto('data:image/jpeg;base64,' + image64)
     });
   },

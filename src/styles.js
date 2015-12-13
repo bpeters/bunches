@@ -21,7 +21,6 @@ module.exports = {
   red: '#03A9F4',
   yellow: '#F9CA6B',
   green: '#02D04E',
-  background: '#F1F5F7',
   medium: '#b4b4b4',
   light: '#FAFAFA',
 
@@ -31,4 +30,5 @@ module.exports = {
   gray: '#A8A7A4',
   grayLight: '#D8D7D3',
   white: '#FFFFFF',
+  background: '#F1F5F7',
 };
