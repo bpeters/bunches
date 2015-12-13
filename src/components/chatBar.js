@@ -197,7 +197,13 @@ module.exports = React.createClass({
     )
   },
   toggleTextInput: function() {
-    this.setState({inputShow:this.state.inputShow === false ? true : false});
+    if (this.state.inputShow) {
+      this.inputBlured('chat');
+    }
+
+    this.setState({
+      inputShow:!this.state.inputShow
+    });
   },
   renderChat: function() {
     var textInputBackIcon = {icon: 'material|chevron-left', onPress: this.toggleTextInput};
