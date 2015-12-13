@@ -171,6 +171,7 @@
 		8903CCA01C19E7BA00F83CFE /* CodePush.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CodePush.xcodeproj; path = "../node_modules/react-native-code-push/CodePush.xcodeproj"; sourceTree = "<group>"; };
 		8903CCB31C19E8A100F83CFE /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		899B29C61C1D375E0075EDB6 /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
+		899B29F91C1E01A50075EDB6 /* RCTCustom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCustom.m; sourceTree = "<group>"; };
 		89C5D65C1C193DE5005DFCD6 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		89D3B5491C1162F900004F20 /* RCTCamera.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RCTCamera.xcodeproj"; sourceTree = "<group>"; };
 		89D3B5501C11639200004F20 /* ReactNativeIcons.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeIcons.xcodeproj; path = "../node_modules/react-native-icons/ios/ReactNativeIcons.xcodeproj"; sourceTree = "<group>"; };
@@ -391,6 +392,7 @@
 				89D3B5B61C1168AB00004F20 /* Material-Design-Iconic-Font.ttf */,
 				89D3B5B71C1168AB00004F20 /* octicons.ttf */,
 				89D3B5B81C1168AB00004F20 /* zocial-regular-webfont.ttf */,
+				899B29F91C1E01A50075EDB6 /* RCTCustom.m */,
 				89D3B5591C11643300004F20 /* Resources */,
 				13B07FAE1A68108700A75B9A /* bunches */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
