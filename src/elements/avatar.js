@@ -51,6 +51,7 @@ module.exports = React.createClass({
     onPress: React.PropTypes.func,
     imageURL: React.PropTypes.string,
     online: React.PropTypes.bool,
+    self: React.PropTypes.bool,
   },
   renderIcon: function() {
     return (
@@ -91,7 +92,7 @@ module.exports = React.createClass({
         <View style={Styles.body}>
           {this.props.imageURL ? this.renderImage() : this.renderIcon()}
         </View>
-        {this.renderStatus()}
+        {!this.props.self ? this.renderStatus() : null}
       </TouchableOpacity>
     );
   }

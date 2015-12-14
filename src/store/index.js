@@ -425,8 +425,15 @@ module.exports = {
 
     _.forEach(this.store.messages, (message) => {
       if (message.id === chatId) {
+
         message.mention = false;
         message.newCount = 0;
+
+        _.forEach(message.messages, (m) => {
+          m.new = false;
+          message.notify = false;
+          Storage.setItem(m.key, m.key).done();
+        });
       }
     });
 
