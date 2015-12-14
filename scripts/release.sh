@@ -1,6 +1,8 @@
 #! /bin/bash
 #code-push release Bunches ./release 1.0.0
 
+rm ./release/main.jsbundle &&
+
 react-native bundle \
 --dev false \
 --minify \
