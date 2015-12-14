@@ -1,5 +1,7 @@
 #! /bin/bash
 
+rm -rf $TMPDIR/react-* &&
+
 react-native bundle \
 --dev false \
 --minify \

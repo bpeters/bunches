@@ -1,4 +1,5 @@
 #! /bin/bash
+#code-push release Bunches ./release 1.0.0
 
 react-native bundle \
 --dev false \
