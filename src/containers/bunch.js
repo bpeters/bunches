@@ -7,6 +7,7 @@ var moment = require('moment');
 var NavBar = require('../components/navBar');
 var BunchContainer = require('../components/bunchContainer');
 var ChatBar = require('../components/chatBar');
+var PhotoPreview = require('./photoPreview');
 
 var defaultStyles = require('../styles');
 
@@ -16,7 +17,6 @@ var {
   Platform,
   Text,
   ListView,
-  ScrollView,
 } = React;
 
 var AddPhoto;
@@ -51,12 +51,21 @@ module.exports = React.createClass({
     actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
-  onCameraActionButtonPress: function () {
+  onCameraActionButtonPress: function (orientation) {
     this.props.navigator.push({
       name: "add photo",
       component: AddPhoto,
       hasSideMenu: false,
       bunch: this.props.store.bunch,
+      orientation: orientation,
+    });
+  },
+  onPressCameraRollPhoto: function (image) {
+    this.props.navigator.push({
+      name: "photo preview",
+      component: PhotoPreview,
+      hasSideMenu: false,
+      photo: image,
     });
   },
   createChat: function (message) {
@@ -94,7 +103,15 @@ module.exports = React.createClass({
         <ChatBar
           user={this.props.store.user}
           createChat={this.createChat}
-          onPress={this.onCameraActionButtonPress}
+          onCameraPress={() => {
+            this.onCameraActionButtonPress('back')}
+          }
+          onSelfiePress={() => {
+            this.onCameraActionButtonPress('front')}
+          }
+          onPressCameraRollPhoto={(image) => {
+            this.onPressCameraRollPhoto(image)}
+          }
           store={this.props.store}
           getUsers={this.props.actions.getUsers}
           clearUsers={this.props.actions.clearUsers}

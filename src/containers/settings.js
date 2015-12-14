@@ -23,6 +23,7 @@ var {
   TouchableOpacity,
   Platform,
   AlertIOS,
+  ScrollView,
 } = React;
 
 var AddPhoto;
@@ -44,6 +45,9 @@ var Styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     backgroundColor: defaultStyles.background,
+  },
+  scroll: {
+    flex: 1,
   },
   inputView: {
     left: 16,
@@ -130,11 +134,26 @@ module.exports = React.createClass({
   },
   getInitialState: function(){
     return {
+      name: null,
       username: null,
       password: null,
       image: null,
-      error: this.props.store.error,
+      error: null,
     }
+  },
+  inputFocused: function (refName) {
+    setTimeout(() => {
+      this.refs.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
+        React.findNodeHandle(this.refs[refName]),
+        110,
+        true
+      );
+    }, 50);
+  },
+  inputBlured: function (refName) {
+    setTimeout(() => {
+      this.refs.scrollView.getScrollResponder().scrollTo(0, 0);
+    }, 50);
   },
   onPhotoChange: function(image) {
     this.setState({image});
@@ -197,6 +216,13 @@ module.exports = React.createClass({
       this.props.actions.updateUser('image', this.state.image);
       this.setState({
         image: null,
+      });
+    }
+
+    if (this.state.name) {
+      this.props.actions.updateUser('name', this.state.name);
+      this.setState({
+        name: null,
       });
     }
 
@@ -275,48 +301,73 @@ module.exports = React.createClass({
 
     return (
       <View style={Styles.view}>
-        <NavBar
-          title='Account'
-          menuButton={this.props.menuButton}
-        />
-        <View style={Styles.inputView}>
-          <View style={Styles.static}>
-            <TouchableOpacity onPress={this.onCamera}>
-              <View style={Styles.body}>
-                {this.props.store.user.image || this.state.image ? this.renderImage() : this.renderIcon()}
+          <NavBar
+            title='Account'
+            menuButton={this.props.menuButton}
+          />
+          <View style={Styles.inputView}>
+            <View style={Styles.static}>
+              <TouchableOpacity onPress={this.onCamera}>
+                <View style={Styles.body}>
+                  {this.props.store.user.image || this.state.image ? this.renderImage() : this.renderIcon()}
+                </View>
+              </TouchableOpacity>
+              <View style={Styles.info}>
+                <Text style={[Styles.infoLabel, Styles.labelName]}>
+                  {user.name}
+                </Text>
+                <Text style={Styles.infoLabel}>
+                  {user.email}
+                </Text>
               </View>
-            </TouchableOpacity>
-            <View style={Styles.info}>
-              <Text style={[Styles.infoLabel, Styles.labelName]}>
-                {user.name}
-              </Text>
-              <Text style={Styles.infoLabel}>
-                {user.email}
-              </Text>
             </View>
+            <ScrollView
+              ref='scrollView'
+              keyboardDismissMode='on-drag'
+              style={Styles.scroll}
+              scrollEnabled={false}
+            >
+              <View ref='input'>
+                <Text style={Styles.label}>
+                  Full Name
+                </Text>
+                <TextInput
+                  style={Styles.input}
+                  onChangeText={(name) => this.setState({name})}
+                  value={this.state.name}
+                  placeholder={user.name}
+                  placeholderTextColor={defaultStyles.gray}
+                />
+                <Text style={Styles.label}>
+                  Username
+                </Text>
+                <TextInput
+                  style={Styles.input}
+                  onChangeText={(username) => this.setState({username})}
+                  value={this.state.username}
+                  placeholder={user.handle}
+                  placeholderTextColor={defaultStyles.gray}
+                  onFocus={this.inputFocused.bind(this, 'input')}
+                  onBlur={this.inputBlured.bind(this, 'input')}
+                />
+                <Text style={Styles.label}>
+                  Password
+                </Text>
+                <TextInput
+                  ref='password'
+                  style={Styles.input}
+                  onChangeText={(password) => this.setState({password})}
+                  placeholder="**********"
+                  placeholderTextColor={defaultStyles.gray}
+                  value={this.state.password}
+                  secureTextEntry={true}
+                  onFocus={this.inputFocused.bind(this, 'input')}
+                  onBlur={this.inputBlured.bind(this, 'input')}
+                />
+                {this.props.store.loading ? null : this.renderButton()}
+              </View>
+            </ScrollView>
           </View>
-          <Text style={Styles.label}>
-            Username
-          </Text>
-          <TextInput
-            style={Styles.input}
-            onChangeText={(username) => this.setState({username})}
-            value={this.state.username}
-            placeholder={user.handle}
-          />
-          <Text style={Styles.label}>
-            Password
-          </Text>
-          <TextInput
-            ref='password'
-            style={Styles.input}
-            onChangeText={(password) => this.setState({password})}
-            placeholder="**********"
-            value={this.state.password}
-            secureTextEntry={true}
-          />
-          {this.props.store.loading ? null : this.renderButton()}
-        </View>
           <View style={Styles.buttonView}>
             <Button
               onPress={this.onlogOut}

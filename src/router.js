@@ -3,7 +3,7 @@
 var React = require('react-native');
 var _ = require('lodash');
 
-var Store = require('./store');
+var Store = require('./store/index');
 
 var Landing = require('./containers/landing');
 var Bunch = require('./containers/bunch');
@@ -38,7 +38,6 @@ module.exports= React.createClass({
       loginUser: this.loginUser,
       createUser: this.createUser,
       checkUsername: this.checkUsername,
-      clearErrors: this.clearErrors,
       updateUser: this.updateUser,
       clearSuccess: this.clearSuccess,
       getProfileChats: this.getProfileChats,
@@ -48,6 +47,8 @@ module.exports= React.createClass({
       clearNotifications: this.clearNotifications,
       addTyper: this.addTyper,
       deleteTyper: this.deleteTyper,
+      switchBunches: this.switchBunches,
+      resetPassword: this.resetPassword,
     };
 
     if (route.hasSideMenu) {

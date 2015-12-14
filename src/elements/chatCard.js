@@ -27,8 +27,15 @@ var {
 var Styles = StyleSheet.create({
   row: {
     width: defaultStyles.bodyWidth - 32,
-    marginTop: 16,
+    marginTop: 8,
+    marginBottom: 8,
     marginLeft: 16,
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
   },
   rowHeader: {
     backgroundColor: defaultStyles.white,
@@ -173,6 +180,7 @@ module.exports = React.createClass({
           dataSource={this.state.dataSource.cloneWithRows(images)}
           renderRow={this.renderImage}
           showsHorizontalScrollIndicator={false}
+          automaticallyAdjustContentInsets={false}
           contentOffset={{x: x, y: 0}}
         />
         {images.length > 1 ? this.renderMultipleImage() : null}
@@ -203,15 +211,15 @@ module.exports = React.createClass({
   },
   renderLastTwoMessages: function(messages) {
     var lastTwo = messages.slice(messages.length - 2);
-    var msgs = _.map(lastTwo, (message) => {
-      return this.renderMessage(message);
+    var msgs = _.map(lastTwo, (message, i) => {
+      return this.renderMessage(message, i);
     });
 
     return msgs;
   },
-  renderMessage: function (message) {
+  renderMessage: function (message, i) {
     return (
-      <View style={Styles.rowMessage}>
+      <View key={i} style={Styles.rowMessage}>
         <View style={Styles.user}>
           <Text style={Styles.name}>
             {message.name || 'Anon'}

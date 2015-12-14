@@ -9,6 +9,8 @@ var NavBarChat = require('../components/navBarChat');
 var ChatContainer = require('../components/chatContainer');
 var ChatBar = require('../components/chatBar');
 var Success = require('../elements/success');
+var Timer = require('../elements/timer');
+var PhotoPreview = require('./photoPreview');
 
 var defaultStyles = require('../styles');
 
@@ -58,11 +60,21 @@ module.exports = React.createClass({
     actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
-  onCameraActionButtonPress: function (chat) {
+  onCameraActionButtonPress: function (chat, orientation) {
     this.props.navigator.push({
       name: "add photo",
       component: AddPhoto,
       hasSideMenu: false,
+      chat: chat,
+      orientation: orientation,
+    });
+  },
+  onPressCameraRollPhoto: function (chat, image) {
+    this.props.navigator.push({
+      name: "photo preview",
+      component: PhotoPreview,
+      hasSideMenu: false,
+      photo: image,
       chat: chat,
     });
   },
@@ -120,8 +132,14 @@ module.exports = React.createClass({
           user={this.props.store.user}
           chat={chat}
           createMessage={this.props.actions.createMessage}
-          onPress={() => {
-            this.onCameraActionButtonPress(chat)}
+          onCameraPress={() => {
+            this.onCameraActionButtonPress(chat,'back')}
+          }
+          onSelfiePress={() => {
+            this.onCameraActionButtonPress(chat,'front')}
+          }
+          onPressCameraRollPhoto={(image) => {
+            this.onPressCameraRollPhoto(chat, image)}
           }
           store={this.props.store}
           getUsers={this.props.actions.getUsers}
@@ -146,8 +164,12 @@ module.exports = React.createClass({
             <NavBarChat
               title={chatAttributes.name}
               onBackPress={this.onBackPress}
+            />
+            <Timer
               expiration={moment(chatAttributes.expirationDate).toDate()}
               created={moment(chatAttributes.createdAt).toDate()}
+              view='bunch'
+              width={defaultStyles.bodyWidth - 10}
             />
           </ChatContainer>
         </ChatBar>

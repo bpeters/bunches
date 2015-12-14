@@ -17,6 +17,7 @@ var {
   ScrollView,
   AlertIOS,
   Platform,
+  TouchableOpacity,
 } = React;
 
 var Loading;
@@ -57,6 +58,10 @@ var Styles = StyleSheet.create({
     top: defaultStyles.navBarHeight - 28,
     right: (defaultStyles.bodyWidth / 2) - 28,
   },
+  forgotPassword: {
+    fontFamily: 'Roboto-Regular',
+    color: defaultStyles.gray
+  },
 });
 
 module.exports = React.createClass({
@@ -69,7 +74,7 @@ module.exports = React.createClass({
     return {
       email: null,
       password: null,
-      error: this.props.store.error
+      forgotPassword: false,
     };
   },
   componentWillReceiveProps: function (nextProps) {
@@ -82,16 +87,23 @@ module.exports = React.createClass({
         hasSideMenu: true,
       });
     }
-
-    this.setState({
-      error: nextProps.store.error
-    });
   },
   onBackPress: function () {
     this.props.navigator.pop();
   },
   onLogin: function () {
     this.props.actions.loginUser(this.state.email, this.state.password);
+  },
+  onResetPassword: function () {
+    this.props.actions.resetPassword(this.state.email);
+    this.setState({
+      forgotPassword: !this.state.forgotPassword
+    });
+  },
+  onPressForgotPassword: function () {
+    this.setState({
+      forgotPassword: !this.state.forgotPassword
+    });
   },
   renderLoading: function () {
     return (
@@ -111,19 +123,72 @@ module.exports = React.createClass({
       </View>
     );
   },
+  renderResetButton: function () {
+    return (
+      <View style={Styles.buttonView}>
+        <Button
+          onPress={this.onResetPassword}
+          title='RESET PASSWORD'
+          color={defaultStyles.blue}
+        />
+      </View>
+    );
+  },
+  renderLogin: function () {
+    return (
+      <View style={Styles.inputView}>
+        <TextInput
+          style={Styles.input}
+          onChangeText={(email) => this.setState({email})}
+          value={this.state.email}
+          keyboardType='email-address'
+          returnKeyType='next'
+          placeholder='Email'
+          placeholderTextColor={defaultStyles.gray}
+          onSubmitEditing={() => {
+            this.refs.password.focus();
+          }}
+        />
+        <TextInput
+          ref='password'
+          style={Styles.input}
+          onChangeText={(password) => this.setState({password})}
+          value={this.state.password}
+          secureTextEntry={true}
+          returnKeyType='done'
+          placeholder='Password'
+          placeholderTextColor={defaultStyles.gray}
+          onSubmitEditing={() => {
+            this.onLogin();
+          }}
+        />
+        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressForgotPassword}>
+          <Text style={Styles.forgotPassword}>
+            Forgot Password?
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  },
+  renderForgotPassword: function () {
+    return (
+      <View style={Styles.inputView}>
+        <TextInput
+          style={Styles.input}
+          onChangeText={(email) => this.setState({email})}
+          value={this.state.email}
+          keyboardType='email-address'
+          returnKeyType='next'
+          placeholder='Email'
+          placeholderTextColor={defaultStyles.gray}
+          onSubmitEditing={() => {
+            this.refs.password.focus();
+          }}
+        />
+      </View>
+    );
+  },
   render: function() {
-
-    if(Platform.OS === 'ios'){
-      if (_.get(this.state.error, 'message')) {
-        AlertIOS.alert(
-          'Failed to Sign In',
-          _.get(this.state.error, 'message'),
-          [
-            {text: 'Try Again', onPress: () => this.setState({error: null})},
-          ]
-        );
-      }
-    }
     return (
       <View style={Styles.view}>
         <ScrollView
@@ -136,33 +201,9 @@ module.exports = React.createClass({
             title='Sign In'
             onBackPress={this.onBackPress}
           />
-          <View style={Styles.inputView}>
-            <TextInput
-              style={Styles.input}
-              onChangeText={(email) => this.setState({email})}
-              value={this.state.email}
-              keyboardType='email-address'
-              returnKeyType='next'
-              placeholder='Email'
-              onSubmitEditing={() => {
-                this.refs.password.focus();
-              }}
-            />
-            <TextInput
-              ref='password'
-              style={Styles.input}
-              onChangeText={(password) => this.setState({password})}
-              value={this.state.password}
-              secureTextEntry={true}
-              returnKeyType='done'
-              placeholder='Password'
-              onSubmitEditing={() => {
-                this.onLogin();
-              }}
-            />
-          </View>
+          {this.state.forgotPassword ? this.renderForgotPassword() : this.renderLogin()}
         </ScrollView>
-        {this.props.store.loading ? this.renderLoading() : this.renderButton()}
+        {this.props.store.loading ? this.renderLoading() : (!this.state.forgotPassword ? this.renderButton() : this.renderResetButton())}
       </View>
     );
   }

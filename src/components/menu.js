@@ -134,6 +134,9 @@ module.exports = React.createClass({
     var Chat = require('../containers/chat');
 
     if (rowData.className === 'Bunch') {
+
+      this.props.actions.switchBunches(rowData);
+
       this.props.navigator.replace({
         name: 'bunch',
         component: Bunch,
@@ -237,7 +240,7 @@ module.exports = React.createClass({
 
     var user = this.props.store.user;
 
-    dataBlob['Bunches'] = [this.props.store.bunch];
+    dataBlob['Bunches'] = this.props.store.bunches;
 
     dataBlob['Chats'] = _.filter(this.props.store.messages, (message) => {
       var userIds = _.pluck(message.messages, 'uid');
