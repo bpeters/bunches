@@ -74,7 +74,7 @@ module.exports = React.createClass({
       username: null,
       email: null,
       password: null,
-      error: this.props.store.error
+      error: null,
     };
   },
   componentWillReceiveProps: function (nextProps) {
@@ -87,10 +87,6 @@ module.exports = React.createClass({
         hasSideMenu: true,
       });
     }
-
-    this.setState({
-      error: nextProps.store.error
-    });
   },
   onBackPress: function () {
     this.props.navigator.pop();
@@ -168,7 +164,7 @@ module.exports = React.createClass({
     );
   },
   render: function() {
-    if(Platform.OS === 'ios'){
+    if (Platform.OS === 'ios') {
       if (_.get(this.state.error, 'message')) {
         AlertIOS.alert(
           'Failed to Create Account',
@@ -179,6 +175,7 @@ module.exports = React.createClass({
         );
       }
     }
+
     return (
       <View style={Styles.view}>
         <ScrollView
@@ -198,6 +195,7 @@ module.exports = React.createClass({
               value={this.state.name}
               returnKeyType='next'
               placeholder='Full Name (Sally Joy)'
+              placeholderTextColor={defaultStyles.gray}
               onSubmitEditing={() => {
                 this.refs.username.focus();
               }}
@@ -209,6 +207,7 @@ module.exports = React.createClass({
               value={this.state.username}
               returnKeyType='next'
               placeholder='Username (sjoy)'
+              placeholderTextColor={defaultStyles.gray}
               onSubmitEditing={() => {
                 this.refs.email.focus();
               }}
@@ -221,6 +220,7 @@ module.exports = React.createClass({
               keyboardType='email-address'
               returnKeyType='next'
               placeholder='Email (sally@university.edu)'
+              placeholderTextColor={defaultStyles.gray}
               onSubmitEditing={() => {
                 this.refs.password.focus();
               }}
@@ -233,6 +233,7 @@ module.exports = React.createClass({
               secureTextEntry={true}
               returnKeyType='done'
               placeholder='Password'
+              placeholderTextColor={defaultStyles.gray}
               onSubmitEditing={() => {
                 this.onCreateAccount();
               }}

@@ -40,16 +40,12 @@ module.exports = React.createClass({
     this.props.actions.logoutUser();
   },
   onLoginPress: function () {
-    this.props.actions.clearErrors();
-
     this.props.navigator.push({
       name: 'login',
       component: Login,
     });
   },
   onCreateAccountPress: function () {
-    this.props.actions.clearErrors();
-
     this.props.navigator.push({
       name: 'signup',
       component: Signup,

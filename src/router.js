@@ -38,7 +38,6 @@ module.exports= React.createClass({
       loginUser: this.loginUser,
       createUser: this.createUser,
       checkUsername: this.checkUsername,
-      clearErrors: this.clearErrors,
       updateUser: this.updateUser,
       clearSuccess: this.clearSuccess,
       getProfileChats: this.getProfileChats,
@@ -49,6 +48,7 @@ module.exports= React.createClass({
       addTyper: this.addTyper,
       deleteTyper: this.deleteTyper,
       switchBunches: this.switchBunches,
+      resetPassword: this.resetPassword,
     };
 
     if (route.hasSideMenu) {

@@ -1,5 +1,6 @@
 'use strict';
 
+var React = require('react-native');
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
 var Firebase = require('firebase');
@@ -14,6 +15,11 @@ var ES = require('./elasticsearch');
 var Listen = require('./listen');
 var Storage = require('./storage');
 
+var {
+  AlertIOS,
+  Platform,
+} = React;
+
 var storeDefaults = {
   user: null,
   bunch: null,
@@ -21,7 +27,6 @@ var storeDefaults = {
   chats: [],
   messages: [],
   newChat: null,
-  error: null,
   loading: false,
   success: false,
   profileUser: null,
@@ -98,7 +103,7 @@ module.exports = {
         this.handleParseError(err);
     });
   },
-  handleParseError: function (err) {
+  handleParseError: function (err, title) {
     switch (err.code) {
       case Parse.Error.INVALID_SESSION_TOKEN:
         Parse.User.logOut();
@@ -106,8 +111,15 @@ module.exports = {
       default:
         console.log(err);
 
+        if (Platform.OS === 'ios') {
+          AlertIOS.alert(
+            title || 'Error',
+            err.message,
+            [{text: 'Try Again'}]
+          );
+        }
+
         this.setState({
-          error: err,
           loading: false,
         });
     }
@@ -206,16 +218,15 @@ module.exports = {
   },
   createUser: function (params) {
     this.setState({
-      error: null,
       loading: true,
     });
 
     var user = new Parse.User();
 
-    user.set('username', params.email.toLowerCase());
+    user.set('username', params.email ? params.email.toLowerCase() : '');
     user.set('password', params.password);
-    user.set('email', params.email.toLowerCase());
-    user.set('handle', params.username.toLowerCase());
+    user.set('email', params.email ? params.email.toLowerCase() : '');
+    user.set('handle', params.username ? params.username.toLowerCase() : '');
     user.set('name', params.name);
 
     user.signUp(null, {
@@ -264,23 +275,22 @@ module.exports = {
             });
           },
           error: (user, error) => {
-            this.handleParseError(error);
+            this.handleParseError(error, 'Failed to Create Account');
           }
         });
       },
       error: (user, error) => {
-        this.handleParseError(error);
+        this.handleParseError(error, 'Failed to Create Account');
       }
     });
   },
   loginUser: function (email, password) {
 
     this.setState({
-      error: null,
       loading: true,
     });
 
-    Parse.User.logIn(email.toLowerCase(), password, {
+    Parse.User.logIn(email ? email.toLowerCase() : '', password, {
       success: (user) => {
         var newUser = _.assign(user, user.attributes);
 
@@ -289,7 +299,7 @@ module.exports = {
         this.initStore(newUser);
       },
       error: (user, err) => {
-        this.handleParseError(err);
+        this.handleParseError(err, 'Failed to sign in');
       }
     });
   },
@@ -298,19 +308,23 @@ module.exports = {
     this.deleteUserStatus();
     this.tearDownStore();
   },
+  resetPassword: function (email) {
+    Parse.User.requestPasswordReset(email ? email.toLowerCase() : '', {
+      success: () => {
+        if (Platform.OS === 'ios') {
+          AlertIOS.alert('Reset password link sent');
+        }
+      },
+      error: (err) => {
+        this.handleParseError(err, 'Failed to reset password');
+      }
+    });
+  },
   checkUsername: function (username) {
     return Query.username(username);
   },
-  clearErrors: function () {
-    this.store.error = null;
-
-    this.setState({
-      error: this.store.error
-    });
-  },
   updateUser: function (field, value) {
     this.setState({
-      error: null,
       loading: true,
     });
 
@@ -346,7 +360,7 @@ module.exports = {
         }
 
       }, (err) => {
-        this.handleParseError(err);
+        this.handleParseError(err, 'Failed to Update Account');
       });
     };
 

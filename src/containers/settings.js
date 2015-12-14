@@ -134,7 +134,7 @@ module.exports = React.createClass({
       username: null,
       password: null,
       image: null,
-      error: this.props.store.error,
+      error: null,
     }
   },
   onPhotoChange: function(image) {
@@ -311,6 +311,7 @@ module.exports = React.createClass({
             onChangeText={(name) => this.setState({name})}
             value={this.state.name}
             placeholder={user.name}
+            placeholderTextColor={defaultStyles.gray}
           />
           <Text style={Styles.label}>
             Username
@@ -320,6 +321,7 @@ module.exports = React.createClass({
             onChangeText={(username) => this.setState({username})}
             value={this.state.username}
             placeholder={user.handle}
+            placeholderTextColor={defaultStyles.gray}
           />
           <Text style={Styles.label}>
             Password
@@ -329,6 +331,7 @@ module.exports = React.createClass({
             style={Styles.input}
             onChangeText={(password) => this.setState({password})}
             placeholder="**********"
+            placeholderTextColor={defaultStyles.gray}
             value={this.state.password}
             secureTextEntry={true}
           />
