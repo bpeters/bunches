@@ -251,6 +251,8 @@ module.exports = {
   handleChats: function (value, key) {
     var chat = _.find(this.store.messages, {'id' : key});
 
+    console.log(chat);
+
     var messages = _.get(chat, 'messages') || [];
 
     var promiseMessages = [];
@@ -282,9 +284,11 @@ module.exports = {
     })
     .then(() => {
 
+      var chat = _.find(this.store.messages, {'id' : key});
+
       if (!chat) {
 
-        var chat = _.find(this.store.chats, {'id' : key});
+        chat = _.find(this.store.chats, {'id' : key});
 
         var score = calcPowerScore(chat, messages);
 
