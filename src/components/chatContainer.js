@@ -106,6 +106,7 @@ module.exports = React.createClass({
     messages: React.PropTypes.array,
     getProfileChats: React.PropTypes.func,
     queryUser: React.PropTypes.func,
+    squashMessages: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -239,27 +240,13 @@ module.exports = React.createClass({
   },
   render: function() {
 
-    var userId = null;
-    var key = -1;
-    var squash = [];
-    var messages = _.cloneDeep(this.props.messages).reverse();
-
-    _.forEach(messages, (message, i) => {
-      if (userId === message.uid) {
-        squash[key].squash.push(message);
-      } else {
-        key++;
-        userId = message.uid;
-        squash.push(message);
-        squash[key]['squash'] = [];
-      }
-    });
+    var messages = this.props.squashMessages(this.props.messages);
 
     return (
       <View style={Styles.container}>
         <ListView
           renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
-          dataSource={this.state.dataSource.cloneWithRows(squash.reverse())}
+          dataSource={this.state.dataSource.cloneWithRows(messages)}
           renderRow={this.renderChatRow}
           renderFooter={this.renderChatFooter}
           renderHeader={this.renderChatHeader}

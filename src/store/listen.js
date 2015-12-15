@@ -251,8 +251,6 @@ module.exports = {
   handleChats: function (value, key) {
     var chat = _.find(this.store.messages, {'id' : key});
 
-    console.log(chat);
-
     var messages = _.get(chat, 'messages') || [];
 
     var promiseMessages = [];

@@ -444,4 +444,24 @@ module.exports = {
   queryUser: function (id) {
     return Query.user(id);
   },
+  squashMessages: function (data) {
+
+    var messages = _.cloneDeep(data).reverse()
+    var userId = null;
+    var key = -1;
+    var squash = [];
+
+    _.forEach(messages, (message, i) => {
+      if (userId === message.uid) {
+        squash[key].squash.push(message);
+      } else {
+        key++;
+        userId = message.uid;
+        squash.push(message);
+        squash[key]['squash'] = [];
+      }
+    });
+
+    return squash.reverse();
+  },
 }
