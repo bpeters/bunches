@@ -84,6 +84,7 @@ module.exports = {
 
   },
   addUserStatus: function (bunchId, userId) {
+    console.log(bunchId);
     var url = config.firebase.url + '/bunch/' + bunchId + '/status/';
     var ref = new Firebase(url);
 
@@ -265,8 +266,6 @@ module.exports = {
   },
   handleChats: function (value, key) {
     var chat = _.find(this.store.messages, {'id' : key});
-
-    console.log(chat);
 
     var messages = _.get(chat, 'messages') || [];
 
