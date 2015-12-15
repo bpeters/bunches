@@ -84,7 +84,6 @@ module.exports = {
 
   },
   addUserStatus: function (bunchId, userId) {
-    console.log(bunchId);
     var url = config.firebase.url + '/bunch/' + bunchId + '/status/';
     var ref = new Firebase(url);
 

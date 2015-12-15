@@ -70,7 +70,7 @@ module.exports = {
           this.listenToUserStatus();
           this.listenToTyper();
 
-          this.addUserStatus(this.store.bunch.id,this.store.user.objectId);
+          this.addUserStatus(this.store.bunch.id, this.store.user.objectId);
         }, (err) => {
           this.handleParseError(err);
       });
