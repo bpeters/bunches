@@ -57,6 +57,21 @@ function handleNotification (message, user) {
 }
 
 module.exports = {
+
+  authenticateFirebase: function() {
+    return new Promise( (resolve,reject) => {
+      var ref = new Firebase(config.firebase.url);
+      return ref.authWithCustomToken(config.firebase.secret, (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(ref);
+        }
+      });
+    })
+  },
+
+
   listenToUserStatus: function () {
 
     AppStateIOS.addEventListener('change', (currentAppState) => {
