@@ -35,13 +35,13 @@ var Styles = StyleSheet.create({
     justifyContent: 'center',
   },
   status: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
+    height: 12,
+    width: 12,
+    borderRadius: 6,
     position: 'absolute',
     bottom: 0,
     left: 0,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: defaultStyles.white,
   },
 });

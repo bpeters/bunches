@@ -159,11 +159,11 @@ module.exports = React.createClass({
             <NavBar
               title={title}
               menuButton={this.props.menuButton}
-              score={data.score}
             />
             <NavBarChat
               title={chatAttributes.name}
               onBackPress={this.onBackPress}
+              score={data.score}
             />
             <Timer
               expiration={moment(chatAttributes.expirationDate).toDate()}

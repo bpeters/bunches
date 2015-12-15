@@ -1,5 +1,4 @@
 var elasticsearch = require('elasticsearch');
-var RSVP = require('rsvp');
 var config = require('../src/config/default');
 
 var es = new elasticsearch.Client({

@@ -20,7 +20,6 @@
     "react-native-code-push": "^1.4.2-beta",
     "react-native-icons": "^0.6.3",
     "react-native-invertible-scroll-view": "0.1.2",
-    "react-native-side-menu": "0.14.3",
-    "rsvp": "^3.1.0"
+    "react-native-side-menu": "0.14.3"
   }
 }

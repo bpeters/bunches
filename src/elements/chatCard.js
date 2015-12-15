@@ -30,6 +30,7 @@ var Styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 8,
     marginLeft: 16,
+    borderRadius: 10,
     shadowOpacity: 0.3,
     shadowRadius: 2,
     shadowOffset: {
@@ -107,7 +108,10 @@ var Styles = StyleSheet.create({
   },
   imageView: {
     backgroundColor: defaultStyles.white,
-    padding:20,
+    paddingRight:20,
+    paddingLeft:20,
+    paddingTop: 12,
+    paddingBottom: 12,
   },
   multipleImages: {
     backgroundColor: 'rgba(0,0,0,0)',
