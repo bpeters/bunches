@@ -108,7 +108,7 @@ var Styles = StyleSheet.create({
   },
 });
 
-module.exports = React.createClass({
+var Menu = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     actions: React.PropTypes.object,
@@ -152,6 +152,8 @@ module.exports = React.createClass({
 
       this.props.actions.clearNotifications(rowData.id);
     }
+
+    this.context.menuActions.toggle();
   },
   onAvatarPress: function () {
     if (this.props.store.user.image) {
@@ -285,3 +287,9 @@ module.exports = React.createClass({
     );
   }
 });
+
+Menu.contextTypes = {
+  menuActions: React.PropTypes.object
+};
+
+module.exports = Menu;

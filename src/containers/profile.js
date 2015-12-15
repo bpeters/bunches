@@ -70,6 +70,7 @@ module.exports = React.createClass({
         <ProfileContainer
           navigator={this.props.navigator}
           chats={chats}
+          squashMessages={this.props.actions.squashMessages}
         >
           <NavBar
             title={'@' + user.handle}

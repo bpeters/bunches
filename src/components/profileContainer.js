@@ -39,6 +39,7 @@ module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     chats: React.PropTypes.array,
+    squashMessages: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -86,6 +87,7 @@ module.exports = React.createClass({
         onPressRow={this.onPressRow}
         onAvatarPress={this.onAvatarPress}
         onPressImage={this.onPressImage}
+        squashMessages={this.props.squashMessages}
       />
     );
   },

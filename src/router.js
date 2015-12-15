@@ -72,6 +72,21 @@ module.exports= React.createClass({
       );
     }
   },
+  configureScene: function (route) {
+    if (route.name) {
+      switch (route.name) {
+        case 'enlarge photo':
+          return Navigator.SceneConfigs.FadeAndroid;
+        case 'add photo':
+        case 'photo preview':
+          return Navigator.SceneConfigs.VerticalUpSwipeJump;
+        default:
+          return Navigator.SceneConfigs.HorizontalSwipeJump;
+      }
+    } else {
+      return Navigator.SceneConfigs.FloatFromRight;
+    }
+  },
   render: function() {
     var route;
 
@@ -92,6 +107,7 @@ module.exports= React.createClass({
       <Navigator
         renderScene={this.renderScene}
         initialRoute={route}
+        configureScene={this.configureScene}
       />
     );
   }
