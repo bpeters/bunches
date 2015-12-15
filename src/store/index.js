@@ -62,6 +62,9 @@ module.exports = {
         })
         .then((chats) => {
           this.store.chats = chats;
+          return this.authenticateFirebase();
+        })
+        .then(() => {
 
           this.listenToChats();
           this.listenToUserStatus();
