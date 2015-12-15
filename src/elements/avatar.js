@@ -2,6 +2,8 @@
 
 var React = require('react-native');
 
+var config = require('../config/default');
+
 var {
   Icon,
 } = require('react-native-icons');
@@ -64,10 +66,12 @@ module.exports = React.createClass({
     );
   },
   renderImage: function() {
+    var imageUrl = config.rethumb.url + 'square/40/' + this.props.imageURL;
+
     return (
       <Image
         style={Styles.image}
-        source={{uri: this.props.imageURL}}
+        source={{uri: imageUrl}}
       />
     );
   },
