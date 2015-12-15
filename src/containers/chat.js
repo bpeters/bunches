@@ -155,15 +155,16 @@ module.exports = React.createClass({
             navigator={this.props.navigator}
             getProfileChats={this.props.actions.getProfileChats}
             queryUser={this.props.actions.queryUser}
+            squashMessages={this.props.actions.squashMessages}
           >
             <NavBar
               title={title}
               menuButton={this.props.menuButton}
-              score={data.score}
             />
             <NavBarChat
               title={chatAttributes.name}
               onBackPress={this.onBackPress}
+              score={data.score}
             />
             <Timer
               expiration={moment(chatAttributes.expirationDate).toDate()}

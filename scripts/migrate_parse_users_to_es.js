@@ -1,5 +1,5 @@
 var elasticsearch = require('elasticsearch');
-var RSVP = require('rsvp');
+var Promise = require('bluebird');
 var Parse = require('parse/node');
 var _ = require('lodash');
 var config = require('../src/config/default');
@@ -44,7 +44,7 @@ query.count()
     );
   });
 
-  return RSVP.all(getAllUsers);
+  return Promise.all(getAllUsers);
 })
 .then((result) => {
   var users = _.flatten(result);

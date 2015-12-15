@@ -58,6 +58,15 @@ module.exports = React.createClass({
   propTypes: {
     title: React.PropTypes.string,
     onBackPress: React.PropTypes.func,
+    score: React.PropTypes.number,
+  },
+  renderCounter: function() {
+    return (
+      <Counter
+        score={this.props.score}
+        color='white'
+      /> 
+    )
   },
   render: function() {
     return (
@@ -74,7 +83,9 @@ module.exports = React.createClass({
               {this.props.title}
             </Text>
           </View>
-          <View style={Styles.right}></View>
+          <View style={Styles.right}>
+          {this.props.score ? this.renderCounter() : null}
+          </View>
         </View>
       </View>
     );

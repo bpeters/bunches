@@ -120,6 +120,7 @@ module.exports = React.createClass({
             navigator={this.props.navigator}
             store={this.props.store}
             getProfileChats={this.props.actions.getProfileChats}
+            squashMessages={this.props.actions.squashMessages}
           >
             <NavBar
               title={title}

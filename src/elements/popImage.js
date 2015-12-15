@@ -15,6 +15,7 @@ var {
 var Styles = StyleSheet.create({
   image: {
     height: 176,
+    borderRadius: 4,
   },
   imageText: {
     marginTop: 136,

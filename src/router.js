@@ -49,6 +49,7 @@ module.exports= React.createClass({
       deleteTyper: this.deleteTyper,
       switchBunches: this.switchBunches,
       resetPassword: this.resetPassword,
+      squashMessages: this.squashMessages,
     };
 
     if (route.hasSideMenu) {

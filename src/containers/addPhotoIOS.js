@@ -44,6 +44,9 @@ var Styles = StyleSheet.create({
     width: 100,
     height: 100,
     margin: 10,
+    borderWidth: 2,
+    borderColor: defaultStyles.medium,
+    borderRadius: 4,
   },
   camera: {
     position: 'absolute',

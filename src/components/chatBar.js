@@ -57,7 +57,6 @@ var Styles = StyleSheet.create({
   },
   iconContainer : {
     height: 44,
-    flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
     flexDirection: 'row',

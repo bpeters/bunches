@@ -40,7 +40,8 @@ var Styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderWidth: 2,
-    borderColor: defaultStyles.white,
+    borderColor: defaultStyles.medium,
+    borderRadius: 4,
   },
   icon: {
     borderRadius: 9,
