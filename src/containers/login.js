@@ -145,6 +145,8 @@ module.exports = React.createClass({
           returnKeyType='next'
           placeholder='Email'
           placeholderTextColor={defaultStyles.gray}
+          autoCapitalize='none'
+          autoCorrect={false}
           onSubmitEditing={() => {
             this.refs.password.focus();
           }}
@@ -157,6 +159,8 @@ module.exports = React.createClass({
           secureTextEntry={true}
           returnKeyType='done'
           placeholder='Password'
+          autoCapitalize='none'
+          autoCorrect={false}
           placeholderTextColor={defaultStyles.gray}
           onSubmitEditing={() => {
             this.onLogin();
@@ -180,6 +184,8 @@ module.exports = React.createClass({
           keyboardType='email-address'
           returnKeyType='next'
           placeholder='Email'
+          autoCapitalize='none'
+          autoCorrect={false}
           placeholderTextColor={defaultStyles.gray}
           onSubmitEditing={() => {
             this.refs.password.focus();

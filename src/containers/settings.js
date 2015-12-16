@@ -336,6 +336,7 @@ module.exports = React.createClass({
                   onChangeText={(name) => this.setState({name})}
                   value={this.state.name}
                   placeholder={user.name}
+                  autoCorrect={false}
                   placeholderTextColor={defaultStyles.gray}
                 />
                 <Text style={Styles.label}>
@@ -347,6 +348,8 @@ module.exports = React.createClass({
                   value={this.state.username}
                   placeholder={user.handle}
                   placeholderTextColor={defaultStyles.gray}
+                  autoCapitalize='none'
+                  autoCorrect={false}
                   onFocus={this.inputFocused.bind(this, 'input')}
                   onBlur={this.inputBlured.bind(this, 'input')}
                 />
@@ -361,6 +364,8 @@ module.exports = React.createClass({
                   placeholderTextColor={defaultStyles.gray}
                   value={this.state.password}
                   secureTextEntry={true}
+                  autoCapitalize='none'
+                  autoCorrect={false}
                   onFocus={this.inputFocused.bind(this, 'input')}
                   onBlur={this.inputBlured.bind(this, 'input')}
                 />

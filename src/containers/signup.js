@@ -196,6 +196,7 @@ module.exports = React.createClass({
               returnKeyType='next'
               placeholder='Full Name (Sally Joy)'
               placeholderTextColor={defaultStyles.gray}
+              autoCorrect={false}
               onSubmitEditing={() => {
                 this.refs.username.focus();
               }}
@@ -208,6 +209,8 @@ module.exports = React.createClass({
               returnKeyType='next'
               placeholder='Username (sjoy)'
               placeholderTextColor={defaultStyles.gray}
+              autoCapitalize='none'
+              autoCorrect={false}
               onSubmitEditing={() => {
                 this.refs.email.focus();
               }}
@@ -220,6 +223,8 @@ module.exports = React.createClass({
               keyboardType='email-address'
               returnKeyType='next'
               placeholder='Email (sally@university.edu)'
+              autoCapitalize='none'
+              autoCorrect={false}
               placeholderTextColor={defaultStyles.gray}
               onSubmitEditing={() => {
                 this.refs.password.focus();
@@ -233,6 +238,8 @@ module.exports = React.createClass({
               secureTextEntry={true}
               returnKeyType='done'
               placeholder='Password'
+              autoCapitalize='none'
+              autoCorrect={false}
               placeholderTextColor={defaultStyles.gray}
               onSubmitEditing={() => {
                 this.onCreateAccount();
