@@ -7,6 +7,7 @@ var Chat = require('../containers/chat');
 var EnlargePhoto = require('../containers/enlargePhoto');
 var Profile = require('../containers/profile');
 var ChatCard = require('../elements/chatCard');
+var Hashtag = require('../containers/hashtag');
 
 var defaultStyles = require('../styles');
 
@@ -43,6 +44,7 @@ module.exports = React.createClass({
     store: React.PropTypes.object,
     getProfileChats: React.PropTypes.func,
     squashMessages: React.PropTypes.func,
+    getHashtagChats: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -60,7 +62,6 @@ module.exports = React.createClass({
     });
   },
   onAvatarPress: function (rowData) {
-
     var user = rowData.chat.get('createdBy');
 
     this.props.getProfileChats(user);
@@ -80,6 +81,15 @@ module.exports = React.createClass({
       photo: imageURL,
     });
   },
+  onHashtagPress: function (word) {
+    this.props.getHashtagChats(word);
+
+    this.props.navigator.push({
+      name: 'hashtag',
+      component: Hashtag,
+      hashtag: word,
+    });
+  },
   renderChatRow: function(rowData) {
     return (
       <ChatCard
@@ -88,6 +98,7 @@ module.exports = React.createClass({
         onAvatarPress={this.onAvatarPress}
         onPressImage={this.onPressImage}
         squashMessages={this.props.squashMessages}
+        onHashtagPress={this.onHashtagPress}
       />
     );
   },

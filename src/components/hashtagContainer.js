@@ -5,7 +5,6 @@ var _ = require('lodash');
 
 var EnlargePhoto = require('../containers/enlargePhoto');
 var ChatCard = require('../elements/chatCard');
-var Hashtag = require('../containers/hashtag');
 
 var defaultStyles = require('../styles');
 
@@ -40,6 +39,7 @@ module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     chats: React.PropTypes.array,
+    getProfileChats: React.PropTypes.func,
     squashMessages: React.PropTypes.func,
     getHashtagChats: React.PropTypes.func,
   },
@@ -61,18 +61,18 @@ module.exports = React.createClass({
     });
   },
   onAvatarPress: function (rowData) {
+    var Profile = require('../containers/profile');
 
     var user = rowData.chat.get('createdBy');
 
-    if (user.attributes.image) {
-      this.props.navigator.push({
-        name: 'enlarge photo',
-        component: EnlargePhoto,
-        hasSideMenu: false,
-        photo: user.attributes.image.url(),
-      });
-    }
+    this.props.getProfileChats(user);
 
+    this.props.navigator.push({
+      name: 'profile',
+      component: Profile,
+      username: user.attributes.name,
+      handle: user.attributes.handle,
+    });
   },
   onPressImage: function (imageURL) {
     this.props.navigator.push({
@@ -84,12 +84,6 @@ module.exports = React.createClass({
   },
   onHashtagPress: function (word) {
     this.props.getHashtagChats(word);
-
-    this.props.navigator.push({
-      name: 'hashtag',
-      component: Hashtag,
-      hashtag: word,
-    });
   },
   renderChatRow: function(rowData) {
     return (

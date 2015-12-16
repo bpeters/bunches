@@ -10,6 +10,7 @@ var EnlargePhoto = require('../containers/enlargePhoto');
 var InvertibleScrollView = require('react-native-invertible-scroll-view');
 var Profile = require('../containers/profile');
 var Message = require('../elements/message');
+var Hashtag = require('../containers/hashtag');
 
 var defaultStyles = require('../styles');
 
@@ -107,6 +108,7 @@ module.exports = React.createClass({
     getProfileChats: React.PropTypes.func,
     queryUser: React.PropTypes.func,
     squashMessages: React.PropTypes.func,
+    getHashtagChats: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -129,7 +131,7 @@ module.exports = React.createClass({
           username: user.attributes.name,
           handle: user.attributes.handle,
         });
-      })
+      });
   },
   onPressImage: function (imageURL) {
     this.props.navigator.push({
@@ -137,6 +139,15 @@ module.exports = React.createClass({
       component: EnlargePhoto,
       hasSideMenu: false,
       photo: imageURL,
+    });
+  },
+  onHashtagPress: function (word) {
+    this.props.getHashtagChats(word);
+
+    this.props.navigator.push({
+      name: 'hashtag',
+      component: Hashtag,
+      hashtag: word,
     });
   },
   renderImage: function (imageURL) {
@@ -152,7 +163,10 @@ module.exports = React.createClass({
   renderMessage: function (message) {
     return (
       <View style={Styles.chat}>
-        <Message message={message} />
+        <Message
+          message={message}
+          onHashtagPress={this.onHashtagPress}
+        />
       </View>
     );
   },

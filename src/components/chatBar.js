@@ -84,7 +84,7 @@ module.exports = React.createClass({
     onSelfiePress: React.PropTypes.func,
     onPressCameraRollPhoto: React.PropTypes.func,
     getUsers: React.PropTypes.func,
-    clearUsers: React.PropTypes.func,
+    clearMentions: React.PropTypes.func,
     addTyper: React.PropTypes.func,
     deleteTyper: React.PropTypes.func,
     forChat: React.PropTypes.bool,
@@ -132,7 +132,7 @@ module.exports = React.createClass({
 
       this.props.getUsers(_.trimLeft(mention, '@'));
     } else {
-      this.props.clearUsers();
+      this.props.clearMentions();
     }
 
     this.setState({
@@ -166,7 +166,7 @@ module.exports = React.createClass({
       mention: null,
     });
 
-    this.props.clearUsers();
+    this.props.clearMentions();
   },
   onPressMentionClose: function () {
     var message = _.clone(this.state.message);
@@ -183,7 +183,7 @@ module.exports = React.createClass({
       mention: null,
     });
 
-    this.props.clearUsers();
+    this.props.clearMentions();
   },
   renderIcon: function(rowData){
     return (
