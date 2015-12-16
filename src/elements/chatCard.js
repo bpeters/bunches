@@ -163,6 +163,7 @@ module.exports = React.createClass({
     onPressImage: React.PropTypes.func,
     rowData: React.PropTypes.object,
     squashMessages: React.PropTypes.func,
+    onHashtagPress: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -174,7 +175,7 @@ module.exports = React.createClass({
   renderCarousel: function(images) {
     var x = 0;
 
-    if (images.length > 1){
+    if (images.length > 1) {
       x = 70;
     }
 
@@ -216,7 +217,7 @@ module.exports = React.createClass({
   },
   renderMessage: function (message, i) {
 
-    var text = !_.isEmpty(message.squash) ? message.message + "  \u2022  " + message.squash[0].message : message.message;
+    var text = !_.isEmpty(message.squash) ? message.squash[0].message + "  \u2022  " + message.message : message.message;
 
     return (
       <View key={i} style={Styles.rowMessage}>
@@ -233,7 +234,10 @@ module.exports = React.createClass({
             </Text>
           </View>
         </View>
-        <Message message={text} />
+        <Message
+          message={text}
+          onHashtagPress={this.props.onHashtagPress}
+        />
       </View>
     );
   },

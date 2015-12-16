@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 var EnlargePhoto = require('../containers/enlargePhoto');
 var ChatCard = require('../elements/chatCard');
+var Hashtag = require('../containers/hashtag');
 
 var defaultStyles = require('../styles');
 
@@ -40,6 +41,7 @@ module.exports = React.createClass({
     navigator: React.PropTypes.object,
     chats: React.PropTypes.array,
     squashMessages: React.PropTypes.func,
+    getHashtagChats: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -80,6 +82,15 @@ module.exports = React.createClass({
       photo: imageURL,
     });
   },
+  onHashtagPress: function (word) {
+    this.props.getHashtagChats(word);
+
+    this.props.navigator.push({
+      name: 'hashtag',
+      component: Hashtag,
+      hashtag: word,
+    });
+  },
   renderChatRow: function(rowData) {
     return (
       <ChatCard
@@ -88,6 +99,7 @@ module.exports = React.createClass({
         onAvatarPress={this.onAvatarPress}
         onPressImage={this.onPressImage}
         squashMessages={this.props.squashMessages}
+        onHashtagPress={this.onHashtagPress}
       />
     );
   },

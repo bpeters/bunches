@@ -43,13 +43,14 @@ module.exports= React.createClass({
       getProfileChats: this.getProfileChats,
       queryUser: this.queryUser,
       getUsers: this.getUsers,
-      clearUsers: this.clearUsers,
+      clearMentions: this.clearMentions,
       clearNotifications: this.clearNotifications,
       addTyper: this.addTyper,
       deleteTyper: this.deleteTyper,
       switchBunches: this.switchBunches,
       resetPassword: this.resetPassword,
       squashMessages: this.squashMessages,
+      getHashtagChats: this.getHashtagChats,
     };
 
     if (route.hasSideMenu) {

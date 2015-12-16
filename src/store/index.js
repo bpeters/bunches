@@ -31,6 +31,7 @@ var storeDefaults = {
   success: false,
   profileUser: null,
   profileMessages: [],
+  hashtagMessages: [],
   typers: [],
   mentions: [],
 };
@@ -393,6 +394,10 @@ module.exports = {
     });
   },
   getProfileChats: function (user) {
+    this.setState({
+      loading: true
+    });
+
     Query.chatsByUser(user)
       .then((chats) => {
 
@@ -404,7 +409,8 @@ module.exports = {
 
         this.store.profileMessages = messages;
         this.setState({
-          profileMessages: this.store.profileMessages
+          profileMessages: this.store.profileMessages,
+          loading: false,
         });
       });
   },
@@ -420,7 +426,7 @@ module.exports = {
         });
       });
   },
-  clearUsers: function () {
+  clearMentions: function () {
     this.store.mentions = [];
     this.setState({
       mentions: this.store.mentions
@@ -468,5 +474,31 @@ module.exports = {
     });
 
     return squash.reverse();
+  },
+  getHashtagChats: function (hashtag) {
+    this.setState({
+      loading: true
+    });
+
+    var messages = _.filter(this.store.messages,(message) => {
+
+      var words = _.chain(message.messages)
+        .map((m) => {
+          return m.message.split(' ');
+        })
+        .flatten()
+        .filter((word) => {
+          return word === hashtag;
+        })
+        .value();
+
+      return words.length > 0;
+    });
+
+    this.store.hashtagMessages = messages;
+    this.setState({
+      hashtagMessages: this.store.hashtagMessages,
+      loading: false,
+    });
   },
 }

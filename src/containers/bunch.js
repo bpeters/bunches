@@ -114,13 +114,14 @@ module.exports = React.createClass({
           }
           store={this.props.store}
           getUsers={this.props.actions.getUsers}
-          clearUsers={this.props.actions.clearUsers}
+          clearMentions={this.props.actions.clearMentions}
         >
           <BunchContainer
             navigator={this.props.navigator}
             store={this.props.store}
             getProfileChats={this.props.actions.getProfileChats}
             squashMessages={this.props.actions.squashMessages}
+            getHashtagChats={this.props.actions.getHashtagChats}
           >
             <NavBar
               title={title}
