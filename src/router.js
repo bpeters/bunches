@@ -77,6 +77,8 @@ module.exports= React.createClass({
       switch (route.name) {
         case 'enlarge photo':
           return Navigator.SceneConfigs.FadeAndroid;
+        case 'settings':
+          return Navigator.SceneConfigs.FloatFromRight;
         case 'add photo':
         case 'photo preview':
           return Navigator.SceneConfigs.VerticalUpSwipeJump;

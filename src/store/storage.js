@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react-native');
+var _ = require('lodash');
 
 var {
   AsyncStorage,
@@ -33,5 +34,32 @@ module.exports = {
       .catch((err) => {
         console.log(err);
       });
+  },
+  clean: function (messages) {
+
+    return new Promise((resolve, reject) => {
+      return AsyncStorage.getAllKeys()
+        .then((storage) => {
+          var keys = storage;
+
+          var messageKeys = _.chain(messages)
+            .pluck('messages')
+            .flatten()
+            .pluck('key')
+            .value();
+
+          var removeKeys = _.filter(keys, (key) => {
+            return !_.find(messageKeys, (mk) => {
+              return key === mk;
+            });
+          });
+
+          return AsyncStorage.multiRemove(removeKeys);
+        })
+        .then(() => {
+          resolve();
+        });
+    });
+
   },
 }

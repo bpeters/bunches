@@ -143,6 +143,8 @@ var Menu = React.createClass({
         hasSideMenu: true,
       });
     } else {
+      this.context.menuActions.toggle();
+
       this.props.navigator.push({
         name: 'chat',
         component: Chat,
@@ -152,8 +154,6 @@ var Menu = React.createClass({
 
       this.props.actions.clearNotifications(rowData.id);
     }
-
-    this.context.menuActions.toggle();
   },
   onAvatarPress: function () {
     if (this.props.store.user.image) {

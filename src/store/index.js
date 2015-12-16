@@ -69,8 +69,8 @@ module.exports = {
           this.listenToChats();
           this.listenToUserStatus();
           this.listenToTyper();
-
           this.addUserStatus(this.store.bunch.id, this.store.user.objectId);
+
         }, (err) => {
           this.handleParseError(err);
       });
@@ -78,7 +78,6 @@ module.exports = {
   },
   tearDownStore: function () {
     this.store = _.cloneDeep(storeDefaults);
-
     this.setState(this.store);
   },
   switchBunches: function (bunch) {
@@ -307,9 +306,12 @@ module.exports = {
     });
   },
   logoutUser: function () {
-    Parse.User.logOut();
-    this.deleteUserStatus();
-    this.tearDownStore();
+    Storage.clean(this.store.messages)
+      .then(() => {
+        Parse.User.logOut();
+        this.deleteUserStatus();
+        this.tearDownStore();
+      });
   },
   resetPassword: function (email) {
     Parse.User.requestPasswordReset(email ? email.toLowerCase() : '', {

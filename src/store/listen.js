@@ -57,7 +57,6 @@ function handleNotification (message, user) {
 }
 
 module.exports = {
-
   authenticateFirebase: function() {
     return new Promise( (resolve,reject) => {
       var ref = new Firebase(config.firebase.url);
@@ -70,8 +69,6 @@ module.exports = {
       });
     })
   },
-
-
   listenToUserStatus: function () {
 
     AppStateIOS.addEventListener('change', (currentAppState) => {
