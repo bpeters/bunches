@@ -235,8 +235,8 @@ module.exports = {
           if(data.error){
             console.log(data.error);
           } else {
-            var institution = data.employment.name;
-            var institutionUrl = data.employment.domain;
+            var institution = data.company.name;
+            var institutionUrl = data.company.domain;
             return this.updateInstitution(institution, institutionUrl);
           }
         })
