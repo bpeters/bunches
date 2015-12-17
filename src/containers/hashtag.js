@@ -62,9 +62,7 @@ module.exports = React.createClass({
         <HashtagContainer
           navigator={this.props.navigator}
           chats={chats}
-          getProfileChats={this.props.actions.getProfileChats}
           squashMessages={this.props.actions.squashMessages}
-          getHashtagChats={this.props.actions.getHashtagChats}
         >
           <NavBar
             title={this.props.route.hashtag}

@@ -29,8 +29,9 @@ var storeDefaults = {
   newChat: null,
   loading: false,
   success: false,
-  profileUser: null,
+  profileHandle: null,
   profileMessages: [],
+  hashtag: null,
   hashtagMessages: [],
   typers: [],
   mentions: [],
@@ -326,8 +327,8 @@ module.exports = {
       }
     });
   },
-  checkUsername: function (username) {
-    return Query.username(username);
+  getUserByHandle: function (username) {
+    return Query.userByHandle(username);
   },
   updateUser: function (field, value) {
     this.setState({
@@ -408,8 +409,10 @@ module.exports = {
         });
 
         this.store.profileMessages = messages;
+        this.store.profileHandle = user.attributes.handle;
         this.setState({
           profileMessages: this.store.profileMessages,
+          profileHandle: this.store.profileHandle,
           loading: false,
         });
       });
@@ -455,6 +458,9 @@ module.exports = {
   queryUser: function (id) {
     return Query.user(id);
   },
+  queryUserByHandle: function (id) {
+    return Query.user(id);
+  },
   squashMessages: function (data) {
 
     var messages = _.cloneDeep(data).reverse()
@@ -477,10 +483,10 @@ module.exports = {
   },
   getHashtagChats: function (hashtag) {
     this.setState({
-      loading: true
+      loading: true,
     });
 
-    var messages = _.filter(this.store.messages,(message) => {
+    var messages = _.filter(this.store.messages, (message) => {
 
       var words = _.chain(message.messages)
         .map((m) => {
@@ -496,8 +502,10 @@ module.exports = {
     });
 
     this.store.hashtagMessages = messages;
+    this.store.hashtag = hashtag;
     this.setState({
       hashtagMessages: this.store.hashtagMessages,
+      hashtag: this.store.hashtag,
       loading: false,
     });
   },

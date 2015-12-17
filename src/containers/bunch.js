@@ -119,9 +119,7 @@ module.exports = React.createClass({
           <BunchContainer
             navigator={this.props.navigator}
             store={this.props.store}
-            getProfileChats={this.props.actions.getProfileChats}
             squashMessages={this.props.actions.squashMessages}
-            getHashtagChats={this.props.actions.getHashtagChats}
           >
             <NavBar
               title={title}

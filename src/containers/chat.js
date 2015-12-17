@@ -153,10 +153,8 @@ module.exports = React.createClass({
             messages={messages}
             typers={typers}
             navigator={this.props.navigator}
-            getProfileChats={this.props.actions.getProfileChats}
-            queryUser={this.props.actions.queryUser}
             squashMessages={this.props.actions.squashMessages}
-            getHashtagChats={this.props.actions.getHashtagChats}
+            queryUser={this.props.actions.queryUser}
           >
             <NavBar
               title={title}

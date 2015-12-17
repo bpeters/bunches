@@ -164,6 +164,7 @@ module.exports = React.createClass({
     rowData: React.PropTypes.object,
     squashMessages: React.PropTypes.func,
     onHashtagPress: React.PropTypes.func,
+    onMentionPress: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -237,6 +238,7 @@ module.exports = React.createClass({
         <Message
           message={text}
           onHashtagPress={this.props.onHashtagPress}
+          onMentionPress={this.props.onMentionPress}
         />
       </View>
     );

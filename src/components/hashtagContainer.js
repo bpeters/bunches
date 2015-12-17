@@ -39,9 +39,7 @@ module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     chats: React.PropTypes.array,
-    getProfileChats: React.PropTypes.func,
     squashMessages: React.PropTypes.func,
-    getHashtagChats: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -65,12 +63,9 @@ module.exports = React.createClass({
 
     var user = rowData.chat.get('createdBy');
 
-    this.props.getProfileChats(user);
-
     this.props.navigator.push({
       name: 'profile',
       component: Profile,
-      username: user.attributes.name,
       handle: user.attributes.handle,
     });
   },
@@ -83,7 +78,13 @@ module.exports = React.createClass({
     });
   },
   onHashtagPress: function (word) {
-    this.props.getHashtagChats(word);
+    var Hashtag = require('../containers/hashtag');
+
+    this.props.navigator.push({
+      name: 'hashtag',
+      component: Hashtag,
+      hashtag: word,
+    });
   },
   renderChatRow: function(rowData) {
     return (

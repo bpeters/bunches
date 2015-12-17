@@ -37,7 +37,7 @@ module.exports= React.createClass({
       logoutUser: this.logoutUser,
       loginUser: this.loginUser,
       createUser: this.createUser,
-      checkUsername: this.checkUsername,
+      getUserByHandle: this.getUserByHandle,
       updateUser: this.updateUser,
       clearSuccess: this.clearSuccess,
       getProfileChats: this.getProfileChats,
@@ -52,6 +52,21 @@ module.exports= React.createClass({
       squashMessages: this.squashMessages,
       getHashtagChats: this.getHashtagChats,
     };
+
+    if (route.name === 'profile' && route.handle !== this.state.profileHandle && !this.state.loading) {
+      this.getUserByHandle(route.handle)
+        .then((user) => {
+          this.getProfileChats(user);
+        });
+    } else if (route.name === 'hashtag' && route.hashtag !== this.state.hashtag && !this.state.loading) {
+      setTimeout(() => { 
+        this.getHashtagChats(route.hashtag);
+      }, 300);
+    } else if (route.name === 'chat') {
+      setTimeout(() => { 
+        this.clearNotifications(route.chatId);
+      }, 300);
+    }
 
     if (route.hasSideMenu) {
       return (

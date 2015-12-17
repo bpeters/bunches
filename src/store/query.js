@@ -35,9 +35,9 @@ module.exports = {
 
     return query.find();
   },
-  username: function (username) {
+  userByHandle: function (handle) {
     var query = new Parse.Query('User');
-    query.equalTo('handle', username);
+    query.equalTo('handle', handle);
 
     return query.first();
   },

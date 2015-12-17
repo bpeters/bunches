@@ -44,9 +44,7 @@ module.exports = React.createClass({
   propTypes: {
     message: React.PropTypes.string,
     onHashtagPress: React.PropTypes.func,
-  },
-  onPressMention: function (word) {
-    console.log(word);
+    onMentionPress: React.PropTypes.func,
   },
   onPressLink: function (word) {
     LinkingIOS.openURL(word);
@@ -61,7 +59,7 @@ module.exports = React.createClass({
     var message = _.map(words, (word, i) => {
       if (_.startsWith(word, '@')) {
         return (
-          <Text key={i} style={Styles.mention} onPress={() => {this.onPressMention(word)}}>
+          <Text key={i} style={Styles.mention} onPress={() => {this.props.onMentionPress(word)}}>
             {word + ' '}
           </Text>
         );

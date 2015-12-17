@@ -104,11 +104,11 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     user: React.PropTypes.object,
+    navigator: React.PropTypes.object,
     messages: React.PropTypes.array,
-    getProfileChats: React.PropTypes.func,
-    queryUser: React.PropTypes.func,
+    typers: React.PropTypes.array,
     squashMessages: React.PropTypes.func,
-    getHashtagChats: React.PropTypes.func,
+    queryUser: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -123,12 +123,9 @@ module.exports = React.createClass({
     this.props.queryUser(rowData.uid)
       .then((user) => {
 
-        this.props.getProfileChats(user);
-
         this.props.navigator.push({
           name: 'profile',
           component: Profile,
-          username: user.attributes.name,
           handle: user.attributes.handle,
         });
       });
@@ -142,12 +139,19 @@ module.exports = React.createClass({
     });
   },
   onHashtagPress: function (word) {
-    this.props.getHashtagChats(word);
-
     this.props.navigator.push({
       name: 'hashtag',
       component: Hashtag,
       hashtag: word,
+    });
+  },
+  onMentionPress: function (mention) {
+    var handle = _.trim(mention, '@');
+
+    this.props.navigator.push({
+      name: 'profile',
+      component: Profile,
+      handle: handle,
     });
   },
   renderImage: function (imageURL) {
@@ -166,6 +170,7 @@ module.exports = React.createClass({
         <Message
           message={message}
           onHashtagPress={this.onHashtagPress}
+          onMentionPress={this.onMentionPress}
         />
       </View>
     );

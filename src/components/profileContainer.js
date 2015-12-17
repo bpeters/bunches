@@ -41,7 +41,6 @@ module.exports = React.createClass({
     navigator: React.PropTypes.object,
     chats: React.PropTypes.array,
     squashMessages: React.PropTypes.func,
-    getHashtagChats: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -61,18 +60,15 @@ module.exports = React.createClass({
     });
   },
   onAvatarPress: function (rowData) {
+    var Profile = require('../containers/profile');
 
     var user = rowData.chat.get('createdBy');
 
-    if (user.attributes.image) {
-      this.props.navigator.push({
-        name: 'enlarge photo',
-        component: EnlargePhoto,
-        hasSideMenu: false,
-        photo: user.attributes.image.url(),
-      });
-    }
-
+    this.props.navigator.push({
+      name: 'profile',
+      component: Profile,
+      handle: user.attributes.handle,
+    });
   },
   onPressImage: function (imageURL) {
     this.props.navigator.push({
@@ -83,12 +79,21 @@ module.exports = React.createClass({
     });
   },
   onHashtagPress: function (word) {
-    this.props.getHashtagChats(word);
-
     this.props.navigator.push({
       name: 'hashtag',
       component: Hashtag,
       hashtag: word,
+    });
+  },
+  onMentionPress: function (mention) {
+    var Profile = require('../containers/profile');
+
+    var handle = _.trim(mention, '@');
+
+    this.props.navigator.push({
+      name: 'profile',
+      component: Profile,
+      handle: handle,
     });
   },
   renderChatRow: function(rowData) {
@@ -100,6 +105,7 @@ module.exports = React.createClass({
         onPressImage={this.onPressImage}
         squashMessages={this.props.squashMessages}
         onHashtagPress={this.onHashtagPress}
+        onMentionPress={this.onMentionPress}
       />
     );
   },

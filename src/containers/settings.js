@@ -179,7 +179,7 @@ module.exports = React.createClass({
           }
         });
       } else {
-        this.props.actions.checkUsername(this.state.username)
+        this.props.actions.getUserByHandle(this.state.username)
           .then((user) => {
             if (user) {
               this.setState({

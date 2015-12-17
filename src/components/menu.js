@@ -151,8 +151,6 @@ var Menu = React.createClass({
         hasSideMenu: true,
         chatId: rowData.id,
       });
-
-      this.props.actions.clearNotifications(rowData.id);
     }
   },
   onAvatarPress: function () {

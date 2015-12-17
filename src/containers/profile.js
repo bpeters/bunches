@@ -56,8 +56,8 @@ module.exports = React.createClass({
   },
   render: function () {
     var chats = this.props.store.profileMessages;
+
     var user = {
-      name: this.props.route.username,
       handle: this.props.route.handle,
     };
 
@@ -71,7 +71,6 @@ module.exports = React.createClass({
           navigator={this.props.navigator}
           chats={chats}
           squashMessages={this.props.actions.squashMessages}
-          getHashtagChats={this.props.actions.getHashtagChats}
         >
           <NavBar
             title={'@' + user.handle}
