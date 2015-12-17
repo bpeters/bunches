@@ -4,7 +4,7 @@ var React = require('react-native');
 var _ = require('lodash');
 
 var NavBar = require('../components/navBar');
-var ProfileContainer = require('../components/profileContainer');
+var HashtagContainer = require('../components/hashtagContainer');
 
 var defaultStyles = require('../styles');
 
@@ -55,28 +55,20 @@ module.exports = React.createClass({
     );
   },
   render: function () {
-    var chats = this.props.store.profileMessages;
-
-    var user = {
-      handle: this.props.route.handle,
-    };
-
-    if (!_.isEmpty(chats)) {
-      user = chats[0].chat.get('createdBy').attributes;
-    }
+    var chats = this.props.store.hashtagMessages;
 
     return (
       <View style={Styles.body}>
-        <ProfileContainer
+        <HashtagContainer
           navigator={this.props.navigator}
           chats={chats}
           squashMessages={this.props.actions.squashMessages}
         >
           <NavBar
-            title={'@' + user.handle}
+            title={this.props.route.hashtag}
             onBackButton={this.onBack}
           />
-        </ProfileContainer>
+        </HashtagContainer>
         {this.props.store.loading ? this.renderLoading() : null}
       </View>
     );

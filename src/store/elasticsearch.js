@@ -24,13 +24,30 @@ module.exports = {
     if (query) {
       body = {
         query : {
-          multi_match : {
-            query : query,
-            fields: ['name', 'handle'],
-            fuzziness: 'AUTO',
+          bool : {
+            should : [
+              {
+                fuzzy : {
+                  handle : {
+                    value : query,
+                    fuzziness : 2
+                  }
+                }
+              },
+              {
+                fuzzy : {
+                  name : {
+                    value : query,
+                    fuzziness : 2
+                  }
+                }
+              }
+            ],
+            minimum_should_match : 1,
+            boost : 1.0
           }
         }
-      }
+      };
     } else {
       body = {
         query : {

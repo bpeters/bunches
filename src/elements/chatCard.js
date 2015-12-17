@@ -30,6 +30,7 @@ var Styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 8,
     marginLeft: 16,
+    borderRadius: 10,
     shadowOpacity: 0.3,
     shadowRadius: 2,
     shadowOffset: {
@@ -107,7 +108,10 @@ var Styles = StyleSheet.create({
   },
   imageView: {
     backgroundColor: defaultStyles.white,
-    padding:20,
+    paddingRight:20,
+    paddingLeft:20,
+    paddingTop: 12,
+    paddingBottom: 12,
   },
   multipleImages: {
     backgroundColor: 'rgba(0,0,0,0)',
@@ -158,6 +162,9 @@ module.exports = React.createClass({
     onAvatarPress: React.PropTypes.func,
     onPressImage: React.PropTypes.func,
     rowData: React.PropTypes.object,
+    squashMessages: React.PropTypes.func,
+    onHashtagPress: React.PropTypes.func,
+    onMentionPress: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -169,7 +176,7 @@ module.exports = React.createClass({
   renderCarousel: function(images) {
     var x = 0;
 
-    if (images.length > 1){
+    if (images.length > 1) {
       x = 70;
     }
 
@@ -209,15 +216,10 @@ module.exports = React.createClass({
       </View>
     );
   },
-  renderLastTwoMessages: function(messages) {
-    var lastTwo = messages.slice(messages.length - 2);
-    var msgs = _.map(lastTwo, (message, i) => {
-      return this.renderMessage(message, i);
-    });
-
-    return msgs;
-  },
   renderMessage: function (message, i) {
+
+    var text = !_.isEmpty(message.squash) ? message.squash[0].message + "  \u2022  " + message.message : message.message;
+
     return (
       <View key={i} style={Styles.rowMessage}>
         <View style={Styles.user}>
@@ -233,9 +235,24 @@ module.exports = React.createClass({
             </Text>
           </View>
         </View>
-        <Message message={message.message} />
+        <Message
+          message={text}
+          onHashtagPress={this.props.onHashtagPress}
+          onMentionPress={this.props.onMentionPress}
+        />
       </View>
     );
+  },
+  renderLastTwoMessages: function(mostRecentMessages) {
+
+    var messages = this.props.squashMessages(mostRecentMessages);
+
+    var lastTwo = messages.slice(messages.length - 2);
+    var msgs = _.map(lastTwo, (message, i) => {
+      return this.renderMessage(message, i);
+    });
+
+    return msgs;
   },
   render: function() {
     var rowData = this.props.rowData;

@@ -29,8 +29,10 @@ var storeDefaults = {
   newChat: null,
   loading: false,
   success: false,
-  profileUser: null,
+  profileHandle: null,
   profileMessages: [],
+  hashtag: null,
+  hashtagMessages: [],
   typers: [],
   mentions: [],
 };
@@ -62,12 +64,15 @@ module.exports = {
         })
         .then((chats) => {
           this.store.chats = chats;
+          return this.authenticateFirebase();
+        })
+        .then(() => {
 
           this.listenToChats();
           this.listenToUserStatus();
           this.listenToTyper();
+          this.addUserStatus(this.store.bunch.id, this.store.user.objectId);
 
-          this.addUserStatus();
         }, (err) => {
           this.handleParseError(err);
       });
@@ -75,7 +80,6 @@ module.exports = {
   },
   tearDownStore: function () {
     this.store = _.cloneDeep(storeDefaults);
-
     this.setState(this.store);
   },
   switchBunches: function (bunch) {
@@ -304,9 +308,12 @@ module.exports = {
     });
   },
   logoutUser: function () {
-    Parse.User.logOut();
-    this.deleteUserStatus();
-    this.tearDownStore();
+    Storage.clean(this.store.messages)
+      .then(() => {
+        Parse.User.logOut();
+        this.deleteUserStatus();
+        this.tearDownStore();
+      });
   },
   resetPassword: function (email) {
     Parse.User.requestPasswordReset(email ? email.toLowerCase() : '', {
@@ -320,8 +327,8 @@ module.exports = {
       }
     });
   },
-  checkUsername: function (username) {
-    return Query.username(username);
+  getUserByHandle: function (username) {
+    return Query.userByHandle(username);
   },
   updateUser: function (field, value) {
     this.setState({
@@ -388,6 +395,10 @@ module.exports = {
     });
   },
   getProfileChats: function (user) {
+    this.setState({
+      loading: true
+    });
+
     Query.chatsByUser(user)
       .then((chats) => {
 
@@ -398,8 +409,11 @@ module.exports = {
         });
 
         this.store.profileMessages = messages;
+        this.store.profileHandle = user.attributes.handle;
         this.setState({
-          profileMessages: this.store.profileMessages
+          profileMessages: this.store.profileMessages,
+          profileHandle: this.store.profileHandle,
+          loading: false,
         });
       });
   },
@@ -415,7 +429,7 @@ module.exports = {
         });
       });
   },
-  clearUsers: function () {
+  clearMentions: function () {
     this.store.mentions = [];
     this.setState({
       mentions: this.store.mentions
@@ -425,8 +439,15 @@ module.exports = {
 
     _.forEach(this.store.messages, (message) => {
       if (message.id === chatId) {
+
         message.mention = false;
         message.newCount = 0;
+
+        _.forEach(message.messages, (m) => {
+          m.new = false;
+          message.notify = false;
+          Storage.setItem(m.key, m.key).done();
+        });
       }
     });
 
@@ -436,5 +457,56 @@ module.exports = {
   },
   queryUser: function (id) {
     return Query.user(id);
+  },
+  queryUserByHandle: function (id) {
+    return Query.user(id);
+  },
+  squashMessages: function (data) {
+
+    var messages = _.cloneDeep(data).reverse()
+    var userId = null;
+    var key = -1;
+    var squash = [];
+
+    _.forEach(messages, (message, i) => {
+      if (userId === message.uid) {
+        squash[key].squash.push(message);
+      } else {
+        key++;
+        userId = message.uid;
+        squash.push(message);
+        squash[key]['squash'] = [];
+      }
+    });
+
+    return squash.reverse();
+  },
+  getHashtagChats: function (hashtag) {
+    this.setState({
+      loading: true,
+    });
+
+    var messages = _.filter(this.store.messages, (message) => {
+
+      var words = _.chain(message.messages)
+        .map((m) => {
+          return m.message.split(' ');
+        })
+        .flatten()
+        .filter((word) => {
+          return word === hashtag;
+        })
+        .value();
+
+      return words.length > 0;
+    });
+
+    this.store.hashtagMessages = messages;
+    this.store.hashtag = hashtag;
+    this.setState({
+      hashtagMessages: this.store.hashtagMessages,
+      hashtag: this.store.hashtag,
+      loading: false,
+    });
   },
 }

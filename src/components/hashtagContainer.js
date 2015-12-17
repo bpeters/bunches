@@ -5,7 +5,6 @@ var _ = require('lodash');
 
 var EnlargePhoto = require('../containers/enlargePhoto');
 var ChatCard = require('../elements/chatCard');
-var Hashtag = require('../containers/hashtag');
 
 var defaultStyles = require('../styles');
 
@@ -79,21 +78,12 @@ module.exports = React.createClass({
     });
   },
   onHashtagPress: function (word) {
+    var Hashtag = require('../containers/hashtag');
+
     this.props.navigator.push({
       name: 'hashtag',
       component: Hashtag,
       hashtag: word,
-    });
-  },
-  onMentionPress: function (mention) {
-    var Profile = require('../containers/profile');
-
-    var handle = _.trim(mention, '@');
-
-    this.props.navigator.push({
-      name: 'profile',
-      component: Profile,
-      handle: handle,
     });
   },
   renderChatRow: function(rowData) {
@@ -105,7 +95,6 @@ module.exports = React.createClass({
         onPressImage={this.onPressImage}
         squashMessages={this.props.squashMessages}
         onHashtagPress={this.onHashtagPress}
-        onMentionPress={this.onMentionPress}
       />
     );
   },

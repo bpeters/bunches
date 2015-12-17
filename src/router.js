@@ -37,19 +37,36 @@ module.exports= React.createClass({
       logoutUser: this.logoutUser,
       loginUser: this.loginUser,
       createUser: this.createUser,
-      checkUsername: this.checkUsername,
+      getUserByHandle: this.getUserByHandle,
       updateUser: this.updateUser,
       clearSuccess: this.clearSuccess,
       getProfileChats: this.getProfileChats,
       queryUser: this.queryUser,
       getUsers: this.getUsers,
-      clearUsers: this.clearUsers,
+      clearMentions: this.clearMentions,
       clearNotifications: this.clearNotifications,
       addTyper: this.addTyper,
       deleteTyper: this.deleteTyper,
       switchBunches: this.switchBunches,
       resetPassword: this.resetPassword,
+      squashMessages: this.squashMessages,
+      getHashtagChats: this.getHashtagChats,
     };
+
+    if (route.name === 'profile' && route.handle !== this.state.profileHandle && !this.state.loading) {
+      this.getUserByHandle(route.handle)
+        .then((user) => {
+          this.getProfileChats(user);
+        });
+    } else if (route.name === 'hashtag' && route.hashtag !== this.state.hashtag && !this.state.loading) {
+      setTimeout(() => { 
+        this.getHashtagChats(route.hashtag);
+      }, 300);
+    } else if (route.name === 'chat') {
+      setTimeout(() => { 
+        this.clearNotifications(route.chatId);
+      }, 300);
+    }
 
     if (route.hasSideMenu) {
       return (
@@ -69,6 +86,23 @@ module.exports= React.createClass({
           actions={actions}
         />
       );
+    }
+  },
+  configureScene: function (route) {
+    if (route.name) {
+      switch (route.name) {
+        case 'enlarge photo':
+          return Navigator.SceneConfigs.FadeAndroid;
+        case 'settings':
+          return Navigator.SceneConfigs.FloatFromRight;
+        case 'add photo':
+        case 'photo preview':
+          return Navigator.SceneConfigs.VerticalUpSwipeJump;
+        default:
+          return Navigator.SceneConfigs.HorizontalSwipeJump;
+      }
+    } else {
+      return Navigator.SceneConfigs.FloatFromRight;
     }
   },
   render: function() {
@@ -91,6 +125,7 @@ module.exports= React.createClass({
       <Navigator
         renderScene={this.renderScene}
         initialRoute={route}
+        configureScene={this.configureScene}
       />
     );
   }

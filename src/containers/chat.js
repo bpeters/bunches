@@ -143,7 +143,7 @@ module.exports = React.createClass({
           }
           store={this.props.store}
           getUsers={this.props.actions.getUsers}
-          clearUsers={this.props.actions.clearUsers}
+          clearMentions={this.props.actions.clearMentions}
           addTyper={this.props.actions.addTyper}
           deleteTyper={this.props.actions.deleteTyper}
           forChat={true}
@@ -153,17 +153,17 @@ module.exports = React.createClass({
             messages={messages}
             typers={typers}
             navigator={this.props.navigator}
-            getProfileChats={this.props.actions.getProfileChats}
+            squashMessages={this.props.actions.squashMessages}
             queryUser={this.props.actions.queryUser}
           >
             <NavBar
               title={title}
               menuButton={this.props.menuButton}
-              score={data.score}
             />
             <NavBarChat
               title={chatAttributes.name}
               onBackPress={this.onBackPress}
+              score={data.score}
             />
             <Timer
               expiration={moment(chatAttributes.expirationDate).toDate()}

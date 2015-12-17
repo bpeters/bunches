@@ -2,6 +2,8 @@
 
 var React = require('react-native');
 
+var config = require('../config/default');
+
 var {
   Icon,
 } = require('react-native-icons');
@@ -35,13 +37,13 @@ var Styles = StyleSheet.create({
     justifyContent: 'center',
   },
   status: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
+    height: 12,
+    width: 12,
+    borderRadius: 6,
     position: 'absolute',
     bottom: 0,
     left: 0,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: defaultStyles.white,
   },
 });
@@ -51,6 +53,7 @@ module.exports = React.createClass({
     onPress: React.PropTypes.func,
     imageURL: React.PropTypes.string,
     online: React.PropTypes.bool,
+    self: React.PropTypes.bool,
   },
   renderIcon: function() {
     return (
@@ -63,10 +66,12 @@ module.exports = React.createClass({
     );
   },
   renderImage: function() {
+    var imageUrl = config.rethumb.url + 'square/40/' + this.props.imageURL;
+
     return (
       <Image
         style={Styles.image}
-        source={{uri: this.props.imageURL}}
+        source={{uri: imageUrl}}
       />
     );
   },
@@ -91,7 +96,7 @@ module.exports = React.createClass({
         <View style={Styles.body}>
           {this.props.imageURL ? this.renderImage() : this.renderIcon()}
         </View>
-        {this.renderStatus()}
+        {!this.props.self ? this.renderStatus() : null}
       </TouchableOpacity>
     );
   }

@@ -47,6 +47,10 @@ module.exports = React.createClass({
   },
   render: function() {
 
+    var iconColor;
+    var textColor;
+    var backgroundColor;
+
     // Set colors
     if (this.props.color === 'white') {
 
@@ -56,16 +60,16 @@ module.exports = React.createClass({
         alignItems: 'center',
       };
 
-      var textUser = textChat = {
+      textColor = {
         color: defaultStyles.white,
       };
 
-      var bgUser = bgChat = {
+      backgroundColor = {
         backgroundColor: defaultStyles.white,
       };
 
-      var iconUser = defaultStyles.green;
-      var iconChat = defaultStyles.red;
+      iconColor = defaultStyles.blue;
+
     } else {
       var container = {
         flex:1,
@@ -73,37 +77,29 @@ module.exports = React.createClass({
         alignItems: 'center',
       };
 
-      var textUser = {
-        color: defaultStyles.green,
+      textColor = {
+        color: defaultStyles.blue,
       };
 
-      var bgUser = {
-        backgroundColor: defaultStyles.green,
+      backgroundColor = {
+        backgroundColor: defaultStyles.blue,
       };
 
-      var textChat = {
-        color: defaultStyles.red,
-      };
-
-      var bgChat = {
-        backgroundColor: defaultStyles.red,
-      };
-
-      var iconUser = iconChat = defaultStyles.white;
+      iconColor = defaultStyles.white;
     }
 
     return (
       <View style={container}>
         <View style={Styles.bolt}>
-          <Text style={[Styles.iconText,textChat]}>
+          <Text style={[Styles.iconText,textColor]}>
             {this.props.score}
           </Text>
 
-          <View style={[Styles.iconView,bgChat]}>
+          <View style={[Styles.iconView,backgroundColor]}>
             <Icon
               name='fontawesome|bolt'
               size={12}
-              color={iconChat}
+              color={iconColor}
               style={Styles.icon}
             />
           </View>

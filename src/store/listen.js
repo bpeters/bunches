@@ -4,8 +4,11 @@ var React = require('react-native');
 var Firebase = require('firebase');
 var _ = require('lodash');
 var moment = require('moment');
+var Promise = require('bluebird');
 
 var config = require('../config/default');
+
+var Storage = require('./storage');
 
 var {
   AppStateIOS,
@@ -54,6 +57,18 @@ function handleNotification (message, user) {
 }
 
 module.exports = {
+  authenticateFirebase: function() {
+    return new Promise( (resolve,reject) => {
+      var ref = new Firebase(config.firebase.url);
+      return ref.authWithCustomToken(config.firebase.secret, (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(ref);
+        }
+      });
+    })
+  },
   listenToUserStatus: function () {
 
     AppStateIOS.addEventListener('change', (currentAppState) => {
@@ -174,87 +189,64 @@ module.exports = {
       this.refreshChats()
         .then(() => {
 
+          var promiseChats = [];
+
           _.forEach(data, (value, key) => {
 
             if (_.find(this.store.chats, {'id' : key})) {
-              var chat = _.find(this.store.messages, {'id' : key});
-
-              var messages = _.get(chat, 'messages') || [];
-
-              _.forEach(value, (v, k) => {
-
-                if (!_.find(messages, {'key' : k})) {
-                  v.key = k;
-
-                  v = handleNotification(v, this.store.user);
-
-                  messages.push(v);
-                }
-
-              });
-
-              if (!chat) {
-
-                var chat = _.find(this.store.chats, {'id' : key});
-
-                var score = calcPowerScore(chat, messages);
-
-                this.store.messages.push({
-                  id: key,
-                  chat: chat,
-                  score: score,
-                  messages: messages,
-                });
-              } else {
-                chat.score = calcPowerScore(chat.chat, messages);
-              }
+              promiseChats.push(this.handleChats(value, key));
             }
 
           });
 
-          this.store.messages = _.chain(this.store.messages)
-            .map((message) => {
+          Promise.each(promiseChats, (promise) => {
+            return promise;
+          })
+          .then(() => {
+            this.store.messages = _.chain(this.store.messages)
+              .map((message) => {
 
-              var newCount = 0;
-              var mention;
+                var newCount = 0;
+                var mention;
 
-              _.forEach(message.messages, (m) => {
-                var set;
-                _.forEach(status, (i, j) => {
-                  if (m.uid === i) {
-                    m.online = true;
-                    set = true;
-                  } else if (!set) {
-                    m.online = false;
+                _.forEach(message.messages, (m) => {
+                  var set;
+                  _.forEach(status, (i, j) => {
+                    if (m.uid === i) {
+                      m.online = true;
+                      set = true;
+                    } else if (!set) {
+                      m.online = false;
+                    }
+                  });
+
+                  if (m.notify) {
+                    mention = true;
+                  }
+
+                  if (m.new) {
+                    newCount ++;
                   }
                 });
 
-                if (m.notify) {
-                  mention = true;
-                }
+                message.newCount = newCount;
+                message.mention = mention;
 
-                if (m.new) {
-                  newCount ++;
-                }
-              });
+                return message;
+              })
+              .sortBy((message) => {
+                return message.score;
+              })
+              .value()
+              .reverse();
 
-              message.newCount = newCount;
-              message.mention = mention;
-
-              return message;
-            })
-            .sortBy((message) => {
-              return message.score;
-            })
-            .value()
-            .reverse();
-
-          this.setState({
-            messages: this.store.messages,
-            chats: this.store.chats,
-            bunch: this.store.bunch,
-            user: this.store.user,
-            loading: false,
+            this.setState({
+              messages: this.store.messages,
+              chats: this.store.chats,
+              bunch: this.store.bunch,
+              user: this.store.user,
+              loading: false,
+            });
           });
 
         });
@@ -267,5 +259,61 @@ module.exports = {
         loading: false,
       });
     }
+  },
+  handleChats: function (value, key) {
+    var chat = _.find(this.store.messages, {'id' : key});
+
+    var messages = _.get(chat, 'messages') || [];
+
+    var promiseMessages = [];
+
+    _.forEach(value, (v, k) => {
+
+      if (!_.find(messages, {'key' : k})) {
+        v.key = k;
+
+        promiseMessages.push(
+          Storage.getItem(k).then((stored) => {
+
+            if (!stored) {
+              v = handleNotification(v, this.store.user);
+            }
+
+            messages.push(v);
+
+            return;
+          })
+        );
+
+      }
+
+    });
+
+    return Promise.each(promiseMessages, (promise) => {
+      return promise;
+    })
+    .then(() => {
+
+      var chat = _.find(this.store.messages, {'id' : key});
+
+      if (!chat) {
+
+        chat = _.find(this.store.chats, {'id' : key});
+
+        var score = calcPowerScore(chat, messages);
+
+        this.store.messages.push({
+          id: key,
+          chat: chat,
+          score: score,
+          messages: messages,
+        });
+
+      } else {
+        chat.score = calcPowerScore(chat.chat, messages);
+      }
+
+      return;
+    });
   },
 }

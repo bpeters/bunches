@@ -21,7 +21,7 @@ var Styles = StyleSheet.create({
     backgroundColor: defaultStyles.white,
   },
   image: {
-    marginTop: 200,
+    marginTop: 60,
     alignSelf: 'center'
   },
   buttonView: {

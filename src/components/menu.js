@@ -108,7 +108,7 @@ var Styles = StyleSheet.create({
   },
 });
 
-module.exports = React.createClass({
+var Menu = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     actions: React.PropTypes.object,
@@ -143,14 +143,14 @@ module.exports = React.createClass({
         hasSideMenu: true,
       });
     } else {
+      this.context.menuActions.toggle();
+
       this.props.navigator.push({
         name: 'chat',
         component: Chat,
         hasSideMenu: true,
         chatId: rowData.id,
       });
-
-      this.props.actions.clearNotifications(rowData.id);
     }
   },
   onAvatarPress: function () {
@@ -254,7 +254,7 @@ module.exports = React.createClass({
             <Avatar
               onPress={() => this.onAvatarPress()}
               imageURL={_.get(user, 'image') ? user.image.url() : ''}
-              online={true}
+              self={true}
             />
             <View style={Styles.info}>
               <Text style={Styles.name}>
@@ -285,3 +285,9 @@ module.exports = React.createClass({
     );
   }
 });
+
+Menu.contextTypes = {
+  menuActions: React.PropTypes.object
+};
+
+module.exports = Menu;

@@ -10,6 +10,7 @@ var EnlargePhoto = require('../containers/enlargePhoto');
 var InvertibleScrollView = require('react-native-invertible-scroll-view');
 var Profile = require('../containers/profile');
 var Message = require('../elements/message');
+var Hashtag = require('../containers/hashtag');
 
 var defaultStyles = require('../styles');
 
@@ -103,8 +104,10 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     user: React.PropTypes.object,
+    navigator: React.PropTypes.object,
     messages: React.PropTypes.array,
-    getProfileChats: React.PropTypes.func,
+    typers: React.PropTypes.array,
+    squashMessages: React.PropTypes.func,
     queryUser: React.PropTypes.func,
   },
   getInitialState: function() {
@@ -120,15 +123,12 @@ module.exports = React.createClass({
     this.props.queryUser(rowData.uid)
       .then((user) => {
 
-        this.props.getProfileChats(user);
-
         this.props.navigator.push({
           name: 'profile',
           component: Profile,
-          username: user.attributes.name,
           handle: user.attributes.handle,
         });
-      })
+      });
   },
   onPressImage: function (imageURL) {
     this.props.navigator.push({
@@ -136,6 +136,22 @@ module.exports = React.createClass({
       component: EnlargePhoto,
       hasSideMenu: false,
       photo: imageURL,
+    });
+  },
+  onHashtagPress: function (word) {
+    this.props.navigator.push({
+      name: 'hashtag',
+      component: Hashtag,
+      hashtag: word,
+    });
+  },
+  onMentionPress: function (mention) {
+    var handle = _.trim(mention, '@');
+
+    this.props.navigator.push({
+      name: 'profile',
+      component: Profile,
+      handle: handle,
     });
   },
   renderImage: function (imageURL) {
@@ -151,7 +167,11 @@ module.exports = React.createClass({
   renderMessage: function (message) {
     return (
       <View style={Styles.chat}>
-        <Message message={message} />
+        <Message
+          message={message}
+          onHashtagPress={this.onHashtagPress}
+          onMentionPress={this.onMentionPress}
+        />
       </View>
     );
   },
@@ -239,27 +259,13 @@ module.exports = React.createClass({
   },
   render: function() {
 
-    var userId = null;
-    var key = -1;
-    var squash = [];
-    var messages = _.cloneDeep(this.props.messages).reverse();
-
-    _.forEach(messages, (message, i) => {
-      if (userId === message.uid) {
-        squash[key].squash.push(message);
-      } else {
-        key++;
-        userId = message.uid;
-        squash.push(message);
-        squash[key]['squash'] = [];
-      }
-    });
+    var messages = this.props.squashMessages(this.props.messages);
 
     return (
       <View style={Styles.container}>
         <ListView
           renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
-          dataSource={this.state.dataSource.cloneWithRows(squash.reverse())}
+          dataSource={this.state.dataSource.cloneWithRows(messages)}
           renderRow={this.renderChatRow}
           renderFooter={this.renderChatFooter}
           renderHeader={this.renderChatHeader}

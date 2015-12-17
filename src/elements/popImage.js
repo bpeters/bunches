@@ -2,6 +2,8 @@
 
 var React = require('react-native');
 
+var config = require('../config/default');
+
 var defaultStyles = require('../styles');
 
 var {
@@ -15,6 +17,7 @@ var {
 var Styles = StyleSheet.create({
   image: {
     height: 176,
+    borderRadius: 4,
   },
   imageText: {
     marginTop: 136,
@@ -31,12 +34,14 @@ module.exports = React.createClass({
     photo: React.PropTypes.string,
   },
   render: function() {
+    var imageUrl = config.rethumb.url + 'square/' + defaultStyles.bodyWidth + '/' + this.props.photo;
+
     return (
       <View>
         <TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
           <Image
             source={{
-              uri: this.props.photo,
+              uri: imageUrl,
             }}
             style={Styles.image}
           /> 

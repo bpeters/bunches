@@ -21,7 +21,12 @@ var Styles = StyleSheet.create({
   mention: {
     fontSize: 14,
     fontFamily: 'Roboto-Bold',
-    color: defaultStyles.dark,
+    color: defaultStyles.red,
+  },
+  hashtag: {
+    fontSize: 14,
+    fontFamily: 'Roboto-Bold',
+    color: defaultStyles.blue,
   },
   link: {
     fontSize: 14,
@@ -38,6 +43,8 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     message: React.PropTypes.string,
+    onHashtagPress: React.PropTypes.func,
+    onMentionPress: React.PropTypes.func,
   },
   onPressLink: function (word) {
     LinkingIOS.openURL(word);
@@ -50,9 +57,15 @@ module.exports = React.createClass({
     var urlRegex = new RegExp(urlExpression);
 
     var message = _.map(words, (word, i) => {
-      if (_.includes(word, '@')) {
+      if (_.startsWith(word, '@')) {
         return (
-          <Text key={i} style={Styles.mention}>
+          <Text key={i} style={Styles.mention} onPress={() => {this.props.onMentionPress(word)}}>
+            {word + ' '}
+          </Text>
+        );
+      } else if (_.startsWith(word, '#')) {
+        return (
+          <Text key={i} style={Styles.hashtag} onPress={() => {this.props.onHashtagPress(word)}}>
             {word + ' '}
           </Text>
         );
