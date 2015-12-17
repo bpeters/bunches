@@ -14,6 +14,7 @@ var Query = require('./query');
 var ES = require('./elasticsearch');
 var Listen = require('./listen');
 var Storage = require('./storage');
+var Clearbit = require('./clearbit');
 
 var {
   AlertIOS,
@@ -67,6 +68,9 @@ module.exports = {
           return this.authenticateFirebase();
         })
         .then(() => {
+
+          // this.checkEducationEmail('amit@utexas.edu');
+
 
           this.listenToChats();
           this.listenToUserStatus();
@@ -220,73 +224,142 @@ module.exports = {
 
     });
   },
+  checkEducationEmail: function (email) {
+    var urlExpression = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.+-]+\.edu?/gi;
+    var urlRegex = new RegExp(urlExpression);
+    if (email.match(urlRegex)){
+      return Clearbit.authenticate(email)
+        .then((response) => response.text())
+        .then((data) => {
+          var data = JSON.parse(data);
+          if(data.error){
+            console.log(data.error);
+          } else {
+            var institution = data.employment.name;
+            var institutionUrl = data.employment.domain;
+            return this.updateInstitution(institution, institutionUrl);
+          }
+        })
+        .then((institutionName) => {
+          return institutionName;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      return;
+    }
+  },
+  updateInstitution: function (name, domain) {
+    var query = (new Parse.Query('Institution'))
+      .equalTo('domain',  domain);
+
+    return query.find()
+      .then((institution) => {
+        if(!institution.length){
+          return ParseReact.Mutation.Create('Bunch', {
+            name: name,
+            ttl: 86400000
+          })
+          .dispatch()
+        } else {
+          return;
+        }
+      })
+      .then((object) => {
+        if (object) {
+          return ParseReact.Mutation.Create('Institution', {
+            name: name,
+            domain: domain,
+            bunchId: object.id
+          })
+          .dispatch();
+        } else {
+          return;
+        }
+      })
+      .then((obj) => {
+        return name;
+      }, (error) => {
+        this.handleParseError(error, 'Failed to Find Institution');
+      });
+  },
   createUser: function (params) {
     this.setState({
       loading: true,
     });
 
-    var user = new Parse.User();
+    var bunches = ['Global', 'Feedback'];
 
-    user.set('username', params.email ? params.email.toLowerCase() : '');
-    user.set('password', params.password);
-    user.set('email', params.email ? params.email.toLowerCase() : '');
-    user.set('handle', params.username ? params.username.toLowerCase() : '');
-    user.set('name', params.name);
+    this.checkEducationEmail(params.email.toLowerCase())
+      .then((name) => {
 
-    user.signUp(null, {
-      success: (user) => {
-        var query = new Parse.Query('Bunch');
-        query.containedIn('name', ['Global', 'Feedback']);
+        if(name){
+          bunches.push(name);
+        }
+        var user = new Parse.User();
 
-        query.find({
-          success: (bunches) => {
+        user.set('username', params.email ? params.email.toLowerCase() : '');
+        user.set('password', params.password);
+        user.set('email', params.email ? params.email.toLowerCase() : '');
+        user.set('handle', params.username ? params.username.toLowerCase() : '');
+        user.set('name', params.name);
 
-            var batch = new ParseReact.Mutation.Batch();
+        user.signUp(null, {
+          success: (user) => {
+            var query = new Parse.Query('Bunch');
+            query.containedIn('name', bunches);
 
-            _.forEach(bunches, (bunch) => {
+            query.find({
+              success: (results) => {
 
-              var isMain;
+                var batch = new ParseReact.Mutation.Batch();
 
-              if (bunch.get('name') === 'Global') {
-                isMain = true;
-              }
+                _.forEach(results, (bunch) => {
 
-              ParseReact.Mutation.Create('Bunch2User', {
-                bunch: bunch,
-                user: user,
-                isMain: isMain,
-              })
-              .dispatch({ batch: batch });
+                  var isMain;
 
-            });
+                  if (bunch.get('name') === 'Global') {
+                    isMain = true;
+                  }
 
-            batch.dispatch()
-            .then(() => {
-              var newUser = _.assign(user, user.attributes);
-              newUser.objectId = user.id;
+                  ParseReact.Mutation.Create('Bunch2User', {
+                    bunch: bunch,
+                    user: user,
+                    isMain: isMain,
+                  })
+                  .dispatch({ batch: batch });
 
-              this.initStore(newUser);
-
-              ES.indexUser(user.id, {
-                name: params.name,
-                handle: params.username,
-              })
-              .then(() => {
-                this.setState({
-                  loading: false,
                 });
-              });
+
+                batch.dispatch()
+                .then(() => {
+                  var newUser = _.assign(user, user.attributes);
+                  newUser.objectId = user.id;
+
+                  this.initStore(newUser);
+
+                  ES.indexUser(user.id, {
+                    name: params.name,
+                    handle: params.username,
+                  })
+                  .then(() => {
+                    this.setState({
+                      loading: false,
+                    });
+                  });
+                });
+              },
+              error: (user, error) => {
+                this.handleParseError(error, 'Failed to Create Account');
+              }
             });
           },
           error: (user, error) => {
             this.handleParseError(error, 'Failed to Create Account');
           }
         });
-      },
-      error: (user, error) => {
-        this.handleParseError(error, 'Failed to Create Account');
-      }
-    });
+      })
   },
   loginUser: function (email, password) {
 
