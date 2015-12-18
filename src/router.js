@@ -62,8 +62,8 @@ module.exports= React.createClass({
       setTimeout(() => { 
         this.getHashtagChats(route.hashtag);
       }, 300);
-    } else if (route.name === 'chat') {
-      setTimeout(() => { 
+    } else if (route.name === 'chat' && route.chatId !== this.state.clearedChat) {
+      setTimeout(() => {
         this.clearNotifications(route.chatId);
       }, 300);
     }

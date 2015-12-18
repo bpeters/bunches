@@ -37,6 +37,7 @@ var storeDefaults = {
   hashtagMessages: [],
   typers: [],
   mentions: [],
+  clearedChat: null,
 };
 
 module.exports = {
@@ -240,7 +241,9 @@ module.exports = {
           );
       });
 
-      return Promise.all(promiseMentions)
+      return Promise.each(promiseMentions, (promise) => {
+        return promise;
+      })
     })
     .then((mentions) => {
 
@@ -570,7 +573,8 @@ module.exports = {
     });
 
     this.setState({
-      messages: this.store.messages
+      messages: this.store.messages,
+      clearedChat: chatId,
     });
   },
   queryUser: function (id) {
