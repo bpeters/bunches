@@ -19,8 +19,6 @@ var Styles = StyleSheet.create({
   barContainer: {
     backgroundColor: defaultStyles.white,
     height: 15,
-    borderBottomLeftRadius: 4,
-    borderBottomRightRadius: 4,
     borderColor: defaultStyles.light,
     borderLeftWidth: 1,
     borderRightWidth: 1,

@@ -9,6 +9,7 @@ var Timer = require('../elements/timer');
 var Counter = require('../elements/counter');
 var PopImage = require('../elements/popImage');
 var Message = require('../elements/message');
+var StatBar = require('../elements/statBar');
 
 var {
   Icon,
@@ -40,12 +41,8 @@ var Styles = StyleSheet.create({
   },
   rowHeader: {
     backgroundColor: defaultStyles.white,
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
-    borderTopColor: defaultStyles.light,
     borderLeftColor: defaultStyles.light,
     borderRightColor: defaultStyles.light,
-    borderTopWidth: 1,
     borderLeftWidth: 1,
     borderRightWidth: 1,
     flex: 1,
@@ -256,7 +253,11 @@ module.exports = React.createClass({
   },
   render: function() {
     var rowData = this.props.rowData;
+    console.log(rowData);
     var user = rowData.chat.get('createdBy');
+
+
+    var userCount = _.uniq(rowData.messages, 'uid').length;
 
     var mostRecentImages = [];
     var mostRecentMessages = [];
@@ -281,6 +282,12 @@ module.exports = React.createClass({
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => this.props.onPressRow(rowData)}>
         <View style={Styles.row}>
+        <Timer
+            expiration={rowData.chat.attributes.expirationDate}
+            created={rowData.chat.createdAt}
+            view='bunch'
+            width={defaultStyles.bodyWidth - 52}
+          />
           <View style={Styles.rowHeader}>
             <Avatar
               onPress={() => this.props.onAvatarPress(rowData)}
@@ -296,20 +303,15 @@ module.exports = React.createClass({
                   @{user.attributes.handle}
                 </Text>
               </View>
-              <View style={Styles.counts}>
-                <Counter
-                  score={rowData.score}
-                />
-              </View>
+              
             </View>
           </View>
           {mostRecentImages.length ? this.renderCarousel(mostRecentImages.reverse()) : null}
           {mostRecentMessages.length ? this.renderLastTwoMessages(mostRecentMessages) : null}
-          <Timer
+          <StatBar
+            score={rowData.score}
+            userCount={userCount}
             expiration={rowData.chat.attributes.expirationDate}
-            created={rowData.chat.createdAt}
-            view='bunch'
-            width={defaultStyles.bodyWidth - 52}
           />
         </View>
       </TouchableOpacity>
