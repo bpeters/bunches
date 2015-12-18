@@ -106,7 +106,7 @@ module.exports = React.createClass({
     user: React.PropTypes.object,
     navigator: React.PropTypes.object,
     messages: React.PropTypes.array,
-    typers: React.PropTypes.array,
+    typers: React.PropTypes.object,
     squashMessages: React.PropTypes.func,
     queryUser: React.PropTypes.func,
   },

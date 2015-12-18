@@ -99,7 +99,7 @@ module.exports= React.createClass({
         case 'photo preview':
           return Navigator.SceneConfigs.VerticalUpSwipeJump;
         default:
-          return Navigator.SceneConfigs.HorizontalSwipeJump;
+          return Navigator.SceneConfigs.FloatFromRight;
       }
     } else {
       return Navigator.SceneConfigs.FloatFromRight;

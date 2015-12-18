@@ -120,7 +120,7 @@ module.exports = React.createClass({
       .reverse();
 
     var typers = _.find(this.props.store.typers, {'id' : chatId}) || {
-      chatId: null,
+      id: null,
       users: [],
     };
 
