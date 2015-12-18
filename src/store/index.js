@@ -69,9 +69,6 @@ module.exports = {
         })
         .then(() => {
 
-          // this.checkEducationEmail('amit@utexas.edu');
-
-
           this.listenToChats();
           this.listenToUserStatus();
           this.listenToTyper();
@@ -227,12 +224,13 @@ module.exports = {
   checkEducationEmail: function (email) {
     var urlExpression = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.+-]+\.edu?/gi;
     var urlRegex = new RegExp(urlExpression);
-    if (email.match(urlRegex)){
+
+    if (email.match(urlRegex)) {
       return Clearbit.authenticate(email)
         .then((response) => response.text())
         .then((data) => {
           var data = JSON.parse(data);
-          if(data.error){
+          if (data.error) {
             console.log(data.error);
           } else {
             var institution = data.company.name;
@@ -244,7 +242,7 @@ module.exports = {
           return institutionName;
         })
         .catch((error) => {
-          console.log(error);
+          this.handleParseError(error, 'Failed to Create Account');
         });
     } else {
       return;
@@ -256,7 +254,7 @@ module.exports = {
 
     return query.find()
       .then((institution) => {
-        if(!institution.length){
+        if (!institution.length){
           return ParseReact.Mutation.Create('Bunch', {
             name: name,
             ttl: 86400000
@@ -281,7 +279,7 @@ module.exports = {
       .then((obj) => {
         return name;
       }, (error) => {
-        this.handleParseError(error, 'Failed to Find Institution');
+        this.handleParseError(error, 'Failed to Create Account');
       });
   },
   createUser: function (params) {
