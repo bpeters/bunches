@@ -6,6 +6,7 @@ var ParseReact = require('parse-react/react-native');
 var Firebase = require('firebase');
 var _ = require('lodash');
 var moment = require('moment');
+var Promise = require('bluebird');
 
 var config = require('../config/default');
 var nouns = require('../assets/nouns');
@@ -194,6 +195,8 @@ module.exports = {
     var messenger = new Firebase(url);
     var user = this.store.user;
 
+    var message;
+
     ParseReact.Mutation.Create('Chat2User', {
       chat: chat,
       user: user,
@@ -203,22 +206,66 @@ module.exports = {
     .dispatch()
     .then((chat) => {
 
-      messenger.push({
+      message = {
         uid: user.objectId || user.id,
         name: user.name,
         handle: user.handle,
         username: user.username,
         userImageURL: user.image ? user.image.url() : null,
         imageURL: options.image ? options.image.url() : null,
-        message: options.message,
         time: new Date().getTime(),
+      };
+
+      var promiseMentions = [];
+      var mentions = _.chain(options.message)
+        .words(/[^, ]+/g)
+        .filter((word) => {
+          return _.startsWith(word, '@');
+        })
+        .value();
+
+      _.forEach(mentions, (mention) => {
+
+          var handle = _.trimLeft(mention, '@');
+
+          promiseMentions.push(
+            this.getUserByHandle(handle)
+              .then((user) => {
+                if (user) {
+                  return mention + '/?/?/?/';
+                } else {
+                  return;
+                }
+              })
+          );
       });
 
-      this.setState({
-        loading: false,
-        success: true,
-      });
+      return Promise.all(promiseMentions)
+    })
+    .then((mentions) => {
 
+      var formatted = _.chain(options.message)
+        .words(/[^, ]+/g)
+        .map((word) => {
+          _.forEach(mentions, (mention) => {
+
+            if (mention) {
+              var split = mention.split('/?/?/?/');
+              var old = split[0];
+
+              if (old === word) {
+                word = mention;
+              }
+            }
+
+          });
+
+          return word;
+        })
+        .value();
+
+      message.message = formatted.join(' ');
+      messenger.push(message);
     });
   },
   checkEducationEmail: function (email) {

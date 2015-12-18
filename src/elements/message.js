@@ -57,10 +57,13 @@ module.exports = React.createClass({
     var urlRegex = new RegExp(urlExpression);
 
     var message = _.map(words, (word, i) => {
-      if (_.startsWith(word, '@')) {
+      if (_.startsWith(word, '@') && _.endsWith(word, '/?/?/?/')) {
+
+        var split = word.split('/?/?/?/');
+
         return (
-          <Text key={i} style={Styles.mention} onPress={() => {this.props.onMentionPress(word)}}>
-            {word + ' '}
+          <Text key={i} style={Styles.mention} onPress={() => {this.props.onMentionPress(split[0])}}>
+            {split[0] + ' '}
           </Text>
         );
       } else if (_.startsWith(word, '#')) {
