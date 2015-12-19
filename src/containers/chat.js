@@ -44,6 +44,9 @@ module.exports = React.createClass({
     actions: React.PropTypes.object,
     menuButton: React.PropTypes.object,
   },
+  componentDidMount: function() {
+    //this.countdown();
+  },
   onCameraActionButtonPress: function (chat, orientation) {
     this.props.navigator.push({
       name: "add photo",
@@ -64,6 +67,13 @@ module.exports = React.createClass({
   },
   onBackPress: function () {
     this.props.navigator.pop();
+  },
+
+  countdown: function (expiration){
+    var timeLeft = moment(expiration) - moment();
+    setTimeout(() => {
+      this.props.navigator.pop()
+    }, timeLeft);
   },
   render: function() {
 
@@ -91,6 +101,8 @@ module.exports = React.createClass({
     };
 
     var title = this.props.store.bunch.attributes.name;
+
+    this.countdown(moment(chatAttributes.expirationDate).toDate());
 
     return (
       <View style={Styles.body}>
