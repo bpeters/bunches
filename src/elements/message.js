@@ -62,7 +62,7 @@ module.exports = React.createClass({
         var split = word.split('/?/?/?/');
 
         return (
-          <Text key={i} style={Styles.mention} onPress={() => {this.props.onMentionPress(split[0])}}>
+          <Text key={i} style={Styles.mention} onPress={() => {this.props.onMentionPress(split[1], split[0])}}>
             {split[0] + ' '}
           </Text>
         );

@@ -31,7 +31,7 @@ var storeDefaults = {
   newChat: null,
   loading: false,
   success: false,
-  profileHandle: null,
+  profileUser: null,
   profileMessages: [],
   hashtag: null,
   hashtagMessages: [],
@@ -233,7 +233,7 @@ module.exports = {
             this.getUserByHandle(handle)
               .then((user) => {
                 if (user) {
-                  return mention + '/?/?/?/';
+                  return mention + '/?/?/?/' + user.id + '/?/?/?/';
                 } else {
                   return;
                 }
@@ -530,10 +530,10 @@ module.exports = {
         });
 
         this.store.profileMessages = messages;
-        this.store.profileHandle = user.attributes.handle;
+        this.store.profileUser = user.id;
         this.setState({
           profileMessages: this.store.profileMessages,
-          profileHandle: this.store.profileHandle,
+          profileUser: this.store.profileUser,
           loading: false,
         });
       });
@@ -578,9 +578,6 @@ module.exports = {
     });
   },
   queryUser: function (id) {
-    return Query.user(id);
-  },
-  queryUserByHandle: function (id) {
     return Query.user(id);
   },
   squashMessages: function (data) {

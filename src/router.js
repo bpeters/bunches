@@ -53,13 +53,13 @@ module.exports= React.createClass({
       getHashtagChats: this.getHashtagChats,
     };
 
-    if (route.name === 'profile' && route.handle !== this.state.profileHandle && !this.state.loading) {
-      this.getUserByHandle(route.handle)
+    if (route.name === 'profile' && route.uid !== this.state.profileUser && !this.state.loading) {
+      this.queryUser(route.uid)
         .then((user) => {
           this.getProfileChats(user);
         });
     } else if (route.name === 'hashtag' && route.hashtag !== this.state.hashtag && !this.state.loading) {
-      setTimeout(() => { 
+      setTimeout(() => {
         this.getHashtagChats(route.hashtag);
       }, 300);
     } else if (route.name === 'chat' && route.chatId !== this.state.clearedChat) {

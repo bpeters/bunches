@@ -126,7 +126,7 @@ module.exports = React.createClass({
         this.props.navigator.push({
           name: 'profile',
           component: Profile,
-          handle: user.attributes.handle,
+          uid: user.id,
         });
       });
   },
@@ -145,13 +145,11 @@ module.exports = React.createClass({
       hashtag: word,
     });
   },
-  onMentionPress: function (mention) {
-    var handle = _.trim(mention, '@');
-
+  onMentionPress: function (uid) {
     this.props.navigator.push({
       name: 'profile',
       component: Profile,
-      handle: handle,
+      uid: uid,
     });
   },
   renderImage: function (imageURL) {
