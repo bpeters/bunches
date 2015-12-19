@@ -26,8 +26,8 @@ var Styles = StyleSheet.create({
     backgroundColor: defaultStyles.light,
     borderTopWidth: 1,
     borderTopColor: defaultStyles.grayLight,
-    paddingBottom: 10,
-    paddingTop: 10,
+    paddingBottom: 16,
+    paddingTop: 16,
   },
   icon: {
     height: 16,

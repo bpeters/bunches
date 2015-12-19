@@ -31,7 +31,7 @@ var Styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 8,
     marginLeft: 16,
-    borderRadius: 10,
+    borderRadius: 16, //doesn't work now sure why
     shadowOpacity: 0.3,
     shadowRadius: 2,
     shadowOffset: {
@@ -280,7 +280,7 @@ module.exports = React.createClass({
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => this.props.onPressRow(rowData)}>
         <View style={Styles.row}>
-        <Timer
+          <Timer
             expiration={rowData.chat.attributes.expirationDate}
             created={rowData.chat.createdAt}
             view='bunch'
