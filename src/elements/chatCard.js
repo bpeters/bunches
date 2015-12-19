@@ -253,10 +253,8 @@ module.exports = React.createClass({
   },
   render: function() {
     var rowData = this.props.rowData;
-    console.log(rowData);
     var user = rowData.chat.get('createdBy');
-
-
+    
     var userCount = _.uniq(rowData.messages, 'uid').length;
 
     var mostRecentImages = [];
