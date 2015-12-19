@@ -65,7 +65,7 @@ module.exports = React.createClass({
     this.props.navigator.push({
       name: 'profile',
       component: Profile,
-      handle: user.attributes.handle,
+      uid: user.id,
     });
   },
   onPressImage: function (imageURL) {
@@ -83,12 +83,11 @@ module.exports = React.createClass({
       hashtag: word,
     });
   },
-  onMentionPress: function (mention) {
-    var handle = _.trim(mention, '@');
-
+  onMentionPress: function (uid, handle) {
     this.props.navigator.push({
       name: 'profile',
       component: Profile,
+      uid: uid,
       handle: handle,
     });
   },

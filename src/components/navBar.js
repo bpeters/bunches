@@ -3,6 +3,7 @@
 var React = require('react-native');
 
 var IconButton = require('../elements/iconButton');
+var Success = require('../elements/success');
 
 var defaultStyles = require('../styles');
 
@@ -10,7 +11,16 @@ var {
   Text,
   View,
   StyleSheet,
+  Platform,
 } = React;
+
+var Loading;
+
+if (Platform.OS === 'android') {
+  Loading = require('../elements/loadingAndroid');
+} else {
+  Loading = require('../elements/loadingIOS');
+}
 
 var Styles = StyleSheet.create({
   body: {
@@ -38,9 +48,11 @@ var Styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
-  right: {
-    flex: 1,
-    alignItems: 'flex-end',
+  indicator: {
+    position: 'absolute',
+    backgroundColor: 'transparent',
+    top: defaultStyles.navBarHeight - 24 - 16,
+    right: 16,
   },
   title: {
     fontSize: 20,
@@ -54,6 +66,9 @@ var NavBar = React.createClass({
     title: React.PropTypes.string,
     menuButton: React.PropTypes.object,
     onBackButton: React.PropTypes.func,
+    clearSuccess: React.PropTypes.func,
+    loading: React.PropTypes.bool,
+    success: React.PropTypes.bool,
   },
   onHandlePress: function(e) {
     if (this.props.onBackButton) {
@@ -62,6 +77,24 @@ var NavBar = React.createClass({
       this.context.menuActions.toggle();
       this.props.menuButton.onPress(e);
     }
+  },
+  renderLoading: function () {
+    return (
+      <View style={Styles.indicator}>
+        <Loading />
+      </View>
+    );
+  },
+  renderSuccess: function () {
+    setTimeout(() => {
+      this.props.clearSuccess();
+    }, 3000);
+
+    return (
+      <View style={Styles.indicator}>
+        <Success />
+      </View>
+    );
   },
   render: function() {
     return (
@@ -77,6 +110,8 @@ var NavBar = React.createClass({
             {this.props.title}
           </Text>
         </View>
+        {this.props.loading ? this.renderLoading() : null}
+        {this.props.success ? this.renderSuccess() : null}
       </View>
     );
   }

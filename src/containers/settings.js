@@ -5,8 +5,6 @@ var _ = require('lodash');
 
 var NavBar = require('../components/navBar');
 var Button = require('../elements/button');
-var Success = require('../elements/success');
-var Landing = require('../containers/landing');
 
 var defaultStyles = require('../styles');
 
@@ -27,14 +25,11 @@ var {
 } = React;
 
 var AddPhoto;
-var Loading;
 
 if (Platform.OS === 'android') {
   AddPhoto = require('./settingsPhotoAndroid');
-  Loading = require('../elements/loadingAndroid');
 } else {
   AddPhoto = require('./settingsPhotoIOS');
-  Loading = require('../elements/loadingIOS');
 }
 
 var Styles = StyleSheet.create({
@@ -66,12 +61,6 @@ var Styles = StyleSheet.create({
     backgroundColor: defaultStyles.white,
     paddingLeft: 16,
     fontFamily: 'Roboto-Light',
-  },
-  successView: {
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    top: defaultStyles.navBarHeight - 28,
-    left: (defaultStyles.bodyWidth / 2) - 28
   },
   buttonView: {
     position: 'absolute',
@@ -115,12 +104,6 @@ var Styles = StyleSheet.create({
     borderRadius: 40,
     justifyContent: 'center',
     backgroundColor: 'transparent',
-  },
-  loadingView: {
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    top: defaultStyles.navBarHeight - 28,
-    right: (defaultStyles.bodyWidth / 2) - 28,
   },
 });
 
@@ -254,24 +237,6 @@ module.exports = React.createClass({
       />
     )
   },
-  renderSuccess: function () {
-    setTimeout(() => {
-      this.props.actions.clearSuccess();
-    }, 3000);
-
-    return (
-      <View style={Styles.successView}>
-        <Success />
-      </View>
-    );
-  },
-  renderLoading: function () {
-    return (
-      <View style={Styles.loadingView}>
-        <Loading />
-      </View>
-    );
-  },
   renderButton: function () {
     return (
       <View>
@@ -304,6 +269,9 @@ module.exports = React.createClass({
           <NavBar
             title='Account'
             menuButton={this.props.menuButton}
+            clearSuccess={this.props.actions.clearSuccess}
+            loading={this.props.store.loading}
+            success={this.props.store.success}
           />
           <View style={Styles.inputView}>
             <View style={Styles.static}>
@@ -380,8 +348,6 @@ module.exports = React.createClass({
               color={defaultStyles.blue}
             />
           </View>
-        {this.props.store.loading ? this.renderLoading() : null}
-        {this.props.store.success ? this.renderSuccess() : null}
       </View>
     );
   }

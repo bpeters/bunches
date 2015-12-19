@@ -8,7 +8,6 @@ var NavBar = require('../components/navBar');
 var NavBarChat = require('../components/navBarChat');
 var ChatContainer = require('../components/chatContainer');
 var ChatBar = require('../components/chatBar');
-var Success = require('../elements/success');
 var Timer = require('../elements/timer');
 var PhotoPreview = require('./photoPreview');
 
@@ -23,32 +22,17 @@ var {
 } = React;
 
 var AddPhoto;
-var Loading;
 
 if (Platform.OS === 'android') {
   AddPhoto = require('./addPhotoAndroid');
-  Loading = require('../elements/loadingAndroid');
 } else {
   AddPhoto = require('./addPhotoIOS')
-  Loading = require('../elements/loadingIOS');
 }
 
 var Styles = StyleSheet.create({
   body: {
     backgroundColor: defaultStyles.background,
     height: defaultStyles.bodyHeight,
-  },
-  loadingView: {
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    top: defaultStyles.navBarHeight + defaultStyles.navBarHeight - 28,
-    right: (defaultStyles.bodyWidth / 2) - 28,
-  },
-  successView: {
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    top: defaultStyles.navBarHeight + defaultStyles.navBarHeight - 28,
-    left: (defaultStyles.bodyWidth / 2) - 28
   },
 });
 
@@ -80,24 +64,6 @@ module.exports = React.createClass({
   },
   onBackPress: function () {
     this.props.navigator.pop();
-  },
-  renderLoading: function () {
-    return (
-      <View style={Styles.loadingView}>
-        <Loading />
-      </View>
-    );
-  },
-  renderSuccess: function () {
-    setTimeout(() => {
-      this.props.actions.clearSuccess();
-    }, 3000);
-
-    return (
-      <View style={Styles.successView}>
-        <Success />
-      </View>
-    );
   },
   render: function() {
 
@@ -159,6 +125,9 @@ module.exports = React.createClass({
             <NavBar
               title={title}
               menuButton={this.props.menuButton}
+              clearSuccess={this.props.actions.clearSuccess}
+              loading={this.props.store.loading}
+              success={this.props.store.success}
             />
             <NavBarChat
               title={chatAttributes.name}
@@ -173,8 +142,6 @@ module.exports = React.createClass({
             />
           </ChatContainer>
         </ChatBar>
-        {this.props.store.loading ? this.renderLoading() : null}
-        {this.props.store.success ? this.renderSuccess() : null}
       </View>
     );
   }

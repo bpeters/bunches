@@ -66,7 +66,7 @@ module.exports = React.createClass({
     this.props.navigator.push({
       name: 'profile',
       component: Profile,
-      handle: user.attributes.handle,
+      uid: user.id,
     });
   },
   onPressImage: function (imageURL) {
@@ -86,6 +86,16 @@ module.exports = React.createClass({
       hashtag: word,
     });
   },
+  onMentionPress: function (uid, handle) {
+    var Profile = require('../containers/profile');
+
+    this.props.navigator.push({
+      name: 'profile',
+      component: Profile,
+      uid: uid,
+      handle: handle,
+    });
+  },
   renderChatRow: function(rowData) {
     return (
       <ChatCard
@@ -95,6 +105,7 @@ module.exports = React.createClass({
         onPressImage={this.onPressImage}
         squashMessages={this.props.squashMessages}
         onHashtagPress={this.onHashtagPress}
+        onMentionPress={this.onMentionPress}
       />
     );
   },

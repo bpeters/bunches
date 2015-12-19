@@ -151,7 +151,8 @@ module.exports = React.createClass({
     }
 
     this.setState({
-      message: null
+      message: null,
+      mention: null,
     });
   },
   onPressMention: function (mention) {
@@ -170,18 +171,21 @@ module.exports = React.createClass({
   },
   onPressMentionClose: function () {
     var message = _.clone(this.state.message);
-    var end = message.indexOf(this.state.mention);
 
-    message = message.substring(0, end);
+    if (message) {
+      var end = message.indexOf(this.state.mention);
 
-    this.setState({
-      message: message,
-      mention: null,
-    });
+      message = message.substring(0, end);
 
-    this.setState({
-      mention: null,
-    });
+      this.setState({
+        message: message,
+        mention: null,
+      });
+    } else {
+      this.setState({
+        mention: null,
+      });
+    }
 
     this.props.clearMentions();
   },
