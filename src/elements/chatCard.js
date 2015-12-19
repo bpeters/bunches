@@ -51,7 +51,7 @@ var Styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingTop: 16,
     paddingLeft: 16,
-    paddingBottom: 16,
+    paddingBottom: 8,
   },
   info: {
     flex:1,
@@ -63,9 +63,6 @@ var Styles = StyleSheet.create({
     flex:1,
     alignItems: 'stretch',
     flexDirection: 'column',
-  },
-  user: {
-    flex: 2.5,
   },
   userName: {
     fontSize: 16,
@@ -129,9 +126,15 @@ var Styles = StyleSheet.create({
     width: 24,
   },
   user: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+  },
+  message: {
     flex:1,
     justifyContent: 'flex-start',
     flexDirection: 'row',
+    marginTop: 4,
   },
   name: {
     color: defaultStyles.dark,
@@ -221,9 +224,19 @@ module.exports = React.createClass({
       </View>
     );
   },
-  renderMessage: function (message, i) {
+  renderMessage: function (text) {
+    return (
+      <Message
+        message={text}
+        onHashtagPress={this.props.onHashtagPress}
+        onMentionPress={this.props.onMentionPress}
+      />
+    )
+  },
+  renderMessages: function (message, i) {
 
-    var text = !_.isEmpty(message.squash) ? message.squash[0].message + "  \u2022  " + message.message : message.message;
+    var text = !_.isEmpty(message.squash) ? this.renderMessage(message.squash[0].message) : null;
+    var split = text ? this.renderMessage("  \u2022  ") : null;
 
     return (
       <View key={i} style={Styles.rowMessage}>
@@ -240,11 +253,11 @@ module.exports = React.createClass({
             </Text>
           </View>
         </View>
-        <Message
-          message={text}
-          onHashtagPress={this.props.onHashtagPress}
-          onMentionPress={this.props.onMentionPress}
-        />
+        <View style={Styles.message}>
+          {text}
+          {split}
+          {this.renderMessage(message.message)}
+        </View>
       </View>
     );
   },
@@ -254,7 +267,7 @@ module.exports = React.createClass({
 
     var lastTwo = messages.slice(messages.length - 2);
     var msgs = _.map(lastTwo, (message, i) => {
-      return this.renderMessage(message, i);
+      return this.renderMessages(message, i);
     });
 
     return msgs;

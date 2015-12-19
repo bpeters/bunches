@@ -4,6 +4,7 @@ var React = require('react-native');
 var _ = require('lodash');
 
 var defaultStyles = require('../styles');
+var sayings = require('../assets/sayings');
 
 var {
   View,
@@ -56,6 +57,7 @@ var Styles = StyleSheet.create({
     alignItems: 'center',
   },
   iconContainer : {
+    width: defaultStyles.bodyWidth - 12,
     height: 44,
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -216,6 +218,11 @@ module.exports = React.createClass({
       cameraRoll:!this.state.cameraRoll
     });
   },
+  onPowerPress: function() {
+    this.props.createMessage(this.props.chat, {
+      message: '/!/!/!/' + this.props.chat.attributes.name + _.sample(sayings)
+    });
+  },
   onPressCameraRollPhoto: function (photo) {
     this.setState({
       cameraRoll:!this.state.cameraRoll
@@ -270,6 +277,12 @@ module.exports = React.createClass({
       {icon: 'fontawesome|smile-o', onPress: this.props.onSelfiePress},
       {icon: 'ion|images', onPress: this.onCameraRollPress}
     ];
+
+    if (this.props.forChat) {
+      icons.push({
+        icon: 'fontawesome|bolt', onPress: this.onPowerPress
+      });
+    }
 
     return (
       <View style={Styles.wrap}>

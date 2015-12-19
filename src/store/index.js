@@ -183,8 +183,11 @@ module.exports = {
       loading: true,
     });
 
+    console.log(photo);
+
     this.uploadImage(photo)
       .then((image) => {
+        console.log(image);
         this.createMessage(chat, {
           image: image,
         });
@@ -218,28 +221,31 @@ module.exports = {
       };
 
       var promiseMentions = [];
-      var mentions = _.chain(options.message)
-        .words(/[^, ]+/g)
-        .filter((word) => {
-          return _.startsWith(word, '@');
-        })
-        .value();
 
-      _.forEach(mentions, (mention) => {
+      if (options.message) {
+        var mentions = _.chain(options.message)
+          .words(/[^, ]+/g)
+          .filter((word) => {
+            return _.startsWith(word, '@');
+          })
+          .value();
 
-          var handle = _.trimLeft(mention, '@');
+        _.forEach(mentions, (mention) => {
 
-          promiseMentions.push(
-            this.getUserByHandle(handle)
-              .then((user) => {
-                if (user) {
-                  return mention + '/?/?/?/' + user.id + '/?/?/?/';
-                } else {
-                  return;
-                }
-              })
-          );
-      });
+            var handle = _.trimLeft(mention, '@');
+
+            promiseMentions.push(
+              this.getUserByHandle(handle)
+                .then((user) => {
+                  if (user) {
+                    return mention + '/?/?/?/' + user.id + '/?/?/?/';
+                  } else {
+                    return;
+                  }
+                })
+            );
+        });
+      }
 
       return Promise.each(promiseMentions, (promise) => {
         return promise;
@@ -247,9 +253,9 @@ module.exports = {
     })
     .then((mentions) => {
 
-      var formatted = _.chain(options.message)
-        .words(/[^, ]+/g)
-        .map((word) => {
+      if (options.message) {
+        var words = options.message.split(' ');
+        var formatted = _.map(words, (word) => {
           _.forEach(mentions, (mention) => {
 
             if (mention) {
@@ -264,10 +270,11 @@ module.exports = {
           });
 
           return word;
-        })
-        .value();
+        });
 
-      message.message = formatted.join(' ');
+        message.message = formatted.join(' ');
+      }
+
       messenger.push(message);
     });
   },
