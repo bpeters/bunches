@@ -142,7 +142,6 @@ var Styles = StyleSheet.create({
     flex:1,
     alignItems:'flex-start',
     paddingLeft: 8,
-    fontFamily: 'Roboto-Regular',
   },
   time: {
     color: defaultStyles.medium,

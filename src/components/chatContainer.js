@@ -58,9 +58,8 @@ var Styles = StyleSheet.create({
     flexDirection: 'row',
   },
   name: {
-    fontWeight: 'bold',
     color: defaultStyles.dark,
-    fontFamily: 'Roboto-Regular',
+    fontFamily: 'Roboto-Bold',
     fontSize: 14,
   },
   date: {
