@@ -23,8 +23,11 @@ var Styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: defaultStyles.white,
+    backgroundColor: defaultStyles.light,
+    borderTopWidth: 1,
+    borderTopColor: defaultStyles.grayLight,
     paddingBottom: 10,
+    paddingTop: 10,
   },
   icon: {
     height: 16,
