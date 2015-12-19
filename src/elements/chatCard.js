@@ -231,7 +231,7 @@ module.exports = React.createClass({
           <Text style={Styles.name}>
             {message.name || 'Anon'}
           </Text>
-          <Text style={Styles.handle}>
+          <Text style={Styles.handle} onPress={() => this.props.onMentionPress(message.uid, message.handle)}>
             {message.handle ? '@' + message.handle : ''}
           </Text>
           <View style={Styles.date}>
@@ -296,7 +296,7 @@ module.exports = React.createClass({
           />
           <View style={Styles.rowHeader}>
             <Avatar
-              onPress={() => this.props.onAvatarPress(rowData)}
+              onPress={() => this.props.onAvatarPress(user.attributes.image ? user.attributes.image.url() : null)}
               imageURL={user.attributes.image ? user.attributes.image.url() : null}
               online={onlineStatus}
             />
@@ -306,7 +306,7 @@ module.exports = React.createClass({
                   <Text style={Styles.userName}>
                     {user.attributes.name}
                   </Text>
-                  <Text style={Styles.userHandle}>
+                  <Text style={Styles.userHandle} onPress={() => this.props.onMentionPress(user.id, user.attributes.handle)}>
                     @{user.attributes.handle}
                   </Text>
                 </View>

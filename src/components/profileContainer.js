@@ -59,15 +59,12 @@ module.exports = React.createClass({
       chatId: rowData.chat.id
     });
   },
-  onAvatarPress: function (rowData) {
-    var Profile = require('../containers/profile');
-
-    var user = rowData.chat.get('createdBy');
-
+  onAvatarPress: function (imageURL) {
     this.props.navigator.push({
-      name: 'profile',
-      component: Profile,
-      uid: user.id,
+      name: 'enlarge photo',
+      component: EnlargePhoto,
+      hasSideMenu: false,
+      photo: imageURL,
     });
   },
   onPressImage: function (imageURL) {

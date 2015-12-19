@@ -59,21 +59,22 @@ module.exports = React.createClass({
       chatId: rowData.chat.id
     });
   },
-  onAvatarPress: function (rowData) {
-    var user = rowData.chat.get('createdBy');
-
-    this.props.navigator.push({
-      name: 'profile',
-      component: Profile,
-      uid: user.id,
-    });
+  onAvatarPress: function (imageUrl) {
+    if (imageUrl) {
+      this.props.navigator.push({
+        name: 'enlarge photo',
+        component: EnlargePhoto,
+        hasSideMenu: false,
+        photo: imageUrl,
+      });
+    }
   },
-  onPressImage: function (imageURL) {
+  onPressImage: function (imageUrl) {
     this.props.navigator.push({
       name: 'enlarge photo',
       component: EnlargePhoto,
       hasSideMenu: false,
-      photo: imageURL,
+      photo: imageUrl,
     });
   },
   onHashtagPress: function (word) {

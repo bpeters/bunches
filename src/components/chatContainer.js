@@ -118,17 +118,13 @@ module.exports = React.createClass({
       }),
     };
   },
-  onAvatarPress: function (rowData) {
-
-    this.props.queryUser(rowData.uid)
-      .then((user) => {
-
-        this.props.navigator.push({
-          name: 'profile',
-          component: Profile,
-          uid: user.id,
-        });
-      });
+  onAvatarPress: function (imageURL) {
+    this.props.navigator.push({
+      name: "enlarge photo",
+      component: EnlargePhoto,
+      hasSideMenu: false,
+      photo: imageURL,
+    });
   },
   onPressImage: function (imageURL) {
     this.props.navigator.push({
@@ -145,11 +141,12 @@ module.exports = React.createClass({
       hashtag: word,
     });
   },
-  onMentionPress: function (uid) {
+  onMentionPress: function (uid, handle) {
     this.props.navigator.push({
       name: 'profile',
       component: Profile,
       uid: uid,
+      handle: handle,
     });
   },
   renderImage: function (imageURL) {
@@ -190,7 +187,7 @@ module.exports = React.createClass({
     return (
       <View style={Styles.row}>
         <Avatar
-          onPress={() => this.onAvatarPress(rowData)}
+          onPress={() => this.onAvatarPress(rowData.userImageURL)}
           imageURL={rowData.userImageURL}
           online={rowData.online}
         />
@@ -199,7 +196,7 @@ module.exports = React.createClass({
             <Text style={Styles.name}>
               {rowData.name || 'Anon'}
             </Text>
-            <Text style={Styles.handle}>
+            <Text style={Styles.handle} onPress={() => this.onMentionPress(rowData.uid, rowData.handle)}>
               {rowData.handle ? '@' + rowData.handle : ''}
             </Text>
             <View style={Styles.date}>
