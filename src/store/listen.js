@@ -246,7 +246,6 @@ module.exports = {
               bunch: this.store.bunch,
               user: this.store.user,
               loading: false,
-              success: true,
             });
           });
 
@@ -258,7 +257,6 @@ module.exports = {
         bunch: this.store.bunch,
         user: this.store.user,
         loading: false,
-        success: true,
       });
     }
   },

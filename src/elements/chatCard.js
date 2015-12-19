@@ -64,15 +64,23 @@ var Styles = StyleSheet.create({
     alignItems: 'stretch',
     flexDirection: 'column',
   },
-  userName: {
+  user: {
     flex: 2.5,
+  },
+  userName: {
     fontSize: 16,
     fontFamily: 'Roboto-Regular',
     color: defaultStyles.dark,
+    marginRight: 8,
   },
   userHandle: {
     fontSize: 14,
-    paddingTop: 2,
+    fontFamily: 'Roboto-Regular',
+    color: defaultStyles.red,
+  },
+  chatName: {
+    fontSize: 14,
+    paddingTop: 3,
     fontFamily: 'Roboto-Regular', 
     color: defaultStyles.medium,
   },
@@ -126,15 +134,15 @@ var Styles = StyleSheet.create({
     flexDirection: 'row',
   },
   name: {
-    fontWeight: 'bold',
     color: defaultStyles.dark,
-    fontFamily: 'Roboto-Regular',
+    fontFamily: 'Roboto-Bold',
     fontSize: 14,
   },
   date: {
     flex:1,
     alignItems:'flex-start',
     paddingLeft: 8,
+    fontFamily: 'Roboto-Regular',
   },
   time: {
     color: defaultStyles.medium,
@@ -143,7 +151,8 @@ var Styles = StyleSheet.create({
   },
   handle: {
     marginLeft: 5,
-    color: defaultStyles.medium,
+    color: defaultStyles.red,
+    fontFamily: 'Roboto-Regular',
   },
   timeBreak: {
     flex: 1,
@@ -294,14 +303,18 @@ module.exports = React.createClass({
             />
             <View style={Styles.info}>
               <View style={Styles.infoBar}>
-                <Text style={Styles.userName}>
-                  {user.attributes.name}
-                </Text>
-                <Text style={Styles.userHandle}>
-                  @{user.attributes.handle}
+                <View style={Styles.user}>
+                  <Text style={Styles.userName}>
+                    {user.attributes.name}
+                  </Text>
+                  <Text style={Styles.userHandle}>
+                    @{user.attributes.handle}
+                  </Text>
+                </View>
+                <Text style={Styles.chatName}>
+                  {rowData.chat.attributes.name}
                 </Text>
               </View>
-              
             </View>
           </View>
           {mostRecentImages.length ? this.renderCarousel(mostRecentImages.reverse()) : null}

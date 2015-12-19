@@ -52,6 +52,7 @@ var Styles = StyleSheet.create({
   },
   numbers : {
     color: defaultStyles.darkMedium,
+    fontFamily: 'Roboto-Regular',
   },
 });
 
