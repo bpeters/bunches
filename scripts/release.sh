@@ -1,5 +1,5 @@
 #! /bin/bash
-#code-push release Bunches ./release 1.0.0
+#code-push release Bunches ./release 1.0.3
 
 rm ./release/main.jsbundle &&
 
