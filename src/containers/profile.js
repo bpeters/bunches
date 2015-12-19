@@ -35,14 +35,6 @@ module.exports = React.createClass({
   render: function () {
     var chats = this.props.store.profileMessages;
 
-    var user = {
-      handle: this.props.route.handle,
-    };
-
-    if (!_.isEmpty(chats)) {
-      user = chats[0].chat.get('createdBy').attributes;
-    }
-
     return (
       <View style={Styles.body}>
         <ProfileContainer
@@ -51,7 +43,7 @@ module.exports = React.createClass({
           squashMessages={this.props.actions.squashMessages}
         >
           <NavBar
-            title={'@' + user.handle}
+            title={'@' + this.props.route.handle}
             onBackButton={this.onBack}
             clearSuccess={this.props.actions.clearSuccess}
             loading={this.props.store.loading}

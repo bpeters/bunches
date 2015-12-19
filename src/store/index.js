@@ -517,26 +517,27 @@ module.exports = {
   },
   getProfileChats: function (user) {
     this.setState({
-      loading: true
+      loading: true,
     });
 
-    Query.chatsByUser(user)
-      .then((chats) => {
+    console.log(user);
 
-        var chatIds = _.pluck(chats,'id');
+    var messages = _.filter(this.store.messages, (message) => {
 
-        var messages = _.filter(this.store.messages,(message) => {
-          return _.indexOf(chatIds, message.chat.id) >= 0;
-        });
-
-        this.store.profileMessages = messages;
-        this.store.profileUser = user.id;
-        this.setState({
-          profileMessages: this.store.profileMessages,
-          profileUser: this.store.profileUser,
-          loading: false,
-        });
+      var userMessages = _.filter(message.messages, (m) => {
+        return m.uid === user.id;
       });
+
+      return userMessages.length > 0;
+    });
+
+    this.store.profileMessages = messages;
+    this.store.profileUser = user.id;
+    this.setState({
+      profileMessages: this.store.profileMessages,
+      profileUser: this.store.profileUser,
+      loading: false,
+    });
   },
   getUsers: function (query) {
     ES.users(query)
