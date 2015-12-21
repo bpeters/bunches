@@ -52,12 +52,6 @@ var Styles = StyleSheet.create({
     bottom: 16,
     left: 16,
   },
-  loadingView: {
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    top: defaultStyles.navBarHeight - 28,
-    right: (defaultStyles.bodyWidth / 2) - 28,
-  },
   forgotPassword: {
     fontFamily: 'Roboto-Regular',
     color: defaultStyles.gray
@@ -104,13 +98,6 @@ module.exports = React.createClass({
     this.setState({
       forgotPassword: !this.state.forgotPassword
     });
-  },
-  renderLoading: function () {
-    return (
-      <View style={Styles.loadingView}>
-        <Loading />
-      </View>
-    );
   },
   renderButton: function () {
     return (
@@ -206,10 +193,13 @@ module.exports = React.createClass({
           <NavBarOnboard
             title='Sign In'
             onBackPress={this.onBackPress}
+            clearSuccess={this.props.actions.clearSuccess}
+            loading={this.props.store.loading}
+            success={this.props.store.success}
           />
           {this.state.forgotPassword ? this.renderForgotPassword() : this.renderLogin()}
         </ScrollView>
-        {this.props.store.loading ? this.renderLoading() : (!this.state.forgotPassword ? this.renderButton() : this.renderResetButton())}
+        {this.props.store.loading ? null : (!this.state.forgotPassword ? this.renderButton() : this.renderResetButton())}
       </View>
     );
   }

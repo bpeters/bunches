@@ -18,11 +18,13 @@ var Styles = StyleSheet.create({
   view: {
     flex: 1,
     alignItems: 'stretch',
-    backgroundColor: defaultStyles.white,
+    backgroundColor: 'transparent',
   },
   image: {
     marginTop: 60,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    width: 159 * 0.8,
+    height: 400 * 0.8,
   },
   buttonView: {
     position: 'absolute',
