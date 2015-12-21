@@ -65,6 +65,13 @@ module.exports = React.createClass({
   onBackPress: function () {
     this.props.navigator.pop();
   },
+  countdown: function (expiration, chatId){
+    var timeLeft = moment(expiration) - moment();
+    setTimeout(() => {
+      this.props.navigator.pop();
+      this.props.actions.removeExpiredChats(chatId);
+    }, timeLeft);
+  },
   render: function() {
 
     var chatId = this.props.route.chatId || _.get(this.props.store.newChat, 'objectId');
@@ -91,6 +98,8 @@ module.exports = React.createClass({
     };
 
     var title = this.props.store.bunch.attributes.name;
+
+    this.countdown(moment(chatAttributes.expirationDate).toDate(), chatId);
 
     return (
       <View style={Styles.body}>

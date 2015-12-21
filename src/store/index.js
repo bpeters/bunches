@@ -100,6 +100,17 @@ module.exports = {
         this.handleParseError(err);
       });
   },
+  removeExpiredChats: function(chatId) {
+    var messages = this.store.messages;
+
+    this.store.messages = _.filter(messages, (message) => {
+      return message.id !== chatId;
+    });
+
+    this.setState({
+      messages: this.store.messages,
+    });
+  },
   refreshChats: function () {
     return Query.chats(this.store.bunch)
       .then((result) => {
