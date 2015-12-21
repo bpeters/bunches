@@ -19,15 +19,13 @@ var {
 
 var Styles = StyleSheet.create({  
   statBar: {
-    flex:1, 
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: defaultStyles.light,
     borderTopWidth: 1,
     borderTopColor: defaultStyles.grayLight,
-    paddingBottom: 16,
-    paddingTop: 16,
+    height: defaultStyles.statBarHeight,
   },
   icon: {
     height: 16,
@@ -46,6 +44,7 @@ var Styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    height: 10,
   },
   score: {
     color: defaultStyles.blue,

@@ -29,7 +29,7 @@ var Styles = StyleSheet.create({
   container: {
     height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
     backgroundColor: defaultStyles.white,
-    paddingTop: defaultStyles.navBarHeight + defaultStyles.navBarHeight,
+    paddingTop: defaultStyles.navBarHeight + defaultStyles.statBarHeight,
   },
   gap: {
     width: defaultStyles.bodyWidth - 32,
