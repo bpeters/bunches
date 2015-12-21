@@ -48,6 +48,10 @@ var Styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
+  right: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
   indicator: {
     position: 'absolute',
     backgroundColor: 'transparent',
@@ -110,8 +114,10 @@ var NavBar = React.createClass({
             {this.props.title}
           </Text>
         </View>
-        {this.props.loading ? this.renderLoading() : null}
-        {this.props.success ? this.renderSuccess() : null}
+        <View style={Styles.right}>
+          {this.props.loading ? this.renderLoading() : null}
+          {this.props.success ? this.renderSuccess() : null}
+        </View>
       </View>
     );
   }
