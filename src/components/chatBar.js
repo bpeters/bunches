@@ -92,11 +92,10 @@ module.exports = React.createClass({
     forChat: React.PropTypes.bool,
   },
   getInitialState: function () {
-    var showTextInput = this.props.forChat ? true : false;
     return {
       message: null,
       mention: null,
-      inputShow: showTextInput,
+      inputShow: false,
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2
       }),
