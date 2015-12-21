@@ -123,6 +123,14 @@ module.exports = React.createClass({
       this.props.deleteTyper(this.props.chat.objectId || this.props.chat.id);
     }
   },
+  onMentionIconPress: function (){
+    var text = '@';
+    this.props.getUsers();
+    this.setState({
+      message: text,
+      mention: text,
+    });
+  },
   onChangeText: function (message) {
 
     var words = _.words(message, /[^, ]+/g);
@@ -166,8 +174,10 @@ module.exports = React.createClass({
     this.setState({
       message: message,
       mention: null,
+      inputShow: true,
     });
 
+    this.refs.inputField.focus();
     this.props.clearMentions();
   },
   onPressMentionClose: function () {
@@ -211,6 +221,10 @@ module.exports = React.createClass({
       inputShow:!this.state.inputShow,
       cameraRoll: false
     });
+
+    if (this.state.inputShow) {
+      this.refs.inputField.focus();
+    }
   },
   onCameraRollPress: function() {
     this.setState({
@@ -238,6 +252,7 @@ module.exports = React.createClass({
       <View style={Styles.wrap}>
         {this.renderIcon(textInputBackIcon)}
         <TextInput
+          ref='inputField'
           style={Styles.input}
           onChangeText={(message) => {this.onChangeText(message)}}
           onSubmitEditing={() => {
@@ -278,9 +293,10 @@ module.exports = React.createClass({
     ];
 
     if (this.props.forChat) {
-      icons.push({
-        icon: 'fontawesome|bolt', onPress: this.onPowerPress
-      });
+      icons.push(
+        {icon: 'ion|at', onPress: this.onMentionIconPress},
+        {icon: 'fontawesome|bolt', onPress: this.onPowerPress}
+      );
     }
 
     return (
