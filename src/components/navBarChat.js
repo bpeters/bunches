@@ -3,7 +3,8 @@
 var React = require('react-native');
 
 var IconButton = require('../elements/iconButton');
-var Counter = require('../elements/counter');
+var StatBar = require('../elements/statBar');
+var Success = require('../elements/success');
 
 var defaultStyles = require('../styles');
 
@@ -11,14 +12,23 @@ var {
   Text,
   View,
   StyleSheet,
+  Platform,
 } = React;
+
+var Loading;
+
+if (Platform.OS === 'android') {
+  Loading = require('../elements/loadingAndroid');
+} else {
+  Loading = require('../elements/loadingIOS');
+}
 
 var Styles = StyleSheet.create({
   timer: {
     flex: 1,
     position: 'absolute',
-    top: defaultStyles.navBarHeight,
-    height: defaultStyles.navBarHeight,
+    top: 0,
+    height: defaultStyles.navBarHeight + defaultStyles.statBarHeightHeight,
     width: defaultStyles.bodyWidth,
     backgroundColor: defaultStyles.blue,
     shadowOpacity: 0.5,
@@ -31,6 +41,7 @@ var Styles = StyleSheet.create({
   body: {
     flex: 1,
     flexDirection: 'row',
+    height: defaultStyles.navBarHeight,
   },
   left: {
     flex: 1,
@@ -52,6 +63,12 @@ var Styles = StyleSheet.create({
     color: defaultStyles.white,
     fontFamily: 'Roboto-Medium',
   },
+  indicator: {
+    position: 'absolute',
+    backgroundColor: 'transparent',
+    top: defaultStyles.navBarHeight - 24 - 16,
+    right: 16,
+  },
 });
 
 module.exports = React.createClass({
@@ -59,14 +76,29 @@ module.exports = React.createClass({
     title: React.PropTypes.string,
     onBackPress: React.PropTypes.func,
     score: React.PropTypes.number,
+    userCount: React.PropTypes.number,
+    expiration: React.PropTypes.instanceOf(Date),
+    loading: React.PropTypes.bool,
+    success: React.PropTypes.bool,
+    clearSuccess: React.PropTypes.func,
   },
-  renderCounter: function() {
+  renderLoading: function () {
     return (
-      <Counter
-        score={this.props.score}
-        color='white'
-      /> 
-    )
+      <View style={Styles.indicator}>
+        <Loading />
+      </View>
+    );
+  },
+  renderSuccess: function () {
+    setTimeout(() => {
+      this.props.clearSuccess();
+    }, 3000);
+
+    return (
+      <View style={Styles.indicator}>
+        <Success />
+      </View>
+    );
   },
   render: function() {
     return (
@@ -84,9 +116,15 @@ module.exports = React.createClass({
             </Text>
           </View>
           <View style={Styles.right}>
-          {this.props.score ? this.renderCounter() : null}
+            {this.props.loading ? this.renderLoading() : null}
+            {this.props.success ? this.renderSuccess() : null}
           </View>
         </View>
+        <StatBar
+          score={this.props.score}
+          userCount={this.props.userCount}
+          expiration={this.props.expiration}
+        />
       </View>
     );
   }

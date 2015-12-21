@@ -97,6 +97,8 @@ module.exports = React.createClass({
       users: [],
     };
 
+    var userCount = _.uniq(data.messages, 'uid').length;
+
     var title = this.props.store.bunch.attributes.name;
 
     this.countdown(moment(chatAttributes.expirationDate).toDate(), chatId);
@@ -131,17 +133,15 @@ module.exports = React.createClass({
             squashMessages={this.props.actions.squashMessages}
             queryUser={this.props.actions.queryUser}
           >
-            <NavBar
-              title={title}
-              menuButton={this.props.menuButton}
-              clearSuccess={this.props.actions.clearSuccess}
-              loading={this.props.store.loading}
-              success={this.props.store.success}
-            />
             <NavBarChat
               title={chatAttributes.name}
               onBackPress={this.onBackPress}
               score={data.score}
+              userCount={userCount}
+              expiration={moment(chatAttributes.expirationDate).toDate()}
+              clearSuccess={this.props.actions.clearSuccess}
+              loading={this.props.store.loading}
+              success={this.props.store.success}
             />
             <Timer
               expiration={moment(chatAttributes.expirationDate).toDate()}
