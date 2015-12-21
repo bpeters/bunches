@@ -65,7 +65,6 @@ module.exports = React.createClass({
   onBackPress: function () {
     this.props.navigator.pop();
   },
-
   countdown: function (expiration, chatId){
     var timeLeft = moment(expiration) - moment();
     setTimeout(() => {

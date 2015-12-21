@@ -100,8 +100,7 @@ module.exports = {
         this.handleParseError(err);
       });
   },
-
-  removeExpiredChats: function(chatId){
+  removeExpiredChats: function(chatId) {
     var messages = this.store.messages;
 
     this.store.messages = _.filter(messages, (message) => {
