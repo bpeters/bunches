@@ -31,7 +31,7 @@ var Styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 8,
     marginLeft: 16,
-    borderRadius: 16, //doesn't work now sure why
+    borderRadius: 16, //doesn't work not sure why
     shadowOpacity: 0.3,
     shadowRadius: 2,
     shadowOffset: {
@@ -135,6 +135,7 @@ var Styles = StyleSheet.create({
     justifyContent: 'flex-start',
     flexDirection: 'row',
     marginTop: 4,
+    width: defaultStyles.bodyWidth - 32 - 32,
   },
   name: {
     color: defaultStyles.dark,
@@ -253,11 +254,11 @@ module.exports = React.createClass({
             </Text>
           </View>
         </View>
-        <View style={Styles.message}>
+        <Text style={Styles.message}>
           {text}
           {split}
           {this.renderMessage(message.message)}
-        </View>
+        </Text>
       </View>
     );
   },
