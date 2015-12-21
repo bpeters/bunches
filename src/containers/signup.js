@@ -116,9 +116,9 @@ module.exports = React.createClass({
               });
             } else {
               this.props.actions.createUser({
-                email: this.state.email,
-                password: this.state.password,
-                name: this.state.name,
+                email: _.trim(this.state.email),
+                password: _.trim(this.state.password),
+                name: _.trim(this.state.name),
                 username: this.state.username,
               });
 

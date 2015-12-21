@@ -86,7 +86,7 @@ module.exports = React.createClass({
     this.props.navigator.pop();
   },
   onLogin: function () {
-    this.props.actions.loginUser(this.state.email, this.state.password);
+    this.props.actions.loginUser(_.trim(this.state.email), _.trim(this.state.password));
   },
   onResetPassword: function () {
     this.props.actions.resetPassword(this.state.email);

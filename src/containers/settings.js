@@ -184,7 +184,7 @@ module.exports = React.createClass({
           }
         });
       } else {
-        this.props.actions.updateUser('password', this.state.password);
+        this.props.actions.updateUser('password', _.trim(this.state.password));
         this.setState({
           password: null,
         });
@@ -199,7 +199,7 @@ module.exports = React.createClass({
     }
 
     if (this.state.name) {
-      this.props.actions.updateUser('name', this.state.name);
+      this.props.actions.updateUser('name', _.trim(this.state.name));
       this.setState({
         name: null,
       });

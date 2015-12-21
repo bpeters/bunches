@@ -194,11 +194,8 @@ module.exports = {
       loading: true,
     });
 
-    console.log(photo);
-
     this.uploadImage(photo)
       .then((image) => {
-        console.log(image);
         this.createMessage(chat, {
           image: image,
         });
