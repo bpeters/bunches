@@ -51,6 +51,7 @@ module.exports= React.createClass({
       resetPassword: this.resetPassword,
       squashMessages: this.squashMessages,
       getHashtagChats: this.getHashtagChats,
+      removeExpiredChats: this.removeExpiredChats,
     };
 
     if (route.name === 'profile' && route.uid !== this.state.profileUser && !this.state.loading) {
