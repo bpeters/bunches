@@ -54,12 +54,6 @@ var Styles = StyleSheet.create({
     bottom: 16,
     left: 16,
   },
-  loadingView: {
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    top: defaultStyles.navBarHeight - 28,
-    right: (defaultStyles.bodyWidth / 2) - 28,
-  },
 });
 
 module.exports = React.createClass({
@@ -145,13 +139,6 @@ module.exports = React.createClass({
       });
     }
   },
-  renderLoading: function () {
-    return (
-      <View style={Styles.loadingView}>
-        <Loading />
-      </View>
-    );
-  },
   renderButton: function () {
     return (
       <View style={Styles.buttonView}>
@@ -187,6 +174,9 @@ module.exports = React.createClass({
           <NavBarOnboard
             title='Create Account'
             onBackPress={this.onBackPress}
+            clearSuccess={this.props.actions.clearSuccess}
+            loading={this.props.store.loading}
+            success={this.props.store.success}
           />
           <View style={Styles.inputView}>
             <TextInput
@@ -247,7 +237,7 @@ module.exports = React.createClass({
             />
           </View>
         </ScrollView>
-        {this.props.store.loading ? this.renderLoading() : this.renderButton()}
+        {this.props.store.loading ? null : this.renderButton()}
       </View>
     );
   }

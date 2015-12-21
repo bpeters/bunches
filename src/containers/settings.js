@@ -211,6 +211,8 @@ module.exports = React.createClass({
 
   },
   onlogOut: function () {
+    var Landing = require('./landing');
+
     this.props.navigator.replace({
       name: 'landing',
       component: Landing,
