@@ -48,16 +48,11 @@ var Styles = StyleSheet.create({
     left: 16,
     top: 16,
   },
-  label: {
-    marginTop: 16,
-    marginBottom: 16,
-    fontFamily: 'Roboto-Bold',
-  },
   input: {
     width: defaultStyles.bodyWidth - 16 - 16,
     height: 56,
     borderRadius: 4,
-    marginBottom: 16,
+    marginTop: 16,
     backgroundColor: defaultStyles.white,
     paddingLeft: 16,
     fontFamily: 'Roboto-Light',
@@ -77,10 +72,11 @@ var Styles = StyleSheet.create({
     marginLeft:16,
   },
   infoLabel: {
-    marginTop: 16,
+    marginTop: 8,
     fontFamily: 'Roboto-Regular',
-    fontSize: 18,
+    fontSize: 16,
     color: defaultStyles.medium,
+    width: defaultStyles.bodyWidth - 16 - 16 - 56 - 40,
   },
   labelName: {
     color: defaultStyles.dark,
@@ -128,7 +124,7 @@ module.exports = React.createClass({
     setTimeout(() => {
       this.refs.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
         React.findNodeHandle(this.refs[refName]),
-        110,
+        116,
         true
       );
     }, 50);
@@ -287,6 +283,9 @@ module.exports = React.createClass({
                   {user.name}
                 </Text>
                 <Text style={Styles.infoLabel}>
+                  {'@' + user.handle}
+                </Text>
+                <Text style={Styles.infoLabel}>
                   {user.email}
                 </Text>
               </View>
@@ -298,39 +297,30 @@ module.exports = React.createClass({
               scrollEnabled={false}
             >
               <View ref='input'>
-                <Text style={Styles.label}>
-                  Full Name
-                </Text>
                 <TextInput
                   style={Styles.input}
                   onChangeText={(name) => this.setState({name})}
                   value={this.state.name}
-                  placeholder={user.name}
+                  placeholder='Full Name'
                   autoCorrect={false}
                   placeholderTextColor={defaultStyles.gray}
                 />
-                <Text style={Styles.label}>
-                  Username
-                </Text>
                 <TextInput
                   style={Styles.input}
                   onChangeText={(username) => this.setState({username})}
                   value={this.state.username}
-                  placeholder={user.handle}
+                  placeholder='Username'
                   placeholderTextColor={defaultStyles.gray}
                   autoCapitalize='none'
                   autoCorrect={false}
                   onFocus={this.inputFocused.bind(this, 'input')}
                   onBlur={this.inputBlured.bind(this, 'input')}
                 />
-                <Text style={Styles.label}>
-                  Password
-                </Text>
                 <TextInput
                   ref='password'
                   style={Styles.input}
                   onChangeText={(password) => this.setState({password})}
-                  placeholder="**********"
+                  placeholder="Password"
                   placeholderTextColor={defaultStyles.gray}
                   value={this.state.password}
                   secureTextEntry={true}
