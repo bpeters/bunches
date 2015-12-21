@@ -535,8 +535,6 @@ module.exports = {
       loading: true,
     });
 
-    console.log(user);
-
     var messages = _.filter(this.store.messages, (message) => {
 
       var userMessages = _.filter(message.messages, (m) => {

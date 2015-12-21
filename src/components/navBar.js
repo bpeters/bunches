@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react-native');
+var _ = require('lodash');
 
 var IconButton = require('../elements/iconButton');
 var Success = require('../elements/success');
@@ -63,6 +64,17 @@ var Styles = StyleSheet.create({
     color: defaultStyles.white,
     fontFamily: 'Roboto-Medium',
   },
+  count: {
+    position: 'absolute',
+    top: defaultStyles.navBarHeight - 24 - 16,
+    left: 16 + 12 + 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: defaultStyles.red,
+    height: 12,
+    width: 12,
+    borderRadius: 6,
+  },
 });
 
 var NavBar = React.createClass({
@@ -73,6 +85,7 @@ var NavBar = React.createClass({
     clearSuccess: React.PropTypes.func,
     loading: React.PropTypes.bool,
     success: React.PropTypes.bool,
+    store: React.PropTypes.object,
   },
   onHandlePress: function(e) {
     if (this.props.onBackButton) {
@@ -100,7 +113,31 @@ var NavBar = React.createClass({
       </View>
     );
   },
+  renderCount: function () {
+    return (
+      <View style={Styles.count}>
+      </View>
+    );
+  },
   render: function() {
+    var user = this.props.store.user;
+
+    var newCount = _.sum(this.props.store.messages, (message) => {
+      var userIds = _.pluck(message.messages, 'uid');
+
+      if (_.indexOf(userIds, (user.objectId || user.id)) >= 0 && message.newCount > 0) {
+        return message.newCount
+      } else {
+        return 0;
+      }
+    });
+
+    var showCount;
+
+    if (!this.props.onBackButton && newCount) {
+      showCount = true;
+    }
+
     return (
       <View style={Styles.body}>
         <View style={Styles.left}>
@@ -108,6 +145,7 @@ var NavBar = React.createClass({
             onPress={this.onHandlePress}
             icon={this.props.onBackButton ? 'material|arrow-left' : 'material|menu'}
           />
+          {showCount ? this.renderCount() : null}
         </View>
         <View style={Styles.center}>
           <Text style={Styles.title}>

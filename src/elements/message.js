@@ -74,10 +74,12 @@ module.exports = React.createClass({
         if (_.startsWith(word, '@') && _.endsWith(word, '/?/?/?/')) {
 
           var split = word.split('/?/?/?/');
+          var uid = split[1];
+          var handle = _.trimLeft(split[0], '@');
 
           return (
-            <Text key={i} style={Styles.mention} onPress={() => {this.props.onMentionPress(split[1], split[0])}}>
-              {split[0] + ' '}
+            <Text key={i} style={Styles.mention} onPress={() => {this.props.onMentionPress(uid, handle)}}>
+              {'@' + handle + ' '}
             </Text>
           );
         } else if (_.startsWith(word, '#')) {

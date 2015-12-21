@@ -111,6 +111,7 @@ module.exports = React.createClass({
               clearSuccess={this.props.actions.clearSuccess}
               loading={this.props.store.loading}
               success={this.props.store.success}
+              store={this.props.store}
             />
           </BunchContainer>
         </ChatBar>
