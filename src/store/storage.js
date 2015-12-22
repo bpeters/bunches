@@ -17,6 +17,15 @@ module.exports = {
         console.log(err);
       });
   },
+  getAllItems: function (keys) {
+    return AsyncStorage.multiGet(keys)
+      .then((values) => {
+        return values
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
   setItem: function (key, value) {
     return AsyncStorage.setItem(key, value)
       .then((result) => {

@@ -44,7 +44,7 @@ var storeDefaults = {
 module.exports = {
   mixins: [Listen],
   store: _.cloneDeep(storeDefaults),
-  initStore: function (user) {
+  initStore: function (user, newUser) {
     if (user) {
 
       this.store.user = user;
@@ -76,6 +76,10 @@ module.exports = {
           this.listenToUserStatus();
           this.listenToTyper();
           this.addUserStatus(this.store.bunch.id, this.store.user.objectId);
+
+          if (newUser) {
+            this.createWelcomeChat(this.store.user, this.store.bunch);
+          }
 
         }, (err) => {
           this.handleParseError(err);
@@ -206,7 +210,7 @@ module.exports = {
     var bunch = this.store.bunch;
     var url = config.firebase.url + '/bunch/' + bunch.id + '/chat/' + (chat.objectId || chat.id);
     var messenger = new Firebase(url);
-    var user = this.store.user;
+    var user = options.user || this.store.user;
 
     var message;
 
@@ -285,6 +289,8 @@ module.exports = {
       }
 
       messenger.push(message);
+
+      return;
     });
   },
   checkEducationEmail: function (email) {
@@ -311,7 +317,7 @@ module.exports = {
           this.handleParseError(error, 'Failed to Create Account');
         });
     } else {
-      return;
+      return Promise.resolve();
     }
   },
   updateInstitution: function (name, domain) {
@@ -348,10 +354,57 @@ module.exports = {
         this.handleParseError(error, 'Failed to Create Account');
       });
   },
+  createWelcomeChat: function (user, bunch) {
+    var newChat;
+    var brennen;
+    var hunter;
+    var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
+
+    return ParseReact.Mutation.Create('Chat', {
+      name: user.handle + ' #welcome',
+      expirationDate: new Date(expirationDate),
+      belongsTo: bunch,
+      createdBy: user,
+      isDead: false,
+    })
+    .dispatch()
+    .then((chat) => {
+      newChat = chat;
+
+      return this.createMessage(chat, {
+        message: '#welcome'
+      });
+    })
+    .then(() => {
+      return Promise.all([this.getUserByHandle('b'), this.getUserByHandle('h')]);
+    })
+    .then((users) => {
+
+      brennen = _.assign(users[0], users[0].attributes);
+      brennen.objectId = users[0].id;
+
+      hunter = _.assign(users[1], users[1].attributes);
+      hunter.objectId = users[1].id;
+
+      return this.createMessage(newChat, {
+        message: 'Hey! @' + user.handle + ' thank you for signing up for Bunches. If you have any questions feel free to reach out to @b and @h',
+        user: brennen,
+      })
+    })
+    .then(() => {
+      return this.createMessage(newChat, {
+        message: 'Welcome to Bunches. And remember... Zeppelin rules. The end.',
+        user: hunter,
+      });
+    });
+  },
   createUser: function (params) {
     this.setState({
       loading: true,
     });
+
+    var newUser;
+    var newBunch;
 
     var bunches = ['Global', 'Feedback'];
 
@@ -385,6 +438,7 @@ module.exports = {
 
                   if (bunch.get('name') === 'Global') {
                     isMain = true;
+                    newBunch = bunch;
                   }
 
                   ParseReact.Mutation.Create('Bunch2User', {
@@ -398,19 +452,14 @@ module.exports = {
 
                 batch.dispatch()
                 .then(() => {
-                  var newUser = _.assign(user, user.attributes);
+                  newUser = _.assign(user, user.attributes);
                   newUser.objectId = user.id;
 
-                  this.initStore(newUser);
+                  this.initStore(newUser, true);
 
                   ES.indexUser(user.id, {
                     name: params.name,
                     handle: params.username,
-                  })
-                  .then(() => {
-                    this.setState({
-                      loading: false,
-                    });
                   });
                 });
               },
@@ -628,7 +677,9 @@ module.exports = {
 
       var words = _.chain(message.messages)
         .map((m) => {
-          return m.message.split(' ');
+          if (m.message) {
+            return m.message.split(' ');
+          }
         })
         .flatten()
         .filter((word) => {

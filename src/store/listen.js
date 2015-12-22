@@ -280,28 +280,29 @@ module.exports = {
 
       if (!_.find(messages, {'key' : k})) {
         v.key = k;
-
-        promiseMessages.push(
-          Storage.getItem(k).then((stored) => {
-
-            if (!stored) {
-              v = handleNotification(v, this.store.user);
-            }
-
-            messages.push(v);
-
-            return;
-          })
-        );
-
+        messages.push(v);
       }
 
     });
 
-    return Promise.each(promiseMessages, (promise) => {
-      return promise;
-    })
-    .then(() => {
+    var keys = _.pluck(messages, 'key');
+
+    return Storage.getAllItems(keys)
+    .then((storage) => {
+
+      storage = _.chain(storage)
+      .filter((item) => {
+        return item[1];
+      })
+      .flatten()
+      .uniq()
+      .value();
+
+      _.forEach(messages, (message) => {
+        if (_.indexOf(storage, message.key) < 0) {
+          message = handleNotification(message, this.store.user);
+        }
+      });
 
       var chat = _.find(this.store.messages, {'id' : key});
 
