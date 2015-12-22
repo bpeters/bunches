@@ -154,63 +154,91 @@ module.exports = {
       return image;
     });
   },
+  checkForHashtags: function (message) {
+    var words = message.split(' ');
+    var urlExpression = /(#[a-z\d]+)/gi;
+    var urlRegex = new RegExp(urlExpression);
+
+    return new Promise(function(resolve, reject){
+      if (message.match(urlRegex)) {
+        _.map(words, (word, i) => {
+          if (_.startsWith(word, '#')) {
+            resolve(word);
+          }
+        })
+      } else {
+        resolve();
+      }
+    }); 
+  },
+  updateChatTitle: function(chat,title){
+    var Chat = Parse.Object.extend("Chat");
+    var newChat = new Chat();
+    newChat.id = chat.id;
+
+    newChat.set("name", title);
+
+    newChat.save(null, {
+      success: function(chat) {
+        console.log(chat);
+      },
+      error: function(chat, error) {
+        console.log(error);
+      }
+    });
+  },
+
   createChat: function (message, photo) {
     this.setState({
       loading: true,
     });
 
-    var bunch = this.store.bunch;
-    var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
+    this.checkForHashtags(message)
+      .then((title) => {
+        if(!title){
+          title = "first # becomes title";
+        }
+        var bunch = this.store.bunch;
+        var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
 
-    ParseReact.Mutation.Create('Chat', {
-      name: this.store.user.handle + "'s " + _.sample(nouns),
-      expirationDate: new Date(expirationDate),
-      belongsTo: bunch,
-      createdBy: this.store.user,
-      isDead: false,
-    })
-    .dispatch()
-    .then((chat) => {
+        ParseReact.Mutation.Create('Chat', {
+          name: title,
+          expirationDate: new Date(expirationDate),
+          belongsTo: bunch,
+          createdBy: this.store.user,
+          isDead: false,
+        })
+        .dispatch()
+        .then((chat) => {
 
-      this.store.newChat = chat;
+          this.store.newChat = chat;
 
-      this.setState({
-        newChat: this.store.newChat
-      });
-
-      if (photo) {
-        this.uploadImage(photo)
-          .then((image) => {
-            this.createMessage(chat, {
-              image: image,
-              message: message,
-            });
+          this.setState({
+            newChat: this.store.newChat
           });
-      } else {
-        this.createMessage(chat, {
-          message: message
-        });
-      }
 
-    });
-  },
-  createImageMessage: function (chat, photo) {
-    this.setState({
-      loading: true,
-    });
-
-    this.uploadImage(photo)
-      .then((image) => {
-        this.createMessage(chat, {
-          image: image,
+          if (photo) {
+            this.uploadImage(photo)
+              .then((image) => {
+                this.createMessage(chat, {
+                  image: image,
+                  message: message,
+                });
+              });
+          } else {
+            this.createMessage(chat, {
+              message: message
+            });
+          }
         });
-      });
+      })
   },
+
   createMessage: function (chat, options) {
     var bunch = this.store.bunch;
     var url = config.firebase.url + '/bunch/' + bunch.id + '/chat/' + (chat.objectId || chat.id);
     var messenger = new Firebase(url);
-    var user = options.user || this.store.user;
+    var user = this.store.user;
 
     var message;
 
@@ -290,8 +318,28 @@ module.exports = {
 
       messenger.push(message);
 
-      return;
+      if(chat.attributes.name === "first # becomes title"){
+        this.checkForHashtags(options.message)
+          .then((title) => {
+            if(title){
+              this.updateChatTitle(chat,title);
+            }
+          })
+      }
     });
+  },
+
+  createImageMessage: function (chat, photo) {
+    this.setState({
+      loading: true,
+    });
+
+    this.uploadImage(photo)
+      .then((image) => {
+        this.createMessage(chat, {
+          image: image,
+        });
+      });
   },
   checkEducationEmail: function (email) {
     var urlExpression = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.+-]+\.edu?/gi;
