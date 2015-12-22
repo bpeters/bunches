@@ -67,13 +67,15 @@ var Styles = StyleSheet.create({
   count: {
     position: 'absolute',
     top: defaultStyles.navBarHeight - 24 - 16,
-    left: 16 + 12 + 3,
+    left: 16 + 12 + 4,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: defaultStyles.red,
     height: 12,
     width: 12,
     borderRadius: 6,
+    borderWidth: 2,
+    borderColor: defaultStyles.blue,
   },
 });
 
