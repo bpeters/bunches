@@ -11,6 +11,8 @@ var Splash = require('./elements/splash');
 
 Parse.initialize(config.parse.applicationId, config.parse.key);
 
+console.disableYellowBox = true;
+
 module.exports= React.createClass({
   mixins: [ParseReact.Mixin],
   observe: function() {
