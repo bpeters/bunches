@@ -41,6 +41,14 @@ module.exports = {
                     fuzziness : 2
                   }
                 }
+              },
+              {
+                prefix : {
+                  handle :  {
+                    prefix : query,
+                    boost : 3.0
+                  }
+                }
               }
             ],
             minimum_should_match : 1,
