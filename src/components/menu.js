@@ -106,6 +106,13 @@ var Styles = StyleSheet.create({
     fontFamily: 'Roboto-Regular',
     color: defaultStyles.darkMedium,
   },
+  activeBunch: {
+    flex: 1,
+    fontSize: 14,
+    justifyContent: 'center',
+    fontFamily: 'Roboto-Bold',
+    color: defaultStyles.red,
+  }
 });
 
 var Menu = React.createClass({
@@ -168,6 +175,12 @@ var Menu = React.createClass({
   },
   renderBunch: function (rowData) {
     var name = _.get(rowData, 'attributes.name') || _.get(rowData, 'name');
+    var bunch = this.props.store.bunch;
+    var style = Styles.rowText;
+
+    if (_.get(bunch, 'id') && _.get(bunch, 'id') === _.get(rowData, 'id')) {
+      style = Styles.activeBunch;
+    }
 
     return (
       <TouchableOpacity onPress={() => {
@@ -179,7 +192,7 @@ var Menu = React.createClass({
       }}>
         <View>
           <View style={Styles.row}>
-            <Text style={Styles.rowText}>
+            <Text style={style}>
               {name}
             </Text>
           </View>
