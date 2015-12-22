@@ -63,10 +63,19 @@ module.exports= React.createClass({
       setTimeout(() => {
         this.getHashtagChats(route.hashtag);
       }, 300);
-    } else if (route.name === 'chat' && route.chatId !== this.state.clearedChat) {
+    } else if (route.name === 'chat' && !this.store.wait) {
+      this.store.wait = true;
+
       setTimeout(() => {
-        this.clearNotifications(route.chatId);
+        var notification = _.find(this.state.notifications, {id : route.chatId});
+
+        if (notification) {
+          this.clearNotifications(route.chatId);
+        }
+
+        this.store.wait = false;
       }, 300);
+
     }
 
     if (route.hasSideMenu) {

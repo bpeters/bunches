@@ -203,6 +203,9 @@ module.exports = {
             return promise;
           })
           .then(() => {
+
+            this.store.notifications = [];
+
             this.store.messages = _.chain(this.store.messages)
               .map((message) => {
 
@@ -232,6 +235,11 @@ module.exports = {
                 message.newCount = newCount;
                 message.mention = mention;
 
+                var userIds = _.pluck(message.messages, 'uid');
+                if (_.indexOf(userIds, this.store.user.objectId) >= 0 && message.newCount > 0) {
+                  this.store.notifications.push(message);
+                }
+
                 return message;
               })
               .sortBy((message) => {
@@ -245,6 +253,7 @@ module.exports = {
               chats: this.store.chats,
               bunch: this.store.bunch,
               user: this.store.user,
+              notifications: this.store.notifications,
               loading: false,
             });
           });

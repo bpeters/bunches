@@ -37,7 +37,8 @@ var storeDefaults = {
   hashtagMessages: [],
   typers: [],
   mentions: [],
-  clearedChat: null,
+  notifications: [],
+  wait: false,
 };
 
 module.exports = {
@@ -586,9 +587,13 @@ module.exports = {
       }
     });
 
+    this.store.notifications = _.filter(this.store.notifications, (chat) => {
+      return chat.id !== chatId;
+    });
+
     this.setState({
       messages: this.store.messages,
-      clearedChat: chatId,
+      notifications: this.store.notifications,
     });
   },
   queryUser: function (id) {

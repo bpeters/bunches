@@ -120,23 +120,7 @@ var NavBar = React.createClass({
     );
   },
   render: function() {
-    var user = this.props.store.user;
-
-    var newCount = _.sum(this.props.store.messages, (message) => {
-      var userIds = _.pluck(message.messages, 'uid');
-
-      if (_.indexOf(userIds, (user.objectId || user.id)) >= 0 && message.newCount > 0) {
-        return message.newCount
-      } else {
-        return 0;
-      }
-    });
-
-    var showCount;
-
-    if (!this.props.onBackButton && newCount) {
-      showCount = true;
-    }
+    var showNotification = !_.isEmpty(this.props.store.notifications);
 
     return (
       <View style={Styles.body}>
@@ -145,7 +129,7 @@ var NavBar = React.createClass({
             onPress={this.onHandlePress}
             icon={this.props.onBackButton ? 'material|arrow-left' : 'material|menu'}
           />
-          {showCount ? this.renderCount() : null}
+          {showNotification ? this.renderCount() : null}
         </View>
         <View style={Styles.center}>
           <Text style={Styles.title}>
