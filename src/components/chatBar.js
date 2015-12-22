@@ -129,7 +129,9 @@ module.exports = React.createClass({
     this.setState({
       message: text,
       mention: text,
+      inputShow: true,
     });
+    this.refs.inputField.focus();
   },
   onChangeText: function (message) {
 
@@ -174,7 +176,6 @@ module.exports = React.createClass({
     this.setState({
       message: message,
       mention: null,
-      inputShow: true,
     });
 
     this.refs.inputField.focus();
@@ -219,7 +220,9 @@ module.exports = React.createClass({
 
     this.setState({
       inputShow:!this.state.inputShow,
-      cameraRoll: false
+      cameraRoll: false,
+      mention: null,
+      message: null,
     });
 
     if (this.state.inputShow) {
