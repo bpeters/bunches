@@ -34,6 +34,26 @@ var Styles = StyleSheet.create({
     backgroundColor: defaultStyles.background,
     height: defaultStyles.bodyHeight,
   },
+  titleWarning: {
+    flex: 1,
+    position: 'absolute',
+    top: 100,
+    height: 50,
+    width: defaultStyles.bodyWidth,
+    backgroundColor: defaultStyles.red,
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: 0.8,
+  },
+  titleWarningText: {
+    fontSize: 14,
+    color: defaultStyles.white,
+    fontFamily: 'Roboto-Regular',
+    textAlign: 'center',
+  },
+  textBold: {
+    fontFamily: 'Roboto-Bold',
+  }
 });
 
 module.exports = React.createClass({
@@ -72,6 +92,18 @@ module.exports = React.createClass({
       this.props.actions.removeExpiredChats(chatId);
     }, timeLeft);
   },
+  renderTitleWarning: function() {
+    return (
+      <View style={Styles.titleWarning}>
+        <Text style={Styles.titleWarningText}>
+          {'Looks like your chat needs a title. Send a message with a hashtag to update title. i.e. '}
+          <Text style={Styles.textBold}>
+            #bunches4life
+          </Text>
+        </Text>
+      </View>
+    );
+  },
   render: function() {
 
     var chatId = this.props.route.chatId || _.get(this.props.store.newChat, 'objectId');
@@ -99,7 +131,7 @@ module.exports = React.createClass({
 
     var userCount = _.uniq(data.messages, 'uid').length;
 
-    var title = this.props.store.bunch.attributes.name;
+    var shouldUpdateTitle = (chatAttributes.name === this.props.store.user.handle);
 
     this.countdown(moment(chatAttributes.expirationDate).toDate(), chatId);
 
@@ -149,6 +181,7 @@ module.exports = React.createClass({
               view='bunch'
               width={defaultStyles.bodyWidth - 10}
             />
+            {shouldUpdateTitle ? this.renderTitleWarning() : null}
           </ChatContainer>
         </ChatBar>
       </View>

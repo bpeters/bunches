@@ -161,17 +161,17 @@ module.exports = {
 
     return new Promise(function(resolve, reject){
       if (message.match(urlRegex)) {
-        _.map(words, (word, i) => {
+        _.forEach(words, (word, i) => {
           if (_.startsWith(word, '#')) {
             resolve(word);
           }
-        })
+        });
       } else {
         resolve();
       }
     }); 
   },
-  updateChatTitle: function(chat,title){
+  updateChatTitle: function (chat, title) {
     var Chat = Parse.Object.extend("Chat");
     var newChat = new Chat();
     newChat.id = chat.id;
@@ -179,25 +179,22 @@ module.exports = {
     newChat.set("name", title);
 
     newChat.save(null, {
-      success: function(chat) {
-        console.log(chat);
-      },
-      error: function(chat, error) {
-        console.log(error);
+      success: (chat) => {},
+      error: (chat, error) => {
+        this.handleParseError(error, 'Failed to Update Chat Name');
       }
     });
   },
-
   createChat: function (message, photo) {
     this.setState({
       loading: true,
     });
 
     this.checkForHashtags(message)
-      .then((title) => {
-        if(!title){
-          title = "first # becomes title";
-        }
+      .then((hashtag) => {
+
+        var title = hashtag ? (this.store.user.handle + ' ' + hashtag) : this.store.user.handle;
+
         var bunch = this.store.bunch;
         var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
 
@@ -231,9 +228,8 @@ module.exports = {
             });
           }
         });
-      })
+      });
   },
-
   createMessage: function (chat, options) {
     var bunch = this.store.bunch;
     var url = config.firebase.url + '/bunch/' + bunch.id + '/chat/' + (chat.objectId || chat.id);
@@ -318,17 +314,20 @@ module.exports = {
 
       messenger.push(message);
 
-      if(chat.attributes.name === "first # becomes title"){
-        this.checkForHashtags(options.message)
-          .then((title) => {
-            if(title){
-              this.updateChatTitle(chat,title);
-            }
-          })
+      if (chat.attributes.name === this.store.user.handle) {
+        return this.checkForHashtags(options.message);
+      } else {
+        return;
       }
+    })
+    .then((hashtag) => {
+      if (hashtag) {
+        this.updateChatTitle(chat, this.store.user.handle + ' ' + hashtag);
+      }
+    }, (error) => {
+      this.handleParseError(error, 'Failed to Create Message');
     });
   },
-
   createImageMessage: function (chat, photo) {
     this.setState({
       loading: true,
