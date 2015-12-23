@@ -40,7 +40,7 @@ var Styles = StyleSheet.create({
     top: 100,
     height: 50,
     width: defaultStyles.bodyWidth,
-    backgroundColor: defaultStyles.red,
+    backgroundColor: defaultStyles.blue,
     alignItems: 'center',
     justifyContent: 'center',
     opacity: 0.8,

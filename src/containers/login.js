@@ -105,7 +105,7 @@ module.exports = React.createClass({
         <Button
           onPress={this.onLogin}
           title='SIGN IN'
-          color={defaultStyles.red}
+          color={defaultStyles.blue}
         />
       </View>
     );
@@ -116,7 +116,7 @@ module.exports = React.createClass({
         <Button
           onPress={this.onResetPassword}
           title='RESET PASSWORD'
-          color={defaultStyles.blue}
+          color={defaultStyles.red}
         />
       </View>
     );

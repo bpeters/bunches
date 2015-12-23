@@ -36,7 +36,7 @@ var Styles = StyleSheet.create({
     height: 16,
     width: 16,
     marginRight: 5,
-    backgroundColor: defaultStyles.blue,
+    backgroundColor: defaultStyles.red,
     borderRadius: 8,
   },
   element: {
@@ -47,7 +47,7 @@ var Styles = StyleSheet.create({
     height: 10,
   },
   score: {
-    color: defaultStyles.blue,
+    color: defaultStyles.red,
   },
   numbers : {
     color: defaultStyles.darkMedium,

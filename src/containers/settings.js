@@ -241,7 +241,7 @@ module.exports = React.createClass({
         <Button
           onPress={this.onUpdateAccount}
           title='SAVE'
-          color={defaultStyles.red}
+          color={defaultStyles.blue}
         />
       </View>
     );
@@ -338,7 +338,7 @@ module.exports = React.createClass({
             <Button
               onPress={this.onlogOut}
               title='LOG OUT'
-              color={defaultStyles.blue}
+              color={defaultStyles.red}
             />
           </View>
       </View>
