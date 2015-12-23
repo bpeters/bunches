@@ -30,7 +30,7 @@ var Styles = StyleSheet.create({
     top: 0,
     height: defaultStyles.navBarHeight + defaultStyles.statBarHeightHeight,
     width: defaultStyles.bodyWidth,
-    backgroundColor: defaultStyles.blue,
+    backgroundColor: defaultStyles.red,
     shadowOpacity: 0.5,
     shadowRadius: 2,
     shadowOffset: {

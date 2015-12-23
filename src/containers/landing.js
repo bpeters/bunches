@@ -64,12 +64,12 @@ module.exports = React.createClass({
           <Button
             onPress={this.onLoginPress}
             title='SIGN IN'
-            color={defaultStyles.blue}
+            color={defaultStyles.red}
           />
           <Button
             onPress={this.onCreateAccountPress}
             title='CREATE ACCOUNT'
-            color={defaultStyles.red}
+            color={defaultStyles.blue}
           />
           </View>
       </View>

@@ -10,6 +10,7 @@ var Counter = require('../elements/counter');
 var PopImage = require('../elements/popImage');
 var Message = require('../elements/message');
 var StatBar = require('../elements/statBar');
+var ChatHashtag = require('../elements/chatHashtag');
 
 var {
   Icon,
@@ -73,7 +74,7 @@ var Styles = StyleSheet.create({
   userHandle: {
     fontSize: 14,
     fontFamily: 'Roboto-Regular',
-    color: defaultStyles.red,
+    color: defaultStyles.blue,
   },
   chatName: {
     fontSize: 14,
@@ -154,7 +155,7 @@ var Styles = StyleSheet.create({
   },
   handle: {
     marginLeft: 5,
-    color: defaultStyles.red,
+    color: defaultStyles.blue,
     fontFamily: 'Roboto-Regular',
   },
   timeBreak: {
@@ -273,6 +274,14 @@ module.exports = React.createClass({
 
     return msgs;
   },
+  renderHashtags: function(messages) {
+    return (
+      <ChatHashtag
+        messages={messages}
+        onHashtagPress={this.props.onHashtagPress}
+      />
+    )
+  },
   render: function() {
     var rowData = this.props.rowData;
     var user = rowData.chat.get('createdBy');
@@ -281,7 +290,9 @@ module.exports = React.createClass({
 
     var mostRecentImages = [];
     var mostRecentMessages = [];
+    var hashtags = [];
     var onlineStatus;
+    
 
     _.forEach(rowData.messages, (message) => {
 
@@ -291,12 +302,18 @@ module.exports = React.createClass({
 
       if (message.message) {
         mostRecentMessages.push(message);
+
+        var words = message.message.split(' ');
+        var message = _.map(words, (word, i) => {
+          if (_.startsWith(word, '#')) {
+            hashtags.push(word);
+          }
+        });
       }
 
       if (user.id === message.uid && message.online) {
         onlineStatus = message.online;
       }
-
     });
 
     return (
@@ -308,6 +325,7 @@ module.exports = React.createClass({
             view='bunch'
             width={defaultStyles.bodyWidth - 52}
           />
+          {hashtags.length ? this.renderHashtags(hashtags) : null}
           <View style={Styles.rowHeader}>
             <Avatar
               onPress={() => this.props.onAvatarPress(user.attributes.image ? user.attributes.image.url() : null)}
@@ -320,12 +338,9 @@ module.exports = React.createClass({
                   <Text style={Styles.userName}>
                     {user.attributes.name}
                   </Text>
-                  <Text style={Styles.userHandle} onPress={() => this.props.onMentionPress(user.id, user.attributes.handle)}>
-                    @{user.attributes.handle}
-                  </Text>
                 </View>
-                <Text style={Styles.chatName}>
-                  {rowData.chat.attributes.name}
+                <Text style={Styles.userHandle} onPress={() => this.props.onMentionPress(user.id, user.attributes.handle)}>
+                  @{user.attributes.handle}
                 </Text>
               </View>
             </View>

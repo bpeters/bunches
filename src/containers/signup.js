@@ -145,7 +145,7 @@ module.exports = React.createClass({
         <Button
           onPress={this.onCreateAccount}
           title='CREATE ACCOUNT'
-          color={defaultStyles.red}
+          color={defaultStyles.blue}
         />
       </View>
     );

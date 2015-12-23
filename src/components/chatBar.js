@@ -70,7 +70,7 @@ var Styles = StyleSheet.create({
     alignItems: 'center',
   },
   textSend: {
-    color: defaultStyles.blue,
+    color: defaultStyles.red,
     fontWeight: 'bold',
     fontFamily: 'Roboto-Regular',
   },
@@ -208,7 +208,7 @@ module.exports = React.createClass({
           onPress={rowData.onPress}
           icon={rowData.icon}
           size={24}
-          color={defaultStyles.blue}
+          color={defaultStyles.red}
         />
       </View>
     )

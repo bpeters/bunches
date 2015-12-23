@@ -46,7 +46,7 @@ var Styles = StyleSheet.create({
   }, 
   icon: {
     borderRadius: 28,
-    backgroundColor: defaultStyles.red,
+    backgroundColor: defaultStyles.blue,
     width: 56,
     height: 56,
   },
