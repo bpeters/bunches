@@ -16,6 +16,7 @@ var ES = require('./elasticsearch');
 var Listen = require('./listen');
 var Storage = require('./storage');
 var Clearbit = require('./clearbit');
+var Notification = require('./notification');
 
 var {
   AlertIOS,
@@ -76,6 +77,10 @@ module.exports = {
           this.listenToUserStatus();
           this.listenToTyper();
           this.addUserStatus(this.store.bunch.id, this.store.user.objectId);
+
+          Notification.requestPermissions();
+          Notification.registerEvent();
+          Notification.notificationEvent();
 
           if (newUser) {
             this.createWelcomeChat(this.store.user, this.store.bunch);
