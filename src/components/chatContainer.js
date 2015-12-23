@@ -96,7 +96,7 @@ var Styles = StyleSheet.create({
   },
   handle: {
     marginLeft: 5,
-    color: defaultStyles.red,
+    color: defaultStyles.blue,
     fontFamily: 'Roboto-Regular',
   },
 });

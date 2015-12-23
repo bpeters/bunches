@@ -50,7 +50,7 @@ var Styles = StyleSheet.create({
     borderRadius: 90,
     borderWidth: 5,
     borderColor: defaultStyles.white,
-    backgroundColor: defaultStyles.red,
+    backgroundColor: defaultStyles.blue,
     opacity: 0.7,
   },
   iconViewRight: {

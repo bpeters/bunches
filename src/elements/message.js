@@ -21,17 +21,17 @@ var Styles = StyleSheet.create({
   mention: {
     fontSize: 14,
     fontFamily: 'Roboto-Bold',
-    color: defaultStyles.red,
+    color: defaultStyles.blue,
   },
   hashtag: {
     fontSize: 14,
     fontFamily: 'Roboto-Bold',
-    color: defaultStyles.blue,
+    color: defaultStyles.red,
   },
   link: {
     fontSize: 14,
     fontFamily: 'Roboto-Regular',
-    color: defaultStyles.red,
+    color: defaultStyles.blue,
   },
   phrase: {
     fontSize: 14,

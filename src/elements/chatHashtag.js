@@ -30,7 +30,7 @@ var Styles = StyleSheet.create({
   hashtagText: {
     fontSize: 14,
     fontFamily: 'Roboto-Bold',
-    color: defaultStyles.blue,
+    color: defaultStyles.red,
   },
 });
 

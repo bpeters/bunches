@@ -81,7 +81,7 @@ var Styles = StyleSheet.create({
   rowCount: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: defaultStyles.blue,
+    backgroundColor: defaultStyles.red,
     height: 20,
     borderRadius: 10,
     paddingLeft: 8,
@@ -111,7 +111,7 @@ var Styles = StyleSheet.create({
     fontSize: 14,
     justifyContent: 'center',
     fontFamily: 'Roboto-Bold',
-    color: defaultStyles.red,
+    color: defaultStyles.blue,
   }
 });
 

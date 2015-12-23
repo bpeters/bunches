@@ -74,7 +74,7 @@ var Styles = StyleSheet.create({
   userHandle: {
     fontSize: 14,
     fontFamily: 'Roboto-Regular',
-    color: defaultStyles.red,
+    color: defaultStyles.blue,
   },
   chatName: {
     fontSize: 14,
@@ -155,7 +155,7 @@ var Styles = StyleSheet.create({
   },
   handle: {
     marginLeft: 5,
-    color: defaultStyles.red,
+    color: defaultStyles.blue,
     fontFamily: 'Roboto-Regular',
   },
   timeBreak: {

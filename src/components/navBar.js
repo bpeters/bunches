@@ -31,7 +31,7 @@ var Styles = StyleSheet.create({
     flexDirection: 'row',
     height: defaultStyles.navBarHeight,
     width: defaultStyles.bodyWidth,
-    backgroundColor: defaultStyles.blue,
+    backgroundColor: defaultStyles.red,
     shadowOpacity: 0.5,
     shadowRadius: 2,
     shadowOffset: {
@@ -70,12 +70,12 @@ var Styles = StyleSheet.create({
     left: 16 + 12 + 4,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: defaultStyles.red,
+    backgroundColor: defaultStyles.blue,
     height: 12,
     width: 12,
     borderRadius: 6,
     borderWidth: 2,
-    borderColor: defaultStyles.blue,
+    borderColor: defaultStyles.red,
   },
 });
 

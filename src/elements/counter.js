@@ -68,7 +68,7 @@ module.exports = React.createClass({
         backgroundColor: defaultStyles.white,
       };
 
-      iconColor = defaultStyles.blue;
+      iconColor = defaultStyles.red;
 
     } else {
       var container = {
@@ -78,11 +78,11 @@ module.exports = React.createClass({
       };
 
       textColor = {
-        color: defaultStyles.blue,
+        color: defaultStyles.red,
       };
 
       backgroundColor = {
-        backgroundColor: defaultStyles.blue,
+        backgroundColor: defaultStyles.red,
       };
 
       iconColor = defaultStyles.white;

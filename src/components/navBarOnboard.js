@@ -30,7 +30,7 @@ var Styles = StyleSheet.create({
     flexDirection: 'row',
     height: defaultStyles.navBarHeight,
     width: defaultStyles.bodyWidth,
-    backgroundColor: defaultStyles.blue,
+    backgroundColor: defaultStyles.red,
     shadowOpacity: 0.5,
     shadowRadius: 2,
     shadowOffset: {
