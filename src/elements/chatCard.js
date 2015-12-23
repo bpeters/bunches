@@ -274,7 +274,6 @@ module.exports = React.createClass({
 
     return msgs;
   },
-
   renderHashtags: function(messages) {
     return (
       <ChatHashtag

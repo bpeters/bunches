@@ -16,21 +16,21 @@ var Styles = StyleSheet.create({
   container: {
     width: defaultStyles.bodyWidth - 32,
     backgroundColor: defaultStyles.white,
-    padding: 10,
+    paddingTop: 12,
+    paddingLeft: 16,
+    paddingRight: 16,
+    paddingBottom: 4,
   },
   hashtag: {
-    backgroundColor: defaultStyles.red,
     borderRadius: 10,
-    paddingTop: 3,
-    paddingBottom: 3,
     paddingLeft: 6,
     paddingRight: 6,
     marginLeft: 5,
   },
   hashtagText: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: 'Roboto-Bold',
-    color: defaultStyles.white,
+    color: defaultStyles.blue,
   },
 });
 
@@ -68,6 +68,6 @@ module.exports = React.createClass({
           automaticallyAdjustContentInsets={false}
         />
       </View>
-    )
+    );
   }
 });
