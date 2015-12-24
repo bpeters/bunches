@@ -102,22 +102,18 @@ module.exports = React.createClass({
     };
   },
   inputFocused: function (refName) {
-    setTimeout(() => {
-      this.refs.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
-        React.findNodeHandle(this.refs[refName]),
-        this.props.height,
-        true
-      );
-    }, 50);
+    this.refs.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
+      React.findNodeHandle(this.refs[refName]),
+      this.props.height,
+      true
+    );
 
     if (this.props.forChat) {
       this.props.addTyper(this.props.chat.objectId || this.props.chat.id);
     }
   },
   inputBlured: function (refName) {
-    setTimeout(() => {
-      this.refs.scrollView.getScrollResponder().scrollTo(0, 0);
-    }, 50);
+    this.refs.scrollView.getScrollResponder().scrollTo(0, 0);
 
     if (this.props.forChat) {
       this.props.deleteTyper(this.props.chat.objectId || this.props.chat.id);

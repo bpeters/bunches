@@ -121,18 +121,14 @@ module.exports = React.createClass({
     }
   },
   inputFocused: function (refName) {
-    setTimeout(() => {
-      this.refs.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
-        React.findNodeHandle(this.refs[refName]),
-        116,
-        true
-      );
-    }, 50);
+    this.refs.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
+      React.findNodeHandle(this.refs[refName]),
+      116,
+      true
+    );
   },
   inputBlured: function (refName) {
-    setTimeout(() => {
-      this.refs.scrollView.getScrollResponder().scrollTo(0, 0);
-    }, 50);
+    this.refs.scrollView.getScrollResponder().scrollTo(0, 0);
   },
   onPhotoChange: function(image) {
     this.setState({image});
