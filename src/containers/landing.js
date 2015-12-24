@@ -18,13 +18,19 @@ var Styles = StyleSheet.create({
   view: {
     flex: 1,
     alignItems: 'stretch',
-    backgroundColor: 'transparent',
+    backgroundColor: defaultStyles.white,
   },
-  image: {
+  imageBubble: {
+    marginTop: 160,
+    alignSelf: 'center',
+    width: 295 * 0.5,
+    height: 299 * 0.5,
+  },
+  imageLogo: {
     marginTop: 60,
     alignSelf: 'center',
-    width: 159 * 0.8,
-    height: 400 * 0.8,
+    width: 400 * 0.6,
+    height: 74 * 0.6,
   },
   buttonView: {
     position: 'absolute',
@@ -57,7 +63,11 @@ module.exports = React.createClass({
     return (
       <View style={Styles.view}>
         <Image
-          style={Styles.image}
+          style={Styles.imageBubble}
+          source={require('../assets/bubble.png')}
+        />
+        <Image
+          style={Styles.imageLogo}
           source={require('../assets/logo.png')}
         />
         <View style={Styles.buttonView}>
