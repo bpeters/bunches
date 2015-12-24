@@ -6,6 +6,7 @@ var IconButton = require('../elements/iconButton');
 
 var defaultStyles = require('../styles');
 var Counter = require('../elements/counter');
+var Loading = require('../elements/loading');
 
 var {
   Text,
@@ -14,13 +15,6 @@ var {
   Platform,
 } = React;
 
-var Loading;
-
-if (Platform.OS === 'android') {
-  Loading = require('../elements/loadingAndroid');
-} else {
-  Loading = require('../elements/loadingIOS');
-}
 
 var Styles = StyleSheet.create({
   body: {

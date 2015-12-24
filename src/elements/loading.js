@@ -3,7 +3,7 @@
 var React = require('react-native');
 
 var {
-  Icon,
+  Spinner,
 } = require('react-native-icons');
 
 var defaultStyles = require('../styles');
@@ -16,27 +16,16 @@ var {
 } = React;
 
 var Styles = StyleSheet.create({
-  iconView: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: 'transparent',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: defaultStyles.dark,
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
-    shadowOffset: {
-      width: 0,
-      height: 0
-    },
-  }, 
-  spinner: {
-    borderRadius: 28,
+  view: {
+    borderRadius: 12,
     backgroundColor: defaultStyles.dark,
-    width: 56,
-    height: 56,
+    width: 24,
+    height: 24,
+  },
+  spinner: {
+    backgroundColor: 'transparent',
+    width: 24,
+    height: 24,
   },
 });
 
@@ -71,10 +60,10 @@ module.exports = React.createClass({
           ]
         }}
       >
-        <View style={Styles.iconView}>
-          <Icon
+        <View style={Styles.view}>
+          <Spinner
             name='ion|load-a'
-            size={30}
+            size={12}
             color='#ffffff'
             style={Styles.spinner}
           />

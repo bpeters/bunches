@@ -3,7 +3,10 @@
 var React = require('react-native');
 var Dimensions = require('Dimensions');
 
-var {StyleSheet} = React;
+var {
+  StyleSheet,
+  Platform,
+} = React;
 
 var window = Dimensions.get('window');
 var navBarHeight = 56;

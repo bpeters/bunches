@@ -5,6 +5,7 @@ var React = require('react-native');
 var IconButton = require('../elements/iconButton');
 var StatBar = require('../elements/statBar');
 var Success = require('../elements/success');
+var Loading = require('../elements/loading');
 
 var defaultStyles = require('../styles');
 
@@ -14,14 +15,6 @@ var {
   StyleSheet,
   Platform,
 } = React;
-
-var Loading;
-
-if (Platform.OS === 'android') {
-  Loading = require('../elements/loadingAndroid');
-} else {
-  Loading = require('../elements/loadingIOS');
-}
 
 var Styles = StyleSheet.create({
   timer: {
