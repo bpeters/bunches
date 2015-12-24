@@ -36,6 +36,10 @@ var Styles = StyleSheet.create({
     fontFamily: 'Roboto-Regular', 
     color: defaultStyles.medium,
   },
+  image: {
+    marginTop: 60,
+    alignSelf: 'center',
+  },
 });
 
 module.exports = React.createClass({
@@ -112,15 +116,28 @@ module.exports = React.createClass({
       </View>
     );
   },
+  renderList: function () {
+    return (
+      <ListView
+        dataSource={this.state.dataSource.cloneWithRows(this.props.store.messages)}
+        renderRow={this.renderChatRow}
+        renderFooter={this.renderChatFooter}
+        automaticallyAdjustContentInsets={false}
+      />
+    );
+  },
+  renderEmpty: function () {
+    return (
+      <Image
+        style={Styles.image}
+        source={require('../assets/empty.png')}
+      />
+    );
+  },
   render: function() {
     return (
       <View style={Styles.container}>
-        <ListView
-          dataSource={this.state.dataSource.cloneWithRows(this.props.store.messages)}
-          renderRow={this.renderChatRow}
-          renderFooter={this.renderChatFooter}
-          automaticallyAdjustContentInsets={false}
-        />
+        {_.isEmpty(this.props.store.messages) ? this.renderEmpty() : this.renderList()}
         {this.props.children}
       </View>
     );
