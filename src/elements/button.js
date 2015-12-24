@@ -17,6 +17,7 @@ module.exports = React.createClass({
     onPress: React.PropTypes.func,
     title: React.PropTypes.string,
     color: React.PropTypes.string,
+    textColor: React.PropTypes.string,
   },
   getInitialState: function () {
     return {
@@ -47,7 +48,7 @@ module.exports = React.createClass({
         marginTop: 16,
       },
       text: {
-        color: defaultStyles.white,
+        color: this.props.textColor || defaultStyles.white,
         fontFamily: 'Roboto-Bold',
       },
     });

@@ -39,6 +39,22 @@ var Styles = StyleSheet.create({
   image: {
     marginTop: 60,
     alignSelf: 'center',
+    width: 1290 * 0.15,
+    height: 1380 * 0.15,
+  },
+  title: {
+    marginTop: 16,
+    fontSize: 16,
+    fontFamily: 'Roboto-Bold',
+    color: defaultStyles.dark,
+    alignSelf: 'center',
+  },
+  text: {
+    marginTop: 8,
+    fontSize: 14,
+    fontFamily: 'Roboto-Regular',
+    color: defaultStyles.gray,
+    alignSelf: 'center',
   },
 });
 
@@ -128,16 +144,30 @@ module.exports = React.createClass({
   },
   renderEmpty: function () {
     return (
-      <Image
-        style={Styles.image}
-        source={require('../assets/empty.png')}
-      />
+      <View>
+        <Image
+          style={Styles.image}
+          source={require('../assets/empty.png')}
+        />
+        <Text style={Styles.title}>
+          ABSOLUTETLY NOTHING...
+        </Text>
+        <Text style={Styles.text}>
+          Keep calm social jelly, start a conversation.
+        </Text>
+      </View>
     );
   },
   render: function() {
+    var showEmpty;
+
+    if (_.isEmpty(this.props.store.messages) && !this.props.store.loading) {
+      showEmpty = true;
+    }
+
     return (
       <View style={Styles.container}>
-        {_.isEmpty(this.props.store.messages) ? this.renderEmpty() : this.renderList()}
+        {showEmpty ? this.renderEmpty() : this.renderList()}
         {this.props.children}
       </View>
     );
