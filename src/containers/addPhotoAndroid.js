@@ -100,6 +100,7 @@ module.exports = React.createClass({
       cameraType: cameraOrientation,
       preview: false,
       photo: '',
+      message: '',
     };
   },
   onPressClose: function () {

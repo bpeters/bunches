@@ -18,7 +18,7 @@ var Storage = require('./storage');
 var Clearbit = require('./clearbit');
 
 var {
-  AlertIOS,
+  Alert,
   Platform,
 } = React;
 
@@ -134,13 +134,11 @@ module.exports = {
       default:
         console.log(err);
 
-        if (Platform.OS === 'ios') {
-          AlertIOS.alert(
-            title || 'Error',
-            err.message,
-            [{text: 'Try Again'}]
-          );
-        }
+        Alert.alert(
+          title || 'Error',
+          err.message,
+          [{text: 'Try Again'}]
+        );
 
         this.setState({
           loading: false,
