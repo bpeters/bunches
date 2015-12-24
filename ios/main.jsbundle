@@ -57301,9 +57301,9 @@ var config=require('bunches/src/config/default.js');
 var Router=require('bunches/src/router.js');
 var Splash=require('bunches/src/elements/splash.js');
 
-Parse.initialize(config.parse.applicationId,config.parse.key);
+Parse.initialize(config.parse.applicationId,config.parse.key);var 
 
-console.disableYellowBox=true;var 
+
 
 
 View=
@@ -71881,7 +71881,8 @@ return true;}
 __d('bunches/src/config/default.js',function(global, require, module, exports) {  module.exports={
 parse:{
 applicationId:"dsgXdFhexcMreakStwdqPqNLY0tUjMzGFKsF6g5H",
-key:"T0bfFv1Tt7av6go36WcIWmnmYDqi1ciSHZtDwC0Z"},
+key:"T0bfFv1Tt7av6go36WcIWmnmYDqi1ciSHZtDwC0Z",
+rest:"PaBg7LZL6tBtGNwXewOL4iHSddo4xNCr6T3ygw1R"},
 
 firebase:{
 url:"https://bunches.firebaseio.com",
@@ -84429,7 +84430,8 @@ hashtagMessages:[],
 typers:[],
 mentions:[],
 notifications:[],
-wait:false};
+wait:false,
+notificationURL:null};
 
 
 module.exports={
@@ -84469,8 +84471,9 @@ _this.listenToTyper();
 _this.addUserStatus(_this.store.bunch.id,_this.store.user.objectId);
 
 Notification.requestPermissions();
-Notification.registerEvent();
-Notification.notificationEvent();
+
+_this.store.notificationURL=Notification.registerEvent(_this.store.user.objectId);
+Notification.notificationEvent(_this.handlePushNotification);
 
 if(newUser){
 _this.createWelcomeChat(_this.store.user,_this.store.bunch);}},
@@ -84670,6 +84673,7 @@ promiseMentions.push(
 _this6.getUserByHandle(handle).
 then(function(user){
 if(user){
+Notification.mention(_this6.store.user,user.id,options.message,chat);
 return mention+'/?/?/?/'+user.id+'/?/?/?/';}else 
 {
 return;}}));});}
@@ -85081,6 +85085,8 @@ Storage.setItem(m.key,m.key).done();});}});
 this.store.notifications=_.filter(this.store.notifications,function(chat){
 return chat.id!==chatId;});
 
+
+Notification.setBadge(this.store.notifications.length);
 
 this.setState({
 messages:this.store.messages,
@@ -105478,48 +105484,93 @@ module.exports={
 requestPermissions:function(){
 PushNotificationIOS.requestPermissions();},
 
-registerEvent:function(){var _this=this;
-PushNotificationIOS.addEventListener('register',function(token){
-_this.registerDevice(token).
+registerEvent:function(userId){var _this=this;
+return PushNotificationIOS.addEventListener('register',function(token){
+_this.registerDevice(token,userId).
 then(function(result){
-
-AlertIOS.alert(JSON.stringify(result.header));}).
+return result.headers.map.location[0];}).
 
 catch(function(error){
-AlertIOS.alert(JSON.stringify(error));});});},
+console.log(error);});});},
 
 
 
-notificationEvent:function(){
+notificationEvent:function(handlePushNotification){
 PushNotificationIOS.addEventListener('notification',function(notification){
-AlertIOS.alert(
-'Notification Received',
-'Alert message: '+notification.getMessage(),
-[{
-text:'Dismiss',
-onPress:null}]);});},
+if(notification.getBadgeCount()){
+PushNotificationIOS.setApplicationIconBadgeNumber(notification.getBadgeCount());}});},
 
 
 
+setBadge:function(badgeCount){
+PushNotificationIOS.setApplicationIconBadgeNumber(badgeCount);},
 
-sendNotification:function(){},
+mention:function(sender,userId,message,chat){
+var body={
+where:{
+userId:userId},
+
+data:{
+alert:'@'+sender.handle+' mentioned you in a chat',
+badge:'Increment',
+message:message,
+chatId:chat.objectId}};
 
 
-registerDevice:function(token){
+
+this.sendNotification(body).
+then(function(result){
+console.log(result);}).
+
+catch(function(error){
+console.log(error);});},
+
+
+sendNotification:function(body){
+
+return fetch('https://api.parse.com/1/push',{
+method:'POST',
+headers:{
+'Accept':'application/json',
+'X-Parse-Application-Id':config.parse.applicationId,
+'X-Parse-REST-API-Key':config.parse.rest,
+'Content-Type':'application/json'},
+
+body:JSON.stringify(body)});},
+
+
+updateChannels:function(url,channels){
+var body={
+channels:channels};
+
+
+return fetch(url,{
+method:'PUT',
+headers:{
+'Accept':'application/json',
+'X-Parse-Application-Id':config.parse.applicationId,
+'X-Parse-REST-API-Key':config.parse.rest,
+'Content-Type':'application/json'},
+
+body:JSON.stringify(body)});},
+
+
+registerDevice:function(token,userId){
 var body={
 deviceType:'ios',
 deviceToken:token,
 channels:[
-'bunches']};
+'bunches'],
 
+userId:userId};
 
 
 return fetch('https://api.parse.com/1/installations',{
 method:'POST',
 headers:{
 'Accept':'application/json',
-'X-Parse-Application-Id':"dsgXdFhexcMreakStwdqPqNLY0tUjMzGFKsF6g5H",
-'X-Parse-REST-API-Key':"PaBg7LZL6tBtGNwXewOL4iHSddo4xNCr6T3ygw1R",
+'X-Parse-Application-Id':config.parse.applicationId,
+'X-Parse-REST-API-Key':config.parse.rest,
 'Content-Type':'application/json'},
 
 body:JSON.stringify(body)});}};
@@ -105590,12 +105641,12 @@ React.createElement(View,{style:Styles.buttonView},
 React.createElement(Button,{
 onPress:this.onLoginPress,
 title:'SIGN IN',
-color:defaultStyles.blue}),
+color:defaultStyles.red}),
 
 React.createElement(Button,{
 onPress:this.onCreateAccountPress,
 title:'CREATE ACCOUNT',
-color:defaultStyles.red}))));}});
+color:defaultStyles.blue}))));}});
 });
 __d('bunches/src/elements/button.js',function(global, require, module, exports) {  'use strict';
 
@@ -105685,13 +105736,12 @@ chatBarHeight:chatBarHeight,
 bodyHeight:bodyHeight,
 bodyWidth:bodyWidth,
 statBarHeight:statBarHeight,
-blue:'#ED3D96',
-red:'#03A9F4',
-yellow:'#F9CA6B',
-green:'#02D04E',
 medium:'#b4b4b4',
 light:'#FAFAFA',
-
+yellow:'#F9CA6B',
+green:'#02D04E',
+red:'#ED3D96',
+blue:'#03A9F4',
 dark:'#222222',
 darkMedium:'#5F5F5F',
 darkHighlight:'#1E1E1E',
@@ -105807,7 +105857,7 @@ React.createElement(View,{style:Styles.buttonView},
 React.createElement(Button,{
 onPress:this.onLogin,
 title:'SIGN IN',
-color:defaultStyles.red})));},
+color:defaultStyles.blue})));},
 
 
 
@@ -105818,7 +105868,7 @@ React.createElement(View,{style:Styles.buttonView},
 React.createElement(Button,{
 onPress:this.onResetPassword,
 title:'RESET PASSWORD',
-color:defaultStyles.blue})));},
+color:defaultStyles.red})));},
 
 
 
@@ -105935,7 +105985,7 @@ flex:1,
 flexDirection:'row',
 height:defaultStyles.navBarHeight,
 width:defaultStyles.bodyWidth,
-backgroundColor:defaultStyles.blue,
+backgroundColor:defaultStyles.red,
 shadowOpacity:0.5,
 shadowRadius:2,
 shadowOffset:{
@@ -106477,7 +106527,7 @@ backgroundColor={
 backgroundColor:defaultStyles.white};
 
 
-iconColor=defaultStyles.blue;}else 
+iconColor=defaultStyles.red;}else 
 
 {
 var container={
@@ -106487,11 +106537,11 @@ alignItems:'center'};
 
 
 textColor={
-color:defaultStyles.blue};
+color:defaultStyles.red};
 
 
 backgroundColor={
-backgroundColor:defaultStyles.blue};
+backgroundColor:defaultStyles.red};
 
 
 iconColor=defaultStyles.white;}
@@ -106803,8 +106853,8 @@ flex:1,
 flexDirection:'row',
 height:defaultStyles.navBarHeight,
 width:defaultStyles.bodyWidth,
-backgroundColor:defaultStyles.blue,
-shadowOpacity:0.5,
+backgroundColor:defaultStyles.red,
+shadowOpacity:0.3,
 shadowRadius:2,
 shadowOffset:{
 width:0,
@@ -106842,12 +106892,12 @@ top:defaultStyles.navBarHeight-24-16,
 left:16+12+4,
 alignItems:'center',
 justifyContent:'center',
-backgroundColor:defaultStyles.red,
+backgroundColor:defaultStyles.blue,
 height:12,
 width:12,
 borderRadius:6,
 borderWidth:2,
-borderColor:defaultStyles.blue}});
+borderColor:defaultStyles.red}});
 
 
 
@@ -107156,7 +107206,7 @@ position:'absolute',
 top:100,
 height:50,
 width:defaultStyles.bodyWidth,
-backgroundColor:defaultStyles.red,
+backgroundColor:defaultStyles.blue,
 alignItems:'center',
 justifyContent:'center',
 opacity:0.8},
@@ -107217,6 +107267,15 @@ React.createElement(Text,{style:Styles.textBold},'#bunches4life'))));},
 
 
 
+
+
+
+renderNotification:function(){
+return (
+React.createElement(Notification,{
+notification:this.props.store.pushNotification,
+onPressNotificationClose:this.props.actions.clearPushNotification,
+onPressNotification:this.onPressNotification}));},
 
 
 
@@ -107297,7 +107356,10 @@ created:moment(chatAttributes.createdAt).toDate(),
 view:'bunch',
 width:defaultStyles.bodyWidth-10}),
 
-shouldUpdateTitle?this.renderTitleWarning():null))));}});
+shouldUpdateTitle?this.renderTitleWarning():null)),
+
+
+this.props.store.pushNotification?this.renderNotification():null));}});
 });
 __d('bunches/src/components/navBarChat.js',function(global, require, module, exports) {  'use strict';
 
@@ -107331,8 +107393,8 @@ position:'absolute',
 top:0,
 height:defaultStyles.navBarHeight+defaultStyles.statBarHeightHeight,
 width:defaultStyles.bodyWidth,
-backgroundColor:defaultStyles.blue,
-shadowOpacity:0.5,
+backgroundColor:defaultStyles.red,
+shadowOpacity:0.3,
 shadowRadius:2,
 shadowOffset:{
 width:0,
@@ -107464,7 +107526,7 @@ iconFill:{
 height:16,
 width:16,
 marginRight:5,
-backgroundColor:defaultStyles.blue,
+backgroundColor:defaultStyles.red,
 borderRadius:8},
 
 element:{
@@ -107475,7 +107537,7 @@ justifyContent:'center',
 height:10},
 
 score:{
-color:defaultStyles.blue},
+color:defaultStyles.red},
 
 numbers:{
 color:defaultStyles.darkMedium,
@@ -107629,7 +107691,7 @@ width:defaultStyles.bodyWidth-16-40-16-16},
 
 handle:{
 marginLeft:5,
-color:defaultStyles.red,
+color:defaultStyles.blue,
 fontFamily:'Roboto-Regular'}});
 
 
@@ -108332,7 +108394,8 @@ var Timer=require('bunches/src/elements/timer.js');
 var Counter=require('bunches/src/elements/counter.js');
 var PopImage=require('bunches/src/elements/popImage.js');
 var Message=require('bunches/src/elements/message.js');
-var StatBar=require('bunches/src/elements/statBar.js');var _require=
+var StatBar=require('bunches/src/elements/statBar.js');
+var ChatHashtag=require('bunches/src/elements/chatHashtag.js');var _require=
 
 
 
@@ -108396,7 +108459,7 @@ marginRight:8},
 userHandle:{
 fontSize:14,
 fontFamily:'Roboto-Regular',
-color:defaultStyles.red},
+color:defaultStyles.blue},
 
 chatName:{
 fontSize:14,
@@ -108477,7 +108540,7 @@ fontSize:14},
 
 handle:{
 marginLeft:5,
-color:defaultStyles.red,
+color:defaultStyles.blue,
 fontFamily:'Roboto-Regular'},
 
 timeBreak:{
@@ -108596,6 +108659,14 @@ return _this3.renderMessages(message,i);});
 
 return msgs;},
 
+renderHashtags:function(messages){
+return (
+React.createElement(ChatHashtag,{
+messages:messages,
+onHashtagPress:this.props.onHashtagPress}));},
+
+
+
 render:function(){var _this4=this;
 var rowData=this.props.rowData;
 var user=rowData.chat.get('createdBy');
@@ -108604,7 +108675,9 @@ var userCount=_.uniq(rowData.messages,'uid').length;
 
 var mostRecentImages=[];
 var mostRecentMessages=[];
+var hashtags=[];
 var onlineStatus;
+
 
 _.forEach(rowData.messages,function(message){
 
@@ -108613,12 +108686,18 @@ mostRecentImages.push(message.imageURL);}
 
 
 if(message.message){
-mostRecentMessages.push(message);}
+mostRecentMessages.push(message);
+
+var words=message.message.split(' ');
+var message=_.map(words,function(word,i){
+if(_.startsWith(word,'#')){
+hashtags.push(word);}});}
+
+
 
 
 if(user.id===message.uid&&message.online){
 onlineStatus=message.online;}});
-
 
 
 
@@ -108631,6 +108710,7 @@ created:rowData.chat.createdAt,
 view:'bunch',
 width:defaultStyles.bodyWidth-52}),
 
+hashtags.length?this.renderHashtags(hashtags):null,
 React.createElement(View,{style:Styles.rowHeader},
 React.createElement(Avatar,{
 onPress:function(){return _this4.props.onAvatarPress(user.attributes.image?user.attributes.image.url():null);},
@@ -108641,14 +108721,11 @@ React.createElement(View,{style:Styles.info},
 React.createElement(View,{style:Styles.infoBar},
 React.createElement(View,{style:Styles.user},
 React.createElement(Text,{style:Styles.userName},
-user.attributes.name),
+user.attributes.name)),
+
 
 React.createElement(Text,{style:Styles.userHandle,onPress:function(){return _this4.props.onMentionPress(user.id,user.attributes.handle);}},'@',
-user.attributes.handle)),
-
-
-React.createElement(Text,{style:Styles.chatName},
-rowData.chat.attributes.name)))),
+user.attributes.handle)))),
 
 
 
@@ -108705,7 +108782,7 @@ if(percent<=0.5){
 color=defaultStyles.yellow;}
 
 if(percent<=0.25){
-color=defaultStyles.blue;}
+color=defaultStyles.red;}
 
 
 return (
@@ -108738,17 +108815,17 @@ lineHeight:18},
 mention:{
 fontSize:14,
 fontFamily:'Roboto-Bold',
-color:defaultStyles.red},
+color:defaultStyles.blue},
 
 hashtag:{
 fontSize:14,
 fontFamily:'Roboto-Bold',
-color:defaultStyles.blue},
+color:defaultStyles.red},
 
 link:{
 fontSize:14,
 fontFamily:'Roboto-Regular',
-color:defaultStyles.red},
+color:defaultStyles.blue},
 
 phrase:{
 fontSize:14,
@@ -108823,6 +108900,75 @@ word+' '));}});
 return (
 React.createElement(Text,{style:Styles.message},
 message));}}});
+});
+__d('bunches/src/elements/chatHashtag.js',function(global, require, module, exports) {  'use strict';
+
+var React=require('react-native/Libraries/react-native/react-native.js');
+
+var defaultStyles=require('bunches/src/styles.js');var 
+
+
+View=
+
+
+
+
+React.View;var Text=React.Text;var StyleSheet=React.StyleSheet;var ListView=React.ListView;var TouchableOpacity=React.TouchableOpacity;
+
+var Styles=StyleSheet.create({
+container:{
+width:defaultStyles.bodyWidth-32,
+backgroundColor:defaultStyles.white,
+paddingTop:12,
+paddingLeft:16,
+paddingRight:16,
+paddingBottom:4},
+
+hashtag:{
+borderRadius:10,
+paddingLeft:6,
+paddingRight:6,
+marginLeft:5},
+
+hashtagText:{
+fontSize:14,
+fontFamily:'Roboto-Bold',
+color:defaultStyles.red}});
+
+
+
+module.exports=React.createClass({displayName:'exports',
+propTypes:{
+messages:React.PropTypes.array,
+onHashtagPress:React.PropTypes.func},
+
+getInitialState:function(){
+return {
+dataSource:new ListView.DataSource({
+rowHasChanged:function(r1,r2){return r1!==r2;}})};},
+
+
+
+renderTag:function(rowData){var _this=this;
+return (
+React.createElement(TouchableOpacity,{onPress:function(){_this.props.onHashtagPress(rowData);}},
+React.createElement(View,{style:Styles.hashtag},
+React.createElement(Text,{style:Styles.hashtagText},
+rowData))));},
+
+
+
+
+
+render:function(){
+return (
+React.createElement(View,{style:Styles.container},
+React.createElement(ListView,{
+horizontal:true,
+dataSource:this.state.dataSource.cloneWithRows(this.props.messages),
+renderRow:this.renderTag,
+showsHorizontalScrollIndicator:false,
+automaticallyAdjustContentInsets:false})));}});
 });
 __d('bunches/src/containers/hashtag.js',function(global, require, module, exports) {  'use strict';
 
@@ -109074,7 +109220,7 @@ justifyContent:'center',
 alignItems:'center'},
 
 textSend:{
-color:defaultStyles.blue,
+color:defaultStyles.red,
 fontWeight:'bold',
 fontFamily:'Roboto-Regular'}});
 
@@ -109212,7 +109358,7 @@ React.createElement(IconButton,{
 onPress:rowData.onPress,
 icon:rowData.icon,
 size:24,
-color:defaultStyles.blue})));},
+color:defaultStyles.red})));},
 
 
 
@@ -109423,7 +109569,7 @@ color:defaultStyles.medium},
 
 icon:{
 borderRadius:9,
-backgroundColor:defaultStyles.blue,
+backgroundColor:defaultStyles.red,
 width:18,
 height:18,
 justifyContent:'center',
@@ -109532,7 +109678,7 @@ borderRadius:4},
 
 icon:{
 borderRadius:9,
-backgroundColor:defaultStyles.blue,
+backgroundColor:defaultStyles.red,
 width:18,
 height:18,
 justifyContent:'center',
@@ -109658,7 +109804,7 @@ width:90,
 borderRadius:90,
 borderWidth:5,
 borderColor:defaultStyles.white,
-backgroundColor:defaultStyles.red,
+backgroundColor:defaultStyles.blue,
 opacity:0.7},
 
 iconViewRight:{
@@ -110006,7 +110152,7 @@ width:90,
 borderRadius:90,
 borderWidth:5,
 borderColor:defaultStyles.white,
-backgroundColor:defaultStyles.red,
+backgroundColor:defaultStyles.blue,
 opacity:0.7},
 
 iconViewRight:{
@@ -110227,7 +110373,7 @@ width:90,
 borderRadius:90,
 borderWidth:5,
 borderColor:defaultStyles.white,
-backgroundColor:defaultStyles.red,
+backgroundColor:defaultStyles.blue,
 opacity:0.7},
 
 iconViewTopRight:{
@@ -110618,7 +110764,7 @@ React.createElement(View,{style:Styles.buttonView},
 React.createElement(Button,{
 onPress:this.onCreateAccount,
 title:'CREATE ACCOUNT',
-color:defaultStyles.red})));},
+color:defaultStyles.blue})));},
 
 
 
@@ -111238,7 +111384,7 @@ color:defaultStyles.white},
 rowCount:{
 alignItems:'center',
 justifyContent:'center',
-backgroundColor:defaultStyles.blue,
+backgroundColor:defaultStyles.red,
 height:20,
 borderRadius:10,
 paddingLeft:8,
@@ -111268,7 +111414,7 @@ flex:1,
 fontSize:14,
 justifyContent:'center',
 fontFamily:'Roboto-Bold',
-color:defaultStyles.red}});
+color:defaultStyles.blue}});
 
 
 
@@ -111705,7 +111851,7 @@ React.createElement(View,null,
 React.createElement(Button,{
 onPress:this.onUpdateAccount,
 title:'SAVE',
-color:defaultStyles.red})));},
+color:defaultStyles.blue})));},
 
 
 
@@ -111802,7 +111948,7 @@ React.createElement(View,{style:Styles.buttonView},
 React.createElement(Button,{
 onPress:this.onlogOut,
 title:'LOG OUT',
-color:defaultStyles.blue}))));}});
+color:defaultStyles.red}))));}});
 });
 __d('bunches/src/containers/settingsPhotoAndroid.js',function(global, require, module, exports) {  'use strict';
 
@@ -111856,7 +112002,7 @@ width:90,
 borderRadius:90,
 borderWidth:5,
 borderColor:defaultStyles.white,
-backgroundColor:defaultStyles.red,
+backgroundColor:defaultStyles.blue,
 opacity:0.7},
 
 iconViewRight:{
@@ -112061,7 +112207,7 @@ width:90,
 borderRadius:90,
 borderWidth:5,
 borderColor:defaultStyles.white,
-backgroundColor:defaultStyles.red,
+backgroundColor:defaultStyles.blue,
 opacity:0.7},
 
 iconViewTopRight:{
@@ -112309,4 +112455,4 @@ React.createElement(View,{style:Styles.view}));}});
 });
 ;require("InitializeJavaScriptAppEngine");
 ;require("bunches/index.ios.js");
-__SSTOKENSTRING = "@generated SignedSource<<41b4fa8422773dc5a42e3ae2f98b1405>>";
+__SSTOKENSTRING = "@generated SignedSource<<88a5146136fa308ccae80fb321dcd21d>>";
