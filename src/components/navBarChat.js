@@ -31,7 +31,7 @@ var Styles = StyleSheet.create({
     height: defaultStyles.navBarHeight + defaultStyles.statBarHeightHeight,
     width: defaultStyles.bodyWidth,
     backgroundColor: defaultStyles.red,
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.3,
     shadowRadius: 2,
     shadowOffset: {
       width: 0,

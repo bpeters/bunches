@@ -104,6 +104,15 @@ module.exports = React.createClass({
       </View>
     );
   },
+  renderNotification: function () {
+    return (
+      <Notification
+        notification={this.props.store.pushNotification}
+        onPressNotificationClose={this.props.actions.clearPushNotification}
+        onPressNotification={this.onPressNotification}
+      />
+    );
+  },
   render: function() {
 
     var chatId = this.props.route.chatId || _.get(this.props.store.newChat, 'objectId');
@@ -184,6 +193,7 @@ module.exports = React.createClass({
             {shouldUpdateTitle ? this.renderTitleWarning() : null}
           </ChatContainer>
         </ChatBar>
+        {this.props.store.pushNotification ? this.renderNotification() : null}
       </View>
     );
   }

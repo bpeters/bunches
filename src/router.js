@@ -63,8 +63,9 @@ module.exports= React.createClass({
       setTimeout(() => {
         this.getHashtagChats(route.hashtag);
       }, 300);
-    } else if (route.name === 'chat' && !this.store.wait) {
+    } else if (route.name === 'chat' && !this.store.wait && route.chatId !== this.store.chat) {
       this.store.wait = true;
+      this.store.chat = route.chatId;
 
       setTimeout(() => {
         var notification = _.find(this.state.notifications, {id : route.chatId});
@@ -73,9 +74,13 @@ module.exports= React.createClass({
           this.clearNotifications(route.chatId);
         }
 
+        this.clearPushNotifications(route.chatId);
+
         this.store.wait = false;
       }, 300);
 
+    } else if (route.name !== 'chat') {
+      this.store.chat = null;
     }
 
     if (route.hasSideMenu) {

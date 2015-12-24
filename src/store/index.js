@@ -16,6 +16,7 @@ var ES = require('./elasticsearch');
 var Listen = require('./listen');
 var Storage = require('./storage');
 var Clearbit = require('./clearbit');
+var Notification = require('./notification');
 
 var {
   AlertIOS,
@@ -27,6 +28,7 @@ var storeDefaults = {
   bunch: null,
   bunches: [],
   chats: [],
+  chat: null,
   messages: [],
   newChat: null,
   loading: false,
@@ -39,6 +41,8 @@ var storeDefaults = {
   mentions: [],
   notifications: [],
   wait: false,
+  notificationId: null,
+  pushNotifications: [],
 };
 
 module.exports = {
@@ -76,6 +80,11 @@ module.exports = {
           this.listenToUserStatus();
           this.listenToTyper();
           this.addUserStatus(this.store.bunch.id, this.store.user.objectId);
+
+          Notification.requestPermissions();
+          
+          Notification.registerEvent(this.store.user.objectId, this.setInstallationId);
+          Notification.notificationEvent(this.handlePushNotifications);
 
           if (newUser) {
             this.createWelcomeChat(this.store.user, this.store.bunch);
@@ -275,6 +284,7 @@ module.exports = {
               this.getUserByHandle(handle)
                 .then((user) => {
                   if (user) {
+                    Notification.mention(this.store.user, user.id, options.message, chat);
                     return mention + '/?/?/?/' + user.id + '/?/?/?/';
                   } else {
                     return;
@@ -744,5 +754,24 @@ module.exports = {
       hashtag: this.store.hashtag,
       loading: false,
     });
+  },
+  setInstallationId: function (installationId) {
+    this.store.notificationId = installationId;
+  },
+  handlePushNotifications: function (chatId) {
+    this.store.pushNotifications.push(chatId);
+
+    this.setState({
+      pushNotifications: this.store.pushNotifications
+    });
+  },
+  clearPushNotifications: function (chatId) {
+    this.store.pushNotifications = _.filter(this.store.pushNotifications, chatId);
+
+    this.setState({
+      pushNotifications: this.store.pushNotifications
+    });
+
+    Notification.setBadge(this.store.notificationId, this.store.pushNotifications.length);
   },
 }
