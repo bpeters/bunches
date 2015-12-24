@@ -15,6 +15,28 @@ var statBarHeight = 44;
 var bodyHeight = window.height;
 var bodyWidth= window.width;
 
+
+// Platform specific styling
+var container; // bunch and chat container
+var chatCard; // chat card
+var statBar; // stat bar
+
+if(Platform.OS === 'ios'){
+  container = bodyHeight - chatBarHeight;
+} else {
+  container = bodyHeight - chatBarHeight - 25;
+  chatCard = {
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderColor: '#D8D7D3'
+  };
+  statBar = {
+    borderBottomWidth: 1,
+    borderBottomColor: '#D8D7D3'
+  }
+}
+
 module.exports = {
   window: window,
   navBarHeight: navBarHeight,
@@ -35,4 +57,7 @@ module.exports = {
   grayLight: '#D8D7D3',
   white: '#FFFFFF',
   background: '#F1F5F7',
+  chatCard: chatCard,
+  container: container,
+  statBar: statBar,
 };

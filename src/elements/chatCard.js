@@ -32,13 +32,13 @@ var Styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 8,
     marginLeft: 16,
-    borderRadius: 16, //doesn't work not sure why
     shadowOpacity: 0.3,
     shadowRadius: 2,
     shadowOffset: {
       width: 0,
       height: 2
     },
+
   },
   rowHeader: {
     backgroundColor: defaultStyles.white,
@@ -318,7 +318,7 @@ module.exports = React.createClass({
 
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => this.props.onPressRow(rowData)}>
-        <View style={Styles.row}>
+        <View style={[Styles.row,defaultStyles.chatCard]}>
           <Timer
             expiration={rowData.chat.attributes.expirationDate}
             created={rowData.chat.createdAt}

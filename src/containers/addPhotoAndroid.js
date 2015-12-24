@@ -95,8 +95,9 @@ module.exports = React.createClass({
     user: React.PropTypes.object,
   },
   getInitialState: function() {
+    var cameraOrientation = this.props.route.orientation === 'back' ? Camera.constants.Type.back : Camera.constants.Type.front;
     return {
-      cameraType: Camera.constants.Type.back,
+      cameraType: cameraOrientation,
       preview: false,
       photo: '',
     };

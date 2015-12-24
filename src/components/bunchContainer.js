@@ -22,7 +22,7 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
+    height: defaultStyles.container,
     paddingTop: defaultStyles.navBarHeight,
   },
   loadMore: {
