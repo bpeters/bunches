@@ -20,11 +20,22 @@ var bodyWidth= window.width;
 var container; // bunch and chat container
 var chatCard; // chat card
 var statBar; // stat bar
+var buttonView; // logout button on settings page
 
 if(Platform.OS === 'ios'){
   container = bodyHeight - chatBarHeight;
+  buttonView = {
+    position: 'absolute',
+    left: 16,
+    bottom: 16
+  };
 } else {
   container = bodyHeight - chatBarHeight - 25;
+  buttonView = {
+    position: 'absolute',
+    left: 16,
+    bottom: 31
+  };
   chatCard = {
     borderTopWidth: 1,
     borderLeftWidth: 1,
@@ -60,4 +71,5 @@ module.exports = {
   chatCard: chatCard,
   container: container,
   statBar: statBar,
+  buttonView: buttonView,
 };

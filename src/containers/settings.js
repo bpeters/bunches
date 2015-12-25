@@ -57,11 +57,6 @@ var Styles = StyleSheet.create({
     paddingLeft: 16,
     fontFamily: 'Roboto-Light',
   },
-  buttonView: {
-    position: 'absolute',
-    bottom: 16,
-    left: 16,
-  },
   static: {
     flex:1,
     flexDirection:'row',
@@ -334,7 +329,7 @@ module.exports = React.createClass({
               </View>
             </ScrollView>
           </View>
-          <View style={Styles.buttonView}>
+          <View style={defaultStyles.buttonView}>
             <Button
               onPress={this.onlogOut}
               title='LOG OUT'
