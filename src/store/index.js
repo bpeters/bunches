@@ -243,7 +243,7 @@ module.exports = {
       text: options.message,
     })
     .dispatch()
-    .then((chat) => {
+    .then((chat2user) => {
 
       message = {
         uid: user.objectId || user.id,
@@ -312,7 +312,7 @@ module.exports = {
 
       messenger.push(message);
 
-      if (chat.attributes.name === this.store.user.handle) {
+      if (chat.name === this.store.user.handle) {
         return this.checkForHashtags(options.message);
       } else {
         return;
