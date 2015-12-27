@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 var Button = require('../elements/button');
 var NavBarOnboard = require('../components/navBarOnboard');
+var Loading = require('../elements/loading');
 
 var defaultStyles = require('../styles');
 
@@ -15,17 +16,9 @@ var {
   StyleSheet,
   Text,
   ScrollView,
-  AlertIOS,
+  Alert,
   Platform,
 } = React;
-
-var Loading;
-
-if (Platform.OS === 'android') {
-  Loading = require('../elements/loadingAndroid');
-} else {
-  Loading = require('../elements/loadingIOS');
-}
 
 var Styles = StyleSheet.create({
   view: {
@@ -39,6 +32,7 @@ var Styles = StyleSheet.create({
   inputView: {
     left: 16,
     top: defaultStyles.navBarHeight + 16,
+    height: 400,
   },
   input: {
     width: defaultStyles.bodyWidth - 16 - 16,
@@ -151,17 +145,16 @@ module.exports = React.createClass({
     );
   },
   render: function() {
-    if (Platform.OS === 'ios') {
-      if (_.get(this.state.error, 'message')) {
-        AlertIOS.alert(
-          'Failed to Create Account',
-          _.get(this.state.error, 'message'),
-          [
-            {text: 'Try Again', onPress: () => this.setState({error: null})},
-          ]
-        );
-      }
+    if (_.get(this.state.error, 'message')) {
+      Alert.alert(
+        'Failed to Create Account',
+        _.get(this.state.error, 'message'),
+        [
+          {text: 'Try Again', onPress: () => this.setState({error: null})},
+        ]
+      );
     }
+    
 
     return (
       <View style={Styles.view}>

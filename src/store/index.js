@@ -19,7 +19,7 @@ var Clearbit = require('./clearbit');
 var Notification = require('./notification');
 
 var {
-  AlertIOS,
+  Alert,
   Platform,
 } = React;
 
@@ -143,13 +143,11 @@ module.exports = {
       default:
         console.log(err);
 
-        if (Platform.OS === 'ios') {
-          AlertIOS.alert(
-            title || 'Error',
-            err.message,
-            [{text: 'Try Again'}]
-          );
-        }
+        Alert.alert(
+          title || 'Error',
+          err.message,
+          [{text: 'Try Again'}]
+        );
 
         this.setState({
           loading: false,
@@ -254,7 +252,7 @@ module.exports = {
       text: options.message,
     })
     .dispatch()
-    .then((chat) => {
+    .then((chat2user) => {
 
       message = {
         uid: user.objectId || user.id,
@@ -324,7 +322,7 @@ module.exports = {
 
       messenger.push(message);
 
-      if (chat.attributes.name === this.store.user.handle) {
+      if (chat.name === this.store.user.handle) {
         return this.checkForHashtags(options.message);
       } else {
         return;

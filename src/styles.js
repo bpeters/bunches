@@ -3,7 +3,10 @@
 var React = require('react-native');
 var Dimensions = require('Dimensions');
 
-var {StyleSheet} = React;
+var {
+  StyleSheet,
+  Platform,
+} = React;
 
 var window = Dimensions.get('window');
 var navBarHeight = 56;
@@ -11,6 +14,39 @@ var chatBarHeight = 56;
 var statBarHeight = 44;
 var bodyHeight = window.height;
 var bodyWidth= window.width;
+
+
+// Platform specific styling
+var container; // bunch and chat container
+var chatCard; // chat card
+var statBar; // stat bar
+var buttonView; // logout button on settings page
+
+if(Platform.OS === 'ios'){
+  container = bodyHeight - chatBarHeight;
+  buttonView = {
+    position: 'absolute',
+    left: 16,
+    bottom: 16
+  };
+} else {
+  container = bodyHeight - chatBarHeight - 25;
+  buttonView = {
+    position: 'absolute',
+    left: 16,
+    bottom: 31
+  };
+  chatCard = {
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderColor: '#D8D7D3'
+  };
+  statBar = {
+    borderBottomWidth: 1,
+    borderBottomColor: '#D8D7D3'
+  }
+}
 
 module.exports = {
   window: window,
@@ -32,4 +68,8 @@ module.exports = {
   grayLight: '#D8D7D3',
   white: '#FFFFFF',
   background: '#F1F5F7',
+  chatCard: chatCard,
+  container: container,
+  statBar: statBar,
+  buttonView: buttonView,
 };

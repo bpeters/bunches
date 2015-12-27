@@ -31,6 +31,7 @@ var Styles = StyleSheet.create({
     height: 16,
     width: 16,
     marginRight: 5,
+    borderRadius: 8,
   },
   iconFill: {
     height: 16,
@@ -44,7 +45,6 @@ var Styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 10,
   },
   score: {
     color: defaultStyles.red,
@@ -70,14 +70,16 @@ module.exports = React.createClass({
     var time = hours + ':' + minutes;
 
     return (
-      <View style={Styles.statBar}>
+      <View style={[Styles.statBar,defaultStyles.statBar]}>
         <View style={Styles.element}>
-          <Icon
-            name='fontawesome|bolt'
-            size={12}
-            color={defaultStyles.white}
-            style={Styles.iconFill}
-          />
+          <View style={Styles.iconFill}>
+            <Icon
+              name='fontawesome|bolt'
+              size={12}
+              color={defaultStyles.white}
+              style={Styles.icon}
+            />
+            </View>
           <Text style={Styles.score}>
             {this.props.score}
           </Text>

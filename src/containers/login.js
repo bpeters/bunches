@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 var Button = require('../elements/button');
 var NavBarOnboard = require('../components/navBarOnboard');
+var Loading = require('../elements/loading');
 
 var defaultStyles = require('../styles');
 
@@ -15,18 +16,9 @@ var {
   StyleSheet,
   Text,
   ScrollView,
-  AlertIOS,
   Platform,
   TouchableOpacity,
 } = React;
-
-var Loading;
-
-if (Platform.OS === 'android') {
-  Loading = require('../elements/loadingAndroid');
-} else {
-  Loading = require('../elements/loadingIOS');
-}
 
 var Styles = StyleSheet.create({
   view: {
@@ -37,6 +29,7 @@ var Styles = StyleSheet.create({
   inputView: {
     left: 16,
     top: defaultStyles.navBarHeight + 16,
+    height: 300,
   },
   input: {
     width: defaultStyles.bodyWidth - 16 - 16,

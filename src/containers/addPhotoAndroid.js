@@ -95,10 +95,12 @@ module.exports = React.createClass({
     user: React.PropTypes.object,
   },
   getInitialState: function() {
+    var cameraOrientation = this.props.route.orientation === 'back' ? Camera.constants.Type.back : Camera.constants.Type.front;
     return {
-      cameraType: Camera.constants.Type.back,
+      cameraType: cameraOrientation,
       preview: false,
       photo: '',
+      message: '',
     };
   },
   onPressClose: function () {
@@ -122,7 +124,7 @@ module.exports = React.createClass({
       preview: false
     });
   },
-  onComplete: function () {
+  onNewChat: function () {
     var Chat = require('./chat');
 
     this.props.actions.createChat(this.state.message, this.state.photo);
@@ -135,13 +137,16 @@ module.exports = React.createClass({
       component: Chat,
       hasSideMenu: true,
       newChat: {
-        name: this.state.message,
+        name: null,
         expirationDate: expirationDate,
         createdAt: Date.now(),
-        message: this.state.message,
-        photo: 'data:image/jpeg;base64,' + this.state.photo,
+        photo: this.state.photo,
       },
     });
+  },
+  onNewMessage: function () {
+    this.props.actions.createImageMessage(this.props.route.chat, this.state.photo);
+    this.props.navigator.pop();
   },
   renderPreview: function () {
     return (
@@ -161,7 +166,7 @@ module.exports = React.createClass({
         </View>
         <View style={Styles.iconViewRight}>
           <IconButton
-            onPress={this.onComplete}
+            onPress={this.props.route.chat ? this.onNewMessage : this.onNewChat}
             icon='material|check'
             size={30}
           />

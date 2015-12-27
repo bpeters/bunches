@@ -14,7 +14,7 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    width: defaultStyles.bodyWidth - 32,
+    width: defaultStyles.bodyWidth - 34,
     backgroundColor: defaultStyles.white,
     paddingTop: 12,
     paddingLeft: 16,
