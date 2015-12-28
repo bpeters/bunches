@@ -150,7 +150,7 @@ module.exports = React.createClass({
           source={require('../assets/empty.png')}
         />
         <Text style={Styles.title}>
-          ABSOLUTETLY NOTHING...
+          ABSOLUTELY NOTHING...
         </Text>
         <Text style={Styles.text}>
           Keep calm social jelly, start a conversation.

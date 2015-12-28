@@ -4,13 +4,13 @@ var React = require('react-native');
 var _ = require('lodash');
 var moment = require('moment');
 
-var Avatar = require('./avatar');
-var Timer = require('./timer');
-var Counter = require('./counter');
-var PopImage = require('./popImage');
-var Message = require('./message');
-var StatBar = require('./statBar');
-var ChatHashtag = require('./chatHashtag');
+var Avatar = require('../elements/avatar');
+var Timer = require('../elements/timer');
+var Counter = require('../elements/counter');
+var PopImage = require('../elements/popImage');
+var Message = require('../elements/message');
+var StatBar = require('../elements/statBar');
+var ChatHashtag = require('../elements/chatHashtag');
 
 var {
   Icon,
@@ -38,7 +38,7 @@ var Styles = StyleSheet.create({
       width: 0,
       height: 2
     },
-
+    elevation: 8,
   },
   rowHeader: {
     backgroundColor: defaultStyles.white,
@@ -75,7 +75,6 @@ var Styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Roboto-Regular',
     color: defaultStyles.blue,
-    width: 150,
   },
   chatName: {
     fontSize: 14,
@@ -305,7 +304,7 @@ module.exports = React.createClass({
         mostRecentMessages.push(message);
 
         var words = message.message.split(' ');
-        var message = _.map(words, (word, i) => {
+        var msg = _.map(words, (word, i) => {
           if (_.startsWith(word, '#')) {
             hashtags.push(word);
           }
