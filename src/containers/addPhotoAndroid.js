@@ -188,7 +188,7 @@ module.exports = React.createClass({
         </TouchableOpacity>
         <View style={Styles.iconViewLeft}>
           <IconButton
-            onPress={this.props.onPressClose}
+            onPress={this.onPressClose}
             icon='material|close'
             size={30}
           />
