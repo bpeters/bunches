@@ -9,6 +9,8 @@ var {
   StyleSheet,
   TouchableOpacity,
   LinkingIOS,
+  Platform,
+  IntentAndroid,
 } = React;
 
 var defaultStyles = require('../styles');
@@ -52,7 +54,17 @@ module.exports = React.createClass({
     onMentionPress: React.PropTypes.func,
   },
   onPressLink: function (word) {
-    LinkingIOS.openURL(word);
+    var url;
+    if (_.startsWith(word, 'http://') || _.startsWith(word, 'https://')) {
+      url = word;
+    } else {
+      url = 'http://' + word;
+    }
+    if(Platform.OS === 'ios'){
+      LinkingIOS.openURL(url);
+    } else {
+      IntentAndroid.openURL(url)
+    }
   },
   render: function() {
     if (_.startsWith(this.props.message, '/!/!/!/')) {
