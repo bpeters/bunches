@@ -175,6 +175,7 @@ module.exports = React.createClass({
     squashMessages: React.PropTypes.func,
     onHashtagPress: React.PropTypes.func,
     onMentionPress: React.PropTypes.func,
+    removeExpiredChats: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -282,6 +283,12 @@ module.exports = React.createClass({
       />
     )
   },
+  countdown: function (expiration, chatId){
+    var timeLeft = moment(expiration) - moment();
+    setTimeout(() => {
+      this.props.removeExpiredChats(chatId);
+    }, timeLeft - 5000);
+  },
   render: function() {
     var rowData = this.props.rowData;
     var user = rowData.chat.get('createdBy');
@@ -315,6 +322,8 @@ module.exports = React.createClass({
         onlineStatus = message.online;
       }
     });
+
+    this.countdown(moment(rowData.chat.attributes.expirationDate).toDate(), rowData.id);
 
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => this.props.onPressRow(rowData)}>
