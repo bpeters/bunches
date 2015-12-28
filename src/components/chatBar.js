@@ -101,6 +101,11 @@ module.exports = React.createClass({
       }),
     };
   },
+  componentWillUnmount: function (){
+    if (this.props.forChat) {
+      this.props.deleteTyper(this.props.chat.objectId || this.props.chat.id);
+    }
+  },
   inputFocused: function (refName) {
     this.refs.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
       React.findNodeHandle(this.refs[refName]),
