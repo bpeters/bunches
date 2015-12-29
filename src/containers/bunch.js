@@ -82,6 +82,8 @@ module.exports = React.createClass({
   render: function () {
     var title = _.get(this.props.store.bunch, 'attributes.name');
 
+    var emailVerified = _.get(this.props.store.user, 'emailVerified');
+
     return (
       <View style={Styles.body}>
         <ChatBar
@@ -105,6 +107,8 @@ module.exports = React.createClass({
             store={this.props.store}
             squashMessages={this.props.actions.squashMessages}
             removeExpiredChats={this.props.actions.removeExpiredChats}
+            title={title}
+            verified={emailVerified}
           >
             <NavBar
               title={title}

@@ -51,8 +51,9 @@ module.exports = {
   initStore: function (user, newUser) {
     if (user) {
 
+      user.emailVerified = Parse.User.current().get('emailVerified');
+
       this.store.user = user;
-      console.log(user);
 
       this.setState({
         loading: true,
@@ -243,7 +244,6 @@ module.exports = {
     var url = config.firebase.url + '/bunch/' + bunch.id + '/chat/' + (chat.objectId || chat.id);
     var messenger = new Firebase(url);
     var user = this.store.user;
-    console.log(user);
 
     var message;
 

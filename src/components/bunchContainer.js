@@ -64,6 +64,8 @@ module.exports = React.createClass({
     store: React.PropTypes.object,
     squashMessages: React.PropTypes.func,
     removeExpiredChats: React.PropTypes.func,
+    title: React.PropTypes.string,
+    verified: React.PropTypes.bool,
   },
   getInitialState: function() {
     return {
@@ -160,16 +162,38 @@ module.exports = React.createClass({
       </View>
     );
   },
+  renderNotVerified: function () {
+    return (
+      <View>
+        <Image
+          style={Styles.image}
+          source={require('../assets/jellycop.png')}
+        />
+        <Text style={Styles.title}>
+          YOU HAVEN'T BEEN VERIFIED...
+        </Text>
+        <Text style={Styles.text}>
+          Jelly Cop says "Verify your email to chat!"
+        </Text>
+      </View>
+    );
+  },
   render: function() {
-    var showEmpty;
+    var showEmpty, notVerified;
 
     if (_.isEmpty(this.props.store.messages) && !this.props.store.loading) {
       showEmpty = true;
     }
 
+    if(!this.props.verified && !this.props.store.loading){
+      if(this.props.title !== 'Global' && this.props.title !== 'Feedback'){
+        notVerified = true;
+      }
+    }
+
     return (
       <View style={Styles.container}>
-        {showEmpty ? this.renderEmpty() : this.renderList()}
+        {notVerified ? this.renderNotVerified() : (showEmpty ? this.renderEmpty() : this.renderList())}
         {this.props.children}
       </View>
     );
