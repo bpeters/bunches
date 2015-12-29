@@ -559,9 +559,7 @@ module.exports = {
   resetPassword: function (email) {
     Parse.User.requestPasswordReset(email ? email.toLowerCase() : '', {
       success: () => {
-        if (Platform.OS === 'ios') {
-          AlertIOS.alert('Reset password link sent');
-        }
+        Alert.alert('Reset password link sent');
       },
       error: (err) => {
         this.handleParseError(err, 'Failed to reset password');

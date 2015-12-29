@@ -14,6 +14,7 @@ var Splash = require('./elements/splash');
 var {
   View,
   Navigator,
+  Platform,
 } = React;
 
 module.exports= React.createClass({
@@ -104,6 +105,12 @@ module.exports= React.createClass({
     }
   },
   configureScene: function (route) {
+    var transition;
+    if(Platform.OS === 'ios'){
+      transition = Navigator.SceneConfigs.VerticalUpSwipeJump;
+    } else {
+      transition = Navigator.SceneConfigs.FloatFromBottomAndroid;
+    }
     if (route.name) {
       switch (route.name) {
         case 'enlarge photo':
@@ -112,7 +119,7 @@ module.exports= React.createClass({
           return Navigator.SceneConfigs.FloatFromRight;
         case 'add photo':
         case 'photo preview':
-          return Navigator.SceneConfigs.VerticalUpSwipeJump;
+          return transition;
         default:
           return Navigator.SceneConfigs.FloatFromRight;
       }

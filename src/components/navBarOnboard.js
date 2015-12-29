@@ -31,6 +31,7 @@ var Styles = StyleSheet.create({
       width: 0,
       height: 2
     },
+    elevation: 5,
   },
   left: {
     flex: 1,

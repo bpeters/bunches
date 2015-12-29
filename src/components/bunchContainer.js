@@ -63,6 +63,7 @@ module.exports = React.createClass({
     navigator: React.PropTypes.object,
     store: React.PropTypes.object,
     squashMessages: React.PropTypes.func,
+    removeExpiredChats: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -122,6 +123,7 @@ module.exports = React.createClass({
         squashMessages={this.props.squashMessages}
         onHashtagPress={this.onHashtagPress}
         onMentionPress={this.onMentionPress}
+        removeExpiredChats={this.props.removeExpiredChats}
       />
     );
   },
@@ -150,7 +152,7 @@ module.exports = React.createClass({
           source={require('../assets/empty.png')}
         />
         <Text style={Styles.title}>
-          ABSOLUTETLY NOTHING...
+          ABSOLUTELY NOTHING...
         </Text>
         <Text style={Styles.text}>
           Keep calm social jelly, start a conversation.

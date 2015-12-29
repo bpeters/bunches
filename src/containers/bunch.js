@@ -104,6 +104,7 @@ module.exports = React.createClass({
             navigator={this.props.navigator}
             store={this.props.store}
             squashMessages={this.props.actions.squashMessages}
+            removeExpiredChats={this.props.actions.removeExpiredChats}
           >
             <NavBar
               title={title}
