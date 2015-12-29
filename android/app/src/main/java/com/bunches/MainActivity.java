@@ -18,6 +18,9 @@ import com.lwansbrough.ReactCamera.ReactCameraPackage;
 // Added for CodePush
 import com.microsoft.codepush.react.CodePush;
 
+// Added for Camera Roll
+import fr.bamlab.rncameraroll.CameraRollPackage;
+
 
 // Added for Icons
 import com.smixx.reactnativeicons.ReactNativeIcons;  // <--- import
@@ -48,6 +51,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
                 .addPackage(new ReactCameraPackage(this))
                 .addPackage(new ReactNativeIcons())
                 .addPackage(codePush.getReactPackage())
+                .addPackage(new CameraRollPackage())
                 .setUseDeveloperSupport(BuildConfig.DEBUG)
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();

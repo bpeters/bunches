@@ -14,11 +14,18 @@ var {
   ScrollView,
   Text,
   ListView,
+  Platform,
 } = React;
 
 var IconButton = require('../elements/iconButton');
 var MentionContainer = require('./mentionContainer');
-var CameraRollContainer = require('./cameraRollContainer');
+
+var CameraRollContainer;
+if(Platform.OS === 'ios'){
+  CameraRollContainer = require('./cameraRollContainerIOS');
+} else {
+  CameraRollContainer = require('./cameraRollContainerAndroid');
+}
 
 var Styles = StyleSheet.create({
   scroll: {
