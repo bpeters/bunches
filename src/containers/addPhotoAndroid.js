@@ -135,7 +135,7 @@ module.exports = React.createClass({
     this.props.navigator.replace({
       name: 'chat',
       component: Chat,
-      hasSideMenu: true,
+      hasSideMenu: false,
       newChat: {
         name: null,
         expirationDate: expirationDate,
