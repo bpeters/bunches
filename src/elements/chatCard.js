@@ -38,7 +38,7 @@ var Styles = StyleSheet.create({
       width: 0,
       height: 2
     },
-    elevation: 8,
+    elevation: 5,
   },
   rowHeader: {
     backgroundColor: defaultStyles.white,
