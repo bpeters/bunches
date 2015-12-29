@@ -155,6 +155,9 @@ module.exports = {
     }
   },
   uploadImage: function (photo) {
+    if(_.startsWith(photo,'data:image/jpeg;base64,')) {
+      photo = photo.replace('data:image/jpeg;base64,','');
+    }
     var photo64 = new Parse.File('image.jpeg', { base64: photo});
 
     return photo64.save().then((image) => {

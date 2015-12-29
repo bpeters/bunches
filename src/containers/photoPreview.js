@@ -116,7 +116,7 @@ module.exports = React.createClass({
         <View style={Styles.container}>
           <Image
             source={{
-              uri: this.props.route.photo,
+              uri: 'data:image/jpeg;base64,' + this.props.route.photo,
             }}
             style={Styles.preview}
           />

@@ -76,7 +76,8 @@ module.exports = React.createClass({
   },
   onPressPhoto: function (rowData) {
     var image = rowData.uri;
-    this.props.onPressCameraRollPhoto('data:image/jpeg;base64,' + image)
+    //console.log(rowData);
+    this.props.onPressCameraRollPhoto(image)
   },
   storeImages: function (data) {
     var assets = data.edges;
