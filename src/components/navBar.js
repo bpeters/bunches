@@ -48,10 +48,11 @@ var Styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   indicator: {
-    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'transparent',
-    top: defaultStyles.navBarHeight - 24 - 16,
     right: 16,
+    height: defaultStyles.navBarHeight,
   },
   title: {
     fontSize: 20,

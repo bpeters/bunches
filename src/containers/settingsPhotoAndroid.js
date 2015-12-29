@@ -29,11 +29,7 @@ var Styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000000',
-    borderWidth:1,
-    borderColor:'#000000'
+    backgroundColor: defaultStyles.dark,
   },
   camera: {
     position: 'absolute',
@@ -206,7 +202,7 @@ module.exports = React.createClass({
             {images}
           </View>
         </ScrollView>
-        <View style={Styles.iconViewTopLeft}>
+        <View style={Styles.iconViewLeft}>
           <IconButton
             onPress={this.onCameraRoll}
             icon='material|arrow-left'

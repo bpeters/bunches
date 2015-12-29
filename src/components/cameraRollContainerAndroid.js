@@ -43,9 +43,15 @@ var Styles = StyleSheet.create({
     borderColor: defaultStyles.medium,
     borderRadius: 4,
   },
-  icon: {
+  iconView: {
     borderRadius: 9,
     backgroundColor: defaultStyles.red,
+    width: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  icon: {
     width: 18,
     height: 18,
     justifyContent: 'center',
@@ -76,7 +82,6 @@ module.exports = React.createClass({
   },
   onPressPhoto: function (rowData) {
     var image = rowData.uri;
-    //console.log(rowData);
     this.props.onPressCameraRollPhoto(image)
   },
   storeImages: function (data) {
@@ -106,12 +111,14 @@ module.exports = React.createClass({
     return (
       <View style={Styles.row}>
         <TouchableOpacity onPress={() => this.props.onPressCameraRollClose()}>
-          <Icon
-            name='material|close'
-            size={14}
-            color={defaultStyles.white}
-            style={Styles.icon}
-          />
+          <View style={Styles.iconView}>
+            <Icon
+              name='material|close'
+              size={14}
+              color={defaultStyles.white}
+              style={Styles.icon}
+            />
+          </View>
         </TouchableOpacity>
       </View>
     );
