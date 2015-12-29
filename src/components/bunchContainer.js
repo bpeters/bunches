@@ -64,7 +64,6 @@ module.exports = React.createClass({
     store: React.PropTypes.object,
     squashMessages: React.PropTypes.func,
     removeExpiredChats: React.PropTypes.func,
-    title: React.PropTypes.string,
     verified: React.PropTypes.bool,
   },
   getInitialState: function() {
@@ -185,15 +184,9 @@ module.exports = React.createClass({
       showEmpty = true;
     }
 
-    if(!this.props.verified && !this.props.store.loading){
-      if(this.props.title !== 'Global' && this.props.title !== 'Feedback'){
-        notVerified = true;
-      }
-    }
-
     return (
       <View style={Styles.container}>
-        {notVerified ? this.renderNotVerified() : (showEmpty ? this.renderEmpty() : this.renderList())}
+        {this.props.verified ? (showEmpty ? this.renderEmpty() : this.renderList()) : this.renderNotVerified()}
         {this.props.children}
       </View>
     );
