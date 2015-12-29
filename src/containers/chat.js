@@ -115,9 +115,6 @@ module.exports = React.createClass({
   },
   render: function() {
 
-    var a = this.props.navigator.getCurrentRoutes();
-    console.log(a);
-
     var chatId = this.props.route.chatId || _.get(this.props.store.newChat, 'objectId');
 
     var data = _.find(this.props.store.messages, {'id' : chatId}) || {
