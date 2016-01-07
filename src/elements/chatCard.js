@@ -275,10 +275,12 @@ module.exports = React.createClass({
 
     return msgs;
   },
-  renderHashtags: function(messages) {
+  renderHashtags: function(hashtags) {
+    var deduped = _.uniq(hashtags);
+
     return (
       <ChatHashtag
-        messages={messages}
+        hashtags={deduped}
         onHashtagPress={this.props.onHashtagPress}
       />
     )

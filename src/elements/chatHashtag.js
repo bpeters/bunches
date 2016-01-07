@@ -36,7 +36,7 @@ var Styles = StyleSheet.create({
 
 module.exports = React.createClass({
   propTypes: {
-    messages: React.PropTypes.array,
+    hashtags: React.PropTypes.array,
     onHashtagPress: React.PropTypes.func,
   },
   getInitialState: function() {
@@ -62,7 +62,7 @@ module.exports = React.createClass({
       <View style={Styles.container}>
         <ListView
           horizontal={true}
-          dataSource={this.state.dataSource.cloneWithRows(this.props.messages)}
+          dataSource={this.state.dataSource.cloneWithRows(this.props.hashtags)}
           renderRow={this.renderTag}
           showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
