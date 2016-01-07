@@ -80,4 +80,7 @@ dependencies {
     compile project(':react-native-icons')
     compile project(':com.lwansbrough.ReactCamera')
     compile project(':react-native-code-push')
+
+    compile project(":rn-camera-roll")
+    compile fileTree(dir: "node_modules/rn-camera-roll/android/libs", include: ["*.jar"])
 }

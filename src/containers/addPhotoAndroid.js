@@ -2,6 +2,7 @@
 
 var React = require('react-native');
 var moment = require('moment');
+var _ = require('lodash');
 
 var {
   StyleSheet,
@@ -10,8 +11,8 @@ var {
   Image,
   TouchableOpacity,
   TouchableHighlight,
-  CameraRoll,
-  TextInput
+  TextInput,
+  ScrollView,
 } = React;
 
 var Camera = require('react-native-camera');
@@ -20,17 +21,15 @@ var IconButton = require('../elements/iconButton');
 
 var defaultStyles = require('../styles');
 
+var CameraRoll = require('rn-camera-roll').default;
+
 var Styles = StyleSheet.create({
   overall: {
     flex: 1,
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000000',
-    borderWidth:1,
-    borderColor:'#000000'
+    backgroundColor: defaultStyles.dark,
   },
   camera: {
     position: 'absolute',
@@ -79,6 +78,37 @@ var Styles = StyleSheet.create({
     opacity: 0.8,
     borderRadius: 28,
   },
+  iconViewBottomLeft: {
+    position:'absolute',
+    bottom: 16,
+    left: 16,
+    width: 56,
+    height: 56,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: defaultStyles.dark,
+    opacity: 0.8,
+    borderRadius: 28,
+  },
+  cameraRoll: {
+    marginTop: 56 + 16,
+    flex: 1,
+  },
+  imageGrid: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center'
+  },
+  image: {
+    width: 100,
+    height: 100,
+    margin: 10,
+    borderWidth: 2,
+    borderColor: defaultStyles.medium,
+    borderRadius: 4,
+  },
   preview: {
     width: defaultStyles.bodyWidth,
     height: defaultStyles.bodyHeight,
@@ -99,8 +129,10 @@ module.exports = React.createClass({
     return {
       cameraType: cameraOrientation,
       preview: false,
+      cameraRoll: false,
       photo: '',
       message: '',
+      images: [],
     };
   },
   onPressClose: function () {
@@ -147,6 +179,60 @@ module.exports = React.createClass({
   onNewMessage: function () {
     this.props.actions.createImageMessage(this.props.route.chat, this.state.photo);
     this.props.navigator.pop();
+  },
+  onImagePress: function (image) {
+    this.setState({photo:image,preview:true});
+  },
+  storeImages: function (data) {
+    var assets = data.edges;
+    var images = assets.map( asset => asset.node.image );
+
+    this.setState({
+      images: images,
+    });
+  },
+  logImageError: function (err) {
+    console.log(err);
+  },
+  onCameraRoll: function() {
+    if (!this.state.cameraRoll) {
+      var fetchParams = {
+        first: 25,
+      };
+      CameraRoll.getPhotos(fetchParams, this.storeImages, this.logImageError);
+    }
+    this.setState({
+      cameraRoll: !this.state.cameraRoll
+    });
+  },
+  renderCameraRoll: function () {
+    var images = _.map(this.state.images, (image, i) => {
+      return (
+        <TouchableOpacity key={i} onPress={ () => this.onImagePress(image.uri)} >
+          <Image
+            style={Styles.image}
+            source={{ uri: 'data:image/jpeg;base64,' + image.uri}}
+          />
+        </TouchableOpacity>
+      );
+    });
+
+    return (
+      <View style={Styles.container}>
+        <ScrollView style={Styles.cameraRoll}>
+          <View style={Styles.imageGrid}>
+            {images}
+          </View>
+        </ScrollView>
+        <View style={Styles.iconViewLeft}>
+          <IconButton
+            onPress={this.onCameraRoll}
+            icon='material|arrow-left'
+            size={30}
+          />
+        </View>
+      </View>
+    );
   },
   renderPreview: function () {
     return (
@@ -200,13 +286,20 @@ module.exports = React.createClass({
             size={30}
           />
         </View>
+        <View style={Styles.iconViewBottomLeft}>
+          <IconButton
+            onPress={this.onCameraRoll}
+            icon='ion|images'
+            size={30}
+          />
+        </View>
       </View>
     );
   },
   render: function() {
     return (
       <View style={Styles.overall}>
-        {this.state.preview ? this.renderPreview() : this.renderCamera()}
+        {this.state.preview ? this.renderPreview() : (this.state.cameraRoll ? this.renderCameraRoll() : this.renderCamera())}
       </View>
     );
   }

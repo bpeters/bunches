@@ -16,9 +16,9 @@ var {
   ListView,
   StyleSheet,
   Image,
-  CameraRoll,
-  NativeModules,
 } = React;
+
+var CameraRoll = require('rn-camera-roll').default;
 
 var Styles = StyleSheet.create({
   container: {
@@ -43,9 +43,15 @@ var Styles = StyleSheet.create({
     borderColor: defaultStyles.medium,
     borderRadius: 4,
   },
-  icon: {
+  iconView: {
     borderRadius: 9,
     backgroundColor: defaultStyles.red,
+    width: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  icon: {
     width: 18,
     height: 18,
     justifyContent: 'center',
@@ -74,6 +80,10 @@ module.exports = React.createClass({
 
     CameraRoll.getPhotos(fetchParams, this.storeImages, this.logImageError);
   },
+  onPressPhoto: function (rowData) {
+    var image = rowData.uri;
+    this.props.onPressCameraRollPhoto(image)
+  },
   storeImages: function (data) {
     var assets = data.edges;
     var images = assets.map( asset => asset.node.image );
@@ -85,20 +95,13 @@ module.exports = React.createClass({
   logImageError: function (err) {
     console.log(err);
   },
-  onPressPhoto: function (rowData) {
-    var image = rowData.uri.replace('file://', '');
-
-    NativeModules.ReadImageData.readImage(image, (image64) => {
-      this.props.onPressCameraRollPhoto('data:image/jpeg;base64,' + image64)
-    });
-  },
   renderChatRow: function(rowData) {
     return (
       <TouchableOpacity onPress={() => {this.onPressPhoto(rowData)}}>
         <View style={Styles.row}>
           <Image
             style={Styles.image}
-            source={{ uri: rowData.uri }}
+            source={{ uri: 'data:image/jpeg;base64,' + rowData.uri}}
           />
         </View>
       </TouchableOpacity>
@@ -108,12 +111,14 @@ module.exports = React.createClass({
     return (
       <View style={Styles.row}>
         <TouchableOpacity onPress={() => this.props.onPressCameraRollClose()}>
-          <Icon
-            name='material|close'
-            size={14}
-            color={defaultStyles.white}
-            style={Styles.icon}
-          />
+          <View style={Styles.iconView}>
+            <Icon
+              name='material|close'
+              size={14}
+              color={defaultStyles.white}
+              style={Styles.icon}
+            />
+          </View>
         </TouchableOpacity>
       </View>
     );
