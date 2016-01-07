@@ -82,6 +82,16 @@ module.exports = React.createClass({
   render: function () {
     var title = _.get(this.props.store.bunch, 'attributes.name');
 
+    var emailVerified = _.get(this.props.store.user, 'emailVerified');
+
+    var verified = true;
+
+    if(emailVerified === false && !this.props.store.loading){
+      if(title !== 'Global' && title !== 'Feedback'){
+        verified = false;
+      }
+    }
+
     return (
       <View style={Styles.body}>
         <ChatBar
@@ -99,12 +109,14 @@ module.exports = React.createClass({
           store={this.props.store}
           getUsers={this.props.actions.getUsers}
           clearMentions={this.props.actions.clearMentions}
+          verified={verified}
         >
           <BunchContainer
             navigator={this.props.navigator}
             store={this.props.store}
             squashMessages={this.props.actions.squashMessages}
             removeExpiredChats={this.props.actions.removeExpiredChats}
+            verified={verified}
           >
             <NavBar
               title={title}

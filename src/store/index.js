@@ -51,6 +51,8 @@ module.exports = {
   initStore: function (user, newUser) {
     if (user) {
 
+      user.emailVerified = Parse.User.current().get('emailVerified');
+
       this.store.user = user;
 
       this.setState({
@@ -552,7 +554,7 @@ module.exports = {
     Storage.clean(this.store.messages)
       .then(() => {
         Parse.User.logOut();
-        this.deleteUserStatus();
+        this.deleteUserStatus(this.store.bunch.id, this.store.user.objectId);
         this.tearDownStore();
       });
   },

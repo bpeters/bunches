@@ -90,6 +90,7 @@ module.exports = React.createClass({
     addTyper: React.PropTypes.func,
     deleteTyper: React.PropTypes.func,
     forChat: React.PropTypes.bool,
+    verified: React.PropTypes.bool,
   },
   getInitialState: function () {
     return {
@@ -337,6 +338,16 @@ module.exports = React.createClass({
     );
   },
   render: function() {
+
+    var chatBar;
+
+    if(this.props.verified){
+      chatBar = 
+      <View ref='chat' style={Styles.body}>
+        {this.state.inputShow ? this.renderChat() : this.renderIcons()}
+      </View>;
+    }
+    
     return (
       <ScrollView
         ref='scrollView'
@@ -345,11 +356,9 @@ module.exports = React.createClass({
         scrollEnabled={false}
       >
         {this.props.children}
-        {this.state.mention ? this.renderMentions() : null}
-        {this.state.cameraRoll ? this.renderCameraRoll() : null}
-        <View ref='chat' style={Styles.body}>
-          {this.state.inputShow ? this.renderChat() : this.renderIcons()}
-        </View>
+        {this.props.verified ? (this.state.mention ? this.renderMentions() : null) : null}
+        {this.props.verified ? (this.state.cameraRoll ? this.renderCameraRoll() : null) : null}
+        {chatBar}
       </ScrollView>
     );
   }
