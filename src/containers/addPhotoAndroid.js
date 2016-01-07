@@ -131,17 +131,17 @@ module.exports = React.createClass({
   },
   getButtonSize: function(e) {
     this.setState({
-        progressSize: e.nativeEvent.layout.width - 10,
+      progressSize: e.nativeEvent.layout.width - 10,
     });
   },
   getProgressSize: function() {
     var size = this.state.pressAction.interpolate({
-        inputRange: [0, 1],
-        outputRange: [this.state.progressSize, 0]
+      inputRange: [0, 1],
+      outputRange: [this.state.progressSize, 0]
     });
     return {
-        width: size,
-        height: size,
+      width: size,
+      height: size,
     }
   },
   onPressClose: function () {
@@ -157,16 +157,17 @@ module.exports = React.createClass({
       showButton: false,
       isPhoto: false,
     });
-
+    this.refs.cam.captureVideo();
+    setTimeout(() => {
+      this.onVideoRecordStop();
+    }, timer);
     Animated.timing(this.state.pressAction, {
       duration: timer,
       toValue: 1
-    }).start(this.animationActionComplete);
-
-
-    this.refs.cam.captureVideo();
+    }).start();
   },
   onVideoRecordStop: function () {
+    clearTimeout();
     if(!this.state.isPhoto){
       this.refs.cam.captureVideo();
       this.setState({
