@@ -25,6 +25,8 @@ import java.util.Arrays; // <--- import this if you want to specify which fonts 
 import com.smixx.reactnativeicons.IconFont; // <--- import this if you want to specify which fonts to load
 
 
+// Added for Parse
+import com.parse.Parse;
 
 
 public class MainActivity extends Activity implements DefaultHardwareBackBtnHandler {
@@ -38,6 +40,12 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
         mReactRootView = new ReactRootView(this);
 
         CodePush codePush = new CodePush("mmtzbrYrru6M28Ngw-0NiAqbLpvYEJXL5qzrg", this);
+
+        Parse.initialize(this);
+
+        // ParseObject testObject = new ParseObject("TestObject");
+        // testObject.put("foo", "bar");
+        // testObject.saveInBackground();
 
 
         mReactInstanceManager = ReactInstanceManager.builder()

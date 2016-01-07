@@ -11,6 +11,9 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
       android:allowBackup="true"
       android:label="@string/app_name"
@@ -29,6 +32,14 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+
+      <meta-data
+        android:name="com.parse.APPLICATION_ID"
+        android:value="dsgXdFhexcMreakStwdqPqNLY0tUjMzGFKsF6g5H" />
+      <meta-data
+        android:name="com.parse.CLIENT_KEY"
+        android:value="VIgO2d9LhkwFMY9UVgbQFsXrKgh8bwYk7DAgpqWh" />
+
     </application>
 
 </manifest>
