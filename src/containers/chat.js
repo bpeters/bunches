@@ -165,6 +165,7 @@ module.exports = React.createClass({
           addTyper={this.props.actions.addTyper}
           deleteTyper={this.props.actions.deleteTyper}
           forChat={true}
+          verified={true}
         >
           <ChatContainer
             user={this.props.store.user}

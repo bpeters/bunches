@@ -327,7 +327,7 @@ module.exports = {
 
       messenger.push(message);
 
-      if (chat.name === this.store.user.handle) {
+      if (chat.attributes.name === this.store.user.handle) {
         return this.checkForHashtags(options.message);
       } else {
         return;
