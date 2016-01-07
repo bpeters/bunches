@@ -11,7 +11,8 @@ var {
   TouchableOpacity,
   TouchableHighlight,
   CameraRoll,
-  TextInput
+  TextInput,
+  Animated,
 } = React;
 
 var Camera = require('react-native-camera');
@@ -19,6 +20,8 @@ var Camera = require('react-native-camera');
 var IconButton = require('../elements/iconButton');
 
 var defaultStyles = require('../styles');
+
+var timer = 5000;
 
 var Styles = StyleSheet.create({
   overall: {
@@ -47,10 +50,9 @@ var Styles = StyleSheet.create({
   captureButton: {
     height: 90,
     width: 90,
-    borderRadius: 90,
+    borderRadius: 45,
     borderWidth: 5,
     borderColor: defaultStyles.white,
-    backgroundColor: defaultStyles.blue,
     opacity: 0.7,
   },
   iconViewRight: {
@@ -84,6 +86,21 @@ var Styles = StyleSheet.create({
     height: defaultStyles.bodyHeight,
     backgroundColor: defaultStyles.dark,
   },
+  animated: {
+    height: 90,
+    width: 90,
+    borderRadius: 45,
+    borderWidth: 5,
+    borderColor: defaultStyles.white,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: 1,
+  },
+  fill: {
+    backgroundColor: defaultStyles.red,
+    borderRadius: 45,
+  }
 });
 
 module.exports = React.createClass({
@@ -101,7 +118,31 @@ module.exports = React.createClass({
       preview: false,
       photo: '',
       message: '',
+      isPhoto: true,
+      buttonColor: defaultStyles.blue,
+      pressAction: new Animated.Value(0),
+      progressSize: 90,
+      showButton: true,
     };
+  },
+  componentWillMount: function() {
+    this._value = 0;
+    this.state.pressAction.addListener((v) => this._value = v.value);
+  },
+  getButtonSize: function(e) {
+    this.setState({
+        progressSize: e.nativeEvent.layout.width - 10,
+    });
+  },
+  getProgressSize: function() {
+    var size = this.state.pressAction.interpolate({
+        inputRange: [0, 1],
+        outputRange: [this.state.progressSize, 0]
+    });
+    return {
+        width: size,
+        height: size,
+    }
   },
   onPressClose: function () {
     this.props.navigator.pop();
@@ -110,6 +151,33 @@ module.exports = React.createClass({
     this.refs.cam.capture((image) => {
       this.setState({photo:image,preview:true});
     });
+  },
+  onVideoRecordStart: function () {
+    this.setState({
+      showButton: false,
+      isPhoto: false,
+    });
+
+    Animated.timing(this.state.pressAction, {
+      duration: timer,
+      toValue: 1
+    }).start(this.animationActionComplete);
+
+
+    this.refs.cam.captureVideo();
+  },
+  onVideoRecordStop: function () {
+    if(!this.state.isPhoto){
+      this.refs.cam.captureVideo();
+      this.setState({
+        showButton: true,
+        isPhoto: true,
+      });
+      Animated.timing(this.state.pressAction, {
+        duration: timer,
+        toValue: 0
+      }).start();
+    }
   },
   onCameraSwitch: function() {
     var state = this.state;
@@ -174,6 +242,22 @@ module.exports = React.createClass({
       </View>
     );
   },
+  renderCaptureButton: function() {
+    return (
+      <View style={[Styles.captureButton, {
+        backgroundColor: this.state.buttonColor,
+      }]}
+      onLayout={this.getButtonSize}>
+      </View>
+    )
+  },
+  renderProgress: function() {
+    return (
+      <View style={Styles.animated}>
+        <Animated.View style={[Styles.fill, this.getProgressSize()]} />
+      </View>
+    )
+  },
   renderCamera: function() {
     return (
       <View style={Styles.container}>
@@ -183,24 +267,29 @@ module.exports = React.createClass({
         type={this.state.cameraType}
         captureTarget={Camera.constants.CaptureTarget.memory}
       ></Camera>
-        <TouchableOpacity style={Styles.capture} onPress={this.onCameraPress} >
-          <View style={Styles.captureButton} />
-        </TouchableOpacity>
-        <View style={Styles.iconViewLeft}>
-          <IconButton
-            onPress={this.onPressClose}
-            icon='material|close'
-            size={30}
-          />
-        </View>
-        <View style={Styles.iconViewRight}>
-          <IconButton
-            onPress={this.onCameraSwitch}
-            icon='material|camera-switch'
-            size={30}
-          />
-        </View>
+      <TouchableOpacity 
+        style={Styles.capture} 
+        onPress={this.onCameraPress} 
+        onLongPress={this.onVideoRecordStart}
+        onPressOut={this.onVideoRecordStop}
+      >
+        {this.state.showButton ? this.renderCaptureButton() : this.renderProgress()}
+      </TouchableOpacity>
+      <View style={Styles.iconViewLeft}>
+        <IconButton
+          onPress={this.onPressClose}
+          icon='material|close'
+          size={30}
+        />
       </View>
+      <View style={Styles.iconViewRight}>
+        <IconButton
+          onPress={this.onCameraSwitch}
+          icon='material|camera-switch'
+          size={30}
+        />
+      </View>
+    </View>
     );
   },
   render: function() {
