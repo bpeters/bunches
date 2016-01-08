@@ -27,9 +27,9 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
+    height: defaultStyles.container,
     backgroundColor: defaultStyles.white,
-    paddingTop: defaultStyles.navBarHeight + defaultStyles.navBarHeight,
+    paddingTop: defaultStyles.navBarHeight + defaultStyles.statBarHeight,
   },
   gap: {
     width: defaultStyles.bodyWidth - 32,
@@ -58,9 +58,8 @@ var Styles = StyleSheet.create({
     flexDirection: 'row',
   },
   name: {
-    fontWeight: 'bold',
     color: defaultStyles.dark,
-    fontFamily: 'Roboto-Regular',
+    fontFamily: 'Roboto-Bold',
     fontSize: 14,
   },
   date: {
@@ -97,7 +96,8 @@ var Styles = StyleSheet.create({
   },
   handle: {
     marginLeft: 5,
-    color: defaultStyles.medium,
+    color: defaultStyles.blue,
+    fontFamily: 'Roboto-Regular',
   },
 });
 
@@ -106,7 +106,7 @@ module.exports = React.createClass({
     user: React.PropTypes.object,
     navigator: React.PropTypes.object,
     messages: React.PropTypes.array,
-    typers: React.PropTypes.array,
+    typers: React.PropTypes.object,
     squashMessages: React.PropTypes.func,
     queryUser: React.PropTypes.func,
   },
@@ -118,17 +118,13 @@ module.exports = React.createClass({
       }),
     };
   },
-  onAvatarPress: function (rowData) {
-
-    this.props.queryUser(rowData.uid)
-      .then((user) => {
-
-        this.props.navigator.push({
-          name: 'profile',
-          component: Profile,
-          handle: user.attributes.handle,
-        });
-      });
+  onAvatarPress: function (imageURL) {
+    this.props.navigator.push({
+      name: "enlarge photo",
+      component: EnlargePhoto,
+      hasSideMenu: false,
+      photo: imageURL,
+    });
   },
   onPressImage: function (imageURL) {
     this.props.navigator.push({
@@ -145,12 +141,11 @@ module.exports = React.createClass({
       hashtag: word,
     });
   },
-  onMentionPress: function (mention) {
-    var handle = _.trim(mention, '@');
-
+  onMentionPress: function (uid, handle) {
     this.props.navigator.push({
       name: 'profile',
       component: Profile,
+      uid: uid,
       handle: handle,
     });
   },
@@ -192,7 +187,7 @@ module.exports = React.createClass({
     return (
       <View style={Styles.row}>
         <Avatar
-          onPress={() => this.onAvatarPress(rowData)}
+          onPress={() => this.onAvatarPress(rowData.userImageURL)}
           imageURL={rowData.userImageURL}
           online={rowData.online}
         />
@@ -201,7 +196,7 @@ module.exports = React.createClass({
             <Text style={Styles.name}>
               {rowData.name || 'Anon'}
             </Text>
-            <Text style={Styles.handle}>
+            <Text style={Styles.handle} onPress={() => this.onMentionPress(rowData.uid, rowData.handle)}>
               {rowData.handle ? '@' + rowData.handle : ''}
             </Text>
             <View style={Styles.date}>

@@ -9,6 +9,8 @@ var Timer = require('../elements/timer');
 var Counter = require('../elements/counter');
 var PopImage = require('../elements/popImage');
 var Message = require('../elements/message');
+var StatBar = require('../elements/statBar');
+var ChatHashtag = require('../elements/chatHashtag');
 
 var {
   Icon,
@@ -30,22 +32,18 @@ var Styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 8,
     marginLeft: 16,
-    borderRadius: 10,
     shadowOpacity: 0.3,
     shadowRadius: 2,
     shadowOffset: {
       width: 0,
       height: 2
     },
+    elevation: 5,
   },
   rowHeader: {
     backgroundColor: defaultStyles.white,
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
-    borderTopColor: defaultStyles.light,
     borderLeftColor: defaultStyles.light,
     borderRightColor: defaultStyles.light,
-    borderTopWidth: 1,
     borderLeftWidth: 1,
     borderRightWidth: 1,
     flex: 1,
@@ -54,7 +52,7 @@ var Styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingTop: 16,
     paddingLeft: 16,
-    paddingBottom: 16,
+    paddingBottom: 8,
   },
   info: {
     flex:1,
@@ -68,14 +66,19 @@ var Styles = StyleSheet.create({
     flexDirection: 'column',
   },
   userName: {
-    flex: 2.5,
     fontSize: 16,
     fontFamily: 'Roboto-Regular',
     color: defaultStyles.dark,
+    marginRight: 8,
   },
   userHandle: {
     fontSize: 14,
-    paddingTop: 2,
+    fontFamily: 'Roboto-Regular',
+    color: defaultStyles.blue,
+  },
+  chatName: {
+    fontSize: 14,
+    paddingTop: 3,
     fontFamily: 'Roboto-Regular', 
     color: defaultStyles.medium,
   },
@@ -124,14 +127,20 @@ var Styles = StyleSheet.create({
     width: 24,
   },
   user: {
-    flex:1,
+    flex: 1,
     justifyContent: 'flex-start',
     flexDirection: 'row',
   },
+  message: {
+    flex:1,
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    marginTop: 4,
+    width: defaultStyles.bodyWidth - 32 - 32,
+  },
   name: {
-    fontWeight: 'bold',
     color: defaultStyles.dark,
-    fontFamily: 'Roboto-Regular',
+    fontFamily: 'Roboto-Bold',
     fontSize: 14,
   },
   date: {
@@ -146,7 +155,8 @@ var Styles = StyleSheet.create({
   },
   handle: {
     marginLeft: 5,
-    color: defaultStyles.medium,
+    color: defaultStyles.blue,
+    fontFamily: 'Roboto-Regular',
   },
   timeBreak: {
     flex: 1,
@@ -165,6 +175,7 @@ module.exports = React.createClass({
     squashMessages: React.PropTypes.func,
     onHashtagPress: React.PropTypes.func,
     onMentionPress: React.PropTypes.func,
+    removeExpiredChats: React.PropTypes.func,
   },
   getInitialState: function() {
     return {
@@ -216,9 +227,19 @@ module.exports = React.createClass({
       </View>
     );
   },
-  renderMessage: function (message, i) {
+  renderMessage: function (text) {
+    return (
+      <Message
+        message={text}
+        onHashtagPress={this.props.onHashtagPress}
+        onMentionPress={this.props.onMentionPress}
+      />
+    )
+  },
+  renderMessages: function (message, i) {
 
-    var text = !_.isEmpty(message.squash) ? message.squash[0].message + "  \u2022  " + message.message : message.message;
+    var text = !_.isEmpty(message.squash) ? this.renderMessage(message.squash[0].message) : null;
+    var split = text ? this.renderMessage("  \u2022  ") : null;
 
     return (
       <View key={i} style={Styles.rowMessage}>
@@ -226,7 +247,7 @@ module.exports = React.createClass({
           <Text style={Styles.name}>
             {message.name || 'Anon'}
           </Text>
-          <Text style={Styles.handle}>
+          <Text style={Styles.handle} onPress={() => this.props.onMentionPress(message.uid, message.handle)}>
             {message.handle ? '@' + message.handle : ''}
           </Text>
           <View style={Styles.date}>
@@ -235,11 +256,11 @@ module.exports = React.createClass({
             </Text>
           </View>
         </View>
-        <Message
-          message={text}
-          onHashtagPress={this.props.onHashtagPress}
-          onMentionPress={this.props.onMentionPress}
-        />
+        <Text style={Styles.message}>
+          {text}
+          {split}
+          {this.renderMessage(message.message)}
+        </Text>
       </View>
     );
   },
@@ -249,18 +270,38 @@ module.exports = React.createClass({
 
     var lastTwo = messages.slice(messages.length - 2);
     var msgs = _.map(lastTwo, (message, i) => {
-      return this.renderMessage(message, i);
+      return this.renderMessages(message, i);
     });
 
     return msgs;
   },
+  renderHashtags: function(hashtags) {
+    var deduped = _.uniq(hashtags);
+
+    return (
+      <ChatHashtag
+        hashtags={deduped}
+        onHashtagPress={this.props.onHashtagPress}
+      />
+    )
+  },
+  countdown: function (expiration, chatId){
+    var timeLeft = moment(expiration) - moment();
+    setTimeout(() => {
+      this.props.removeExpiredChats(chatId);
+    }, timeLeft - 5000);
+  },
   render: function() {
     var rowData = this.props.rowData;
     var user = rowData.chat.get('createdBy');
+    
+    var userCount = _.uniq(rowData.messages, 'uid').length;
 
     var mostRecentImages = [];
     var mostRecentMessages = [];
+    var hashtags = [];
     var onlineStatus;
+    
 
     _.forEach(rowData.messages, (message) => {
 
@@ -270,46 +311,57 @@ module.exports = React.createClass({
 
       if (message.message) {
         mostRecentMessages.push(message);
+
+        var words = message.message.split(' ');
+        var msg = _.map(words, (word, i) => {
+          if (_.startsWith(word, '#')) {
+            hashtags.push(word);
+          }
+        });
       }
 
       if (user.id === message.uid && message.online) {
         onlineStatus = message.online;
       }
-
     });
+
+    this.countdown(moment(rowData.chat.attributes.expirationDate).toDate(), rowData.id);
 
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => this.props.onPressRow(rowData)}>
-        <View style={Styles.row}>
-          <View style={Styles.rowHeader}>
-            <Avatar
-              onPress={() => this.props.onAvatarPress(rowData)}
-              imageURL={user.attributes.image ? user.attributes.image.url() : null}
-              online={onlineStatus}
-            />
-            <View style={Styles.info}>
-              <View style={Styles.infoBar}>
-                <Text style={Styles.userName}>
-                  {user.attributes.name}
-                </Text>
-                <Text style={Styles.userHandle}>
-                  @{user.attributes.handle}
-                </Text>
-              </View>
-              <View style={Styles.counts}>
-                <Counter
-                  score={rowData.score}
-                />
-              </View>
-            </View>
-          </View>
-          {mostRecentImages.length ? this.renderCarousel(mostRecentImages.reverse()) : null}
-          {mostRecentMessages.length ? this.renderLastTwoMessages(mostRecentMessages) : null}
+        <View style={[Styles.row,defaultStyles.chatCard]}>
           <Timer
             expiration={rowData.chat.attributes.expirationDate}
             created={rowData.chat.createdAt}
             view='bunch'
             width={defaultStyles.bodyWidth - 52}
+          />
+          {hashtags.length ? this.renderHashtags(hashtags) : null}
+          <View style={Styles.rowHeader}>
+            <Avatar
+              onPress={() => this.props.onAvatarPress(user.attributes.image ? user.attributes.image.url() : null)}
+              imageURL={user.attributes.image ? user.attributes.image.url() : null}
+              online={onlineStatus}
+            />
+            <View style={Styles.info}>
+              <View style={Styles.infoBar}>
+                <View style={Styles.user}>
+                  <Text style={Styles.userName}>
+                    {user.attributes.name}
+                  </Text>
+                </View>
+                <Text style={Styles.userHandle} onPress={() => this.props.onMentionPress(user.id, user.attributes.handle)}>
+                  @{user.attributes.handle}
+                </Text>
+              </View>
+            </View>
+          </View>
+          {mostRecentImages.length ? this.renderCarousel(mostRecentImages.reverse()) : null}
+          {mostRecentMessages.length ? this.renderLastTwoMessages(mostRecentMessages) : null}
+          <StatBar
+            score={rowData.score}
+            userCount={userCount}
+            expiration={rowData.chat.attributes.expirationDate}
           />
         </View>
       </TouchableOpacity>

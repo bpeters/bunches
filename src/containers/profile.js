@@ -11,29 +11,14 @@ var defaultStyles = require('../styles');
 var {
   View,
   StyleSheet,
-  Platform,
   Text,
   ListView,
 } = React;
-
-var Loading;
-
-if (Platform.OS === 'android') {
-  Loading = require('../elements/loadingAndroid');
-} else {
-  Loading = require('../elements/loadingIOS');
-}
 
 var Styles = StyleSheet.create({
   body: {
     backgroundColor: defaultStyles.background,
     height: defaultStyles.bodyHeight,
-  },
-  loadingView: {
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    top: defaultStyles.navBarHeight - 28,
-    right: (defaultStyles.bodyWidth / 2) - 28,
   },
 });
 
@@ -47,23 +32,8 @@ module.exports = React.createClass({
   onBack: function () {
     this.props.navigator.pop();
   },
-  renderLoading: function () {
-    return (
-      <View style={Styles.loadingView}>
-        <Loading />
-      </View>
-    );
-  },
   render: function () {
     var chats = this.props.store.profileMessages;
-
-    var user = {
-      handle: this.props.route.handle,
-    };
-
-    if (!_.isEmpty(chats)) {
-      user = chats[0].chat.get('createdBy').attributes;
-    }
 
     return (
       <View style={Styles.body}>
@@ -73,11 +43,14 @@ module.exports = React.createClass({
           squashMessages={this.props.actions.squashMessages}
         >
           <NavBar
-            title={'@' + user.handle}
+            title={'@' + this.props.route.handle}
             onBackButton={this.onBack}
+            clearSuccess={this.props.actions.clearSuccess}
+            loading={this.props.store.loading}
+            success={this.props.store.success}
+            store={this.props.store}
           />
         </ProfileContainer>
-        {this.props.store.loading ? this.renderLoading() : null}
       </View>
     );
   }

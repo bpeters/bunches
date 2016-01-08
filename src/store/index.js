@@ -6,6 +6,7 @@ var ParseReact = require('parse-react/react-native');
 var Firebase = require('firebase');
 var _ = require('lodash');
 var moment = require('moment');
+var Promise = require('bluebird');
 
 var config = require('../config/default');
 var nouns = require('../assets/nouns');
@@ -14,9 +15,11 @@ var Query = require('./query');
 var ES = require('./elasticsearch');
 var Listen = require('./listen');
 var Storage = require('./storage');
+var Clearbit = require('./clearbit');
+var Notification = require('./notification');
 
 var {
-  AlertIOS,
+  Alert,
   Platform,
 } = React;
 
@@ -25,23 +28,30 @@ var storeDefaults = {
   bunch: null,
   bunches: [],
   chats: [],
+  chat: null,
   messages: [],
   newChat: null,
   loading: false,
   success: false,
-  profileHandle: null,
+  profileUser: null,
   profileMessages: [],
   hashtag: null,
   hashtagMessages: [],
   typers: [],
   mentions: [],
+  notifications: [],
+  wait: false,
+  notificationId: null,
+  pushNotifications: [],
 };
 
 module.exports = {
   mixins: [Listen],
   store: _.cloneDeep(storeDefaults),
-  initStore: function (user) {
+  initStore: function (user, newUser) {
     if (user) {
+
+      user.emailVerified = Parse.User.current().get('emailVerified');
 
       this.store.user = user;
 
@@ -73,6 +83,15 @@ module.exports = {
           this.listenToTyper();
           this.addUserStatus(this.store.bunch.id, this.store.user.objectId);
 
+          Notification.requestPermissions();
+          
+          Notification.registerEvent(this.store.user.objectId, this.setInstallationId);
+          Notification.notificationEvent(this.handlePushNotifications);
+
+          if (newUser) {
+            this.createWelcomeChat(this.store.user, this.store.bunch);
+          }
+
         }, (err) => {
           this.handleParseError(err);
       });
@@ -97,6 +116,17 @@ module.exports = {
         this.handleParseError(err);
       });
   },
+  removeExpiredChats: function(chatId) {
+    var messages = this.store.messages;
+
+    this.store.messages = _.filter(messages, (message) => {
+      return message.id !== chatId;
+    });
+
+    this.setState({
+      messages: this.store.messages,
+    });
+  },
   refreshChats: function () {
     return Query.chats(this.store.bunch)
       .then((result) => {
@@ -115,13 +145,11 @@ module.exports = {
       default:
         console.log(err);
 
-        if (Platform.OS === 'ios') {
-          AlertIOS.alert(
-            title || 'Error',
-            err.message,
-            [{text: 'Try Again'}]
-          );
-        }
+        Alert.alert(
+          title || 'Error',
+          err.message,
+          [{text: 'Try Again'}]
+        );
 
         this.setState({
           loading: false,
@@ -129,10 +157,44 @@ module.exports = {
     }
   },
   uploadImage: function (photo) {
+    if(_.startsWith(photo,'data:image/jpeg;base64,')) {
+      photo = photo.replace('data:image/jpeg;base64,','');
+    }
     var photo64 = new Parse.File('image.jpeg', { base64: photo});
 
     return photo64.save().then((image) => {
       return image;
+    });
+  },
+  checkForHashtags: function (message) {
+    var words = message.split(' ');
+    var urlExpression = /(#[a-z\d]+)/gi;
+    var urlRegex = new RegExp(urlExpression);
+
+    return new Promise(function(resolve, reject){
+      if (message.match(urlRegex)) {
+        _.forEach(words, (word, i) => {
+          if (_.startsWith(word, '#')) {
+            resolve(word);
+          }
+        });
+      } else {
+        resolve();
+      }
+    }); 
+  },
+  updateChatTitle: function (chat, title) {
+    var Chat = Parse.Object.extend("Chat");
+    var newChat = new Chat();
+    newChat.id = chat.id;
+
+    newChat.set("name", title);
+
+    newChat.save(null, {
+      success: (chat) => {},
+      error: (chat, error) => {
+        this.handleParseError(error, 'Failed to Update Chat Name');
+      }
     });
   },
   createChat: function (message, photo) {
@@ -140,39 +202,143 @@ module.exports = {
       loading: true,
     });
 
-    var bunch = this.store.bunch;
-    var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
+    this.checkForHashtags(message)
+      .then((hashtag) => {
 
-    ParseReact.Mutation.Create('Chat', {
-      name: this.store.user.handle + "'s " + _.sample(nouns),
-      expirationDate: new Date(expirationDate),
-      belongsTo: bunch,
-      createdBy: this.store.user,
-      isDead: false,
+        var title = hashtag ? (this.store.user.handle + ' ' + hashtag) : this.store.user.handle;
+
+        var bunch = this.store.bunch;
+        var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
+
+        ParseReact.Mutation.Create('Chat', {
+          name: title,
+          expirationDate: new Date(expirationDate),
+          belongsTo: bunch,
+          createdBy: this.store.user,
+          isDead: false,
+        })
+        .dispatch()
+        .then((chat) => {
+
+          this.store.newChat = chat;
+
+          this.setState({
+            newChat: this.store.newChat
+          });
+
+          if (photo) {
+            this.uploadImage(photo)
+              .then((image) => {
+                this.createMessage(chat, {
+                  image: image,
+                  message: message,
+                });
+              });
+          } else {
+            this.createMessage(chat, {
+              message: message
+            });
+          }
+        });
+      });
+  },
+  createMessage: function (chat, options) {
+    var bunch = this.store.bunch;
+    var url = config.firebase.url + '/bunch/' + bunch.id + '/chat/' + (chat.objectId || chat.id);
+    var messenger = new Firebase(url);
+    var user = this.store.user;
+
+    var message;
+
+    ParseReact.Mutation.Create('Chat2User', {
+      chat: chat,
+      user: user,
+      image: options.image,
+      text: options.message,
     })
     .dispatch()
-    .then((chat) => {
+    .then((chat2user) => {
 
-      this.store.newChat = chat;
+      message = {
+        uid: user.objectId || user.id,
+        name: user.name,
+        handle: user.handle,
+        username: user.username,
+        userImageURL: user.image ? user.image.url() : null,
+        imageURL: options.image ? options.image.url() : null,
+        time: new Date().getTime(),
+      };
 
-      this.setState({
-        newChat: this.store.newChat
-      });
+      var promiseMentions = [];
 
-      if (photo) {
-        this.uploadImage(photo)
-          .then((image) => {
-            this.createMessage(chat, {
-              image: image,
-              message: message,
-            });
-          });
-      } else {
-        this.createMessage(chat, {
-          message: message
+      if (options.message) {
+        var mentions = _.chain(options.message)
+          .words(/[^, ]+/g)
+          .filter((word) => {
+            return _.startsWith(word, '@');
+          })
+          .value();
+
+        _.forEach(mentions, (mention) => {
+
+            var handle = _.trimLeft(mention, '@');
+
+            promiseMentions.push(
+              this.getUserByHandle(handle)
+                .then((user) => {
+                  if (user) {
+                    Notification.mention(this.store.user, user.id, options.message, chat);
+                    return mention + '/?/?/?/' + user.id + '/?/?/?/';
+                  } else {
+                    return;
+                  }
+                })
+            );
         });
       }
 
+      return Promise.each(promiseMentions, (promise) => {
+        return promise;
+      })
+    })
+    .then((mentions) => {
+
+      if (options.message) {
+        var words = options.message.split(' ');
+        var formatted = _.map(words, (word) => {
+          _.forEach(mentions, (mention) => {
+
+            if (mention) {
+              var split = mention.split('/?/?/?/');
+              var old = split[0];
+
+              if (old === word) {
+                word = mention;
+              }
+            }
+
+          });
+
+          return word;
+        });
+
+        message.message = formatted.join(' ');
+      }
+
+      messenger.push(message);
+
+      if (chat.attributes.name === this.store.user.handle) {
+        return this.checkForHashtags(options.message);
+      } else {
+        return;
+      }
+    })
+    .then((hashtag) => {
+      if (hashtag) {
+        this.updateChatTitle(chat, this.store.user.handle + ' ' + hashtag);
+      }
+    }, (error) => {
+      this.handleParseError(error, 'Failed to Create Message');
     });
   },
   createImageMessage: function (chat, photo) {
@@ -187,37 +353,109 @@ module.exports = {
         });
       });
   },
-  createMessage: function (chat, options) {
-    var bunch = this.store.bunch;
-    var url = config.firebase.url + '/bunch/' + bunch.id + '/chat/' + (chat.objectId || chat.id);
-    var messenger = new Firebase(url);
-    var user = this.store.user;
+  checkEducationEmail: function (email) {
+    var urlExpression = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.+-]+\.edu?/gi;
+    var urlRegex = new RegExp(urlExpression);
 
-    ParseReact.Mutation.Create('Chat2User', {
-      chat: chat,
-      user: user,
-      image: options.image,
-      text: options.message,
+    if (email.match(urlRegex)) {
+      return Clearbit.authenticate(email)
+        .then((response) => response.text())
+        .then((data) => {
+          var data = JSON.parse(data);
+          if (data.error) {
+            console.log(data.error);
+          } else {
+            var institution = data.company.name;
+            var institutionUrl = data.company.domain;
+            return this.updateInstitution(institution, institutionUrl);
+          }
+        })
+        .then((institutionName) => {
+          return institutionName;
+        })
+        .catch((error) => {
+          this.handleParseError(error, 'Failed to Create Account');
+        });
+    } else {
+      return Promise.resolve();
+    }
+  },
+  updateInstitution: function (name, domain) {
+    var query = (new Parse.Query('Institution'))
+      .equalTo('domain',  domain);
+
+    return query.find()
+      .then((institution) => {
+        if (!institution.length){
+          return ParseReact.Mutation.Create('Bunch', {
+            name: name,
+            ttl: 86400000
+          })
+          .dispatch()
+        } else {
+          return;
+        }
+      })
+      .then((object) => {
+        if (object) {
+          return ParseReact.Mutation.Create('Institution', {
+            name: name,
+            domain: domain,
+            bunchId: object.id
+          })
+          .dispatch();
+        } else {
+          return;
+        }
+      })
+      .then((obj) => {
+        return name;
+      }, (error) => {
+        this.handleParseError(error, 'Failed to Create Account');
+      });
+  },
+  createWelcomeChat: function (user, bunch) {
+    var newChat;
+    var brennen;
+    var hunter;
+    var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
+
+    return ParseReact.Mutation.Create('Chat', {
+      name: user.handle + ' #welcome',
+      expirationDate: new Date(expirationDate),
+      belongsTo: bunch,
+      createdBy: user,
+      isDead: false,
     })
     .dispatch()
     .then((chat) => {
+      newChat = chat;
 
-      messenger.push({
-        uid: user.objectId || user.id,
-        name: user.name,
-        handle: user.handle,
-        username: user.username,
-        userImageURL: user.image ? user.image.url() : null,
-        imageURL: options.image ? options.image.url() : null,
-        message: options.message,
-        time: new Date().getTime(),
+      return this.createMessage(chat, {
+        message: '#welcome'
       });
+    })
+    .then(() => {
+      return Promise.all([this.getUserByHandle('b'), this.getUserByHandle('h')]);
+    })
+    .then((users) => {
 
-      this.setState({
-        loading: false,
-        success: true,
+      brennen = _.assign(users[0], users[0].attributes);
+      brennen.objectId = users[0].id;
+
+      hunter = _.assign(users[1], users[1].attributes);
+      hunter.objectId = users[1].id;
+
+      return this.createMessage(newChat, {
+        message: 'Hey! @' + user.handle + ' thank you for signing up for Bunches. If you have any questions feel free to reach out to @b and @h',
+        user: brennen,
+      })
+    })
+    .then(() => {
+      return this.createMessage(newChat, {
+        message: 'Welcome to Bunches. And remember... Zeppelin rules. The end.',
+        user: hunter,
       });
-
     });
   },
   createUser: function (params) {
@@ -225,68 +463,76 @@ module.exports = {
       loading: true,
     });
 
-    var user = new Parse.User();
+    var newUser;
+    var newBunch;
 
-    user.set('username', params.email ? params.email.toLowerCase() : '');
-    user.set('password', params.password);
-    user.set('email', params.email ? params.email.toLowerCase() : '');
-    user.set('handle', params.username ? params.username.toLowerCase() : '');
-    user.set('name', params.name);
+    var bunches = ['Global', 'Feedback'];
 
-    user.signUp(null, {
-      success: (user) => {
-        var query = new Parse.Query('Bunch');
-        query.containedIn('name', ['Global', 'Feedback']);
+    this.checkEducationEmail(params.email.toLowerCase())
+      .then((name) => {
 
-        query.find({
-          success: (bunches) => {
+        if(name){
+          bunches.push(name);
+        }
+        var user = new Parse.User();
 
-            var batch = new ParseReact.Mutation.Batch();
+        user.set('username', params.email ? params.email.toLowerCase() : '');
+        user.set('password', params.password);
+        user.set('email', params.email ? params.email.toLowerCase() : '');
+        user.set('handle', params.username ? params.username.toLowerCase() : '');
+        user.set('name', params.name);
 
-            _.forEach(bunches, (bunch) => {
+        user.signUp(null, {
+          success: (user) => {
+            var query = new Parse.Query('Bunch');
+            query.containedIn('name', bunches);
 
-              var isMain;
+            query.find({
+              success: (results) => {
 
-              if (bunch.get('name') === 'Global') {
-                isMain = true;
-              }
+                var batch = new ParseReact.Mutation.Batch();
 
-              ParseReact.Mutation.Create('Bunch2User', {
-                bunch: bunch,
-                user: user,
-                isMain: isMain,
-              })
-              .dispatch({ batch: batch });
+                _.forEach(results, (bunch) => {
 
-            });
+                  var isMain;
 
-            batch.dispatch()
-            .then(() => {
-              var newUser = _.assign(user, user.attributes);
-              newUser.objectId = user.id;
+                  if (bunch.get('name') === 'Global') {
+                    isMain = true;
+                    newBunch = bunch;
+                  }
 
-              this.initStore(newUser);
+                  ParseReact.Mutation.Create('Bunch2User', {
+                    bunch: bunch,
+                    user: user,
+                    isMain: isMain,
+                  })
+                  .dispatch({ batch: batch });
 
-              ES.indexUser(user.id, {
-                name: params.name,
-                handle: params.username,
-              })
-              .then(() => {
-                this.setState({
-                  loading: false,
                 });
-              });
+
+                batch.dispatch()
+                .then(() => {
+                  newUser = _.assign(user, user.attributes);
+                  newUser.objectId = user.id;
+
+                  this.initStore(newUser, true);
+
+                  ES.indexUser(user.id, {
+                    name: params.name,
+                    handle: params.username,
+                  });
+                });
+              },
+              error: (user, error) => {
+                this.handleParseError(error, 'Failed to Create Account');
+              }
             });
           },
           error: (user, error) => {
             this.handleParseError(error, 'Failed to Create Account');
           }
         });
-      },
-      error: (user, error) => {
-        this.handleParseError(error, 'Failed to Create Account');
-      }
-    });
+      })
   },
   loginUser: function (email, password) {
 
@@ -311,16 +557,14 @@ module.exports = {
     Storage.clean(this.store.messages)
       .then(() => {
         Parse.User.logOut();
-        this.deleteUserStatus();
+        this.deleteUserStatus(this.store.bunch.id, this.store.user.objectId);
         this.tearDownStore();
       });
   },
   resetPassword: function (email) {
     Parse.User.requestPasswordReset(email ? email.toLowerCase() : '', {
       success: () => {
-        if (Platform.OS === 'ios') {
-          AlertIOS.alert('Reset password link sent');
-        }
+        Alert.alert('Reset password link sent');
       },
       error: (err) => {
         this.handleParseError(err, 'Failed to reset password');
@@ -396,26 +640,25 @@ module.exports = {
   },
   getProfileChats: function (user) {
     this.setState({
-      loading: true
+      loading: true,
     });
 
-    Query.chatsByUser(user)
-      .then((chats) => {
+    var messages = _.filter(this.store.messages, (message) => {
 
-        var chatIds = _.pluck(chats,'id');
-
-        var messages = _.filter(this.store.messages,(message) => {
-          return _.indexOf(chatIds, message.chat.id) >= 0;
-        });
-
-        this.store.profileMessages = messages;
-        this.store.profileHandle = user.attributes.handle;
-        this.setState({
-          profileMessages: this.store.profileMessages,
-          profileHandle: this.store.profileHandle,
-          loading: false,
-        });
+      var userMessages = _.filter(message.messages, (m) => {
+        return m.uid === user.id;
       });
+
+      return userMessages.length > 0;
+    });
+
+    this.store.profileMessages = messages;
+    this.store.profileUser = user.id;
+    this.setState({
+      profileMessages: this.store.profileMessages,
+      profileUser: this.store.profileUser,
+      loading: false,
+    });
   },
   getUsers: function (query) {
     ES.users(query)
@@ -451,14 +694,16 @@ module.exports = {
       }
     });
 
+    this.store.notifications = _.filter(this.store.notifications, (chat) => {
+      return chat.id !== chatId;
+    });
+
     this.setState({
-      messages: this.store.messages
+      messages: this.store.messages,
+      notifications: this.store.notifications,
     });
   },
   queryUser: function (id) {
-    return Query.user(id);
-  },
-  queryUserByHandle: function (id) {
     return Query.user(id);
   },
   squashMessages: function (data) {
@@ -490,7 +735,9 @@ module.exports = {
 
       var words = _.chain(message.messages)
         .map((m) => {
-          return m.message.split(' ');
+          if (m.message) {
+            return m.message.split(' ');
+          }
         })
         .flatten()
         .filter((word) => {
@@ -508,5 +755,24 @@ module.exports = {
       hashtag: this.store.hashtag,
       loading: false,
     });
+  },
+  setInstallationId: function (installationId) {
+    this.store.notificationId = installationId;
+  },
+  handlePushNotifications: function (chatId) {
+    this.store.pushNotifications.push(chatId);
+
+    this.setState({
+      pushNotifications: this.store.pushNotifications
+    });
+  },
+  clearPushNotifications: function (chatId) {
+    this.store.pushNotifications = _.filter(this.store.pushNotifications, chatId);
+
+    this.setState({
+      pushNotifications: this.store.pushNotifications
+    });
+
+    Notification.setBadge(this.store.notificationId, this.store.pushNotifications.length);
   },
 }

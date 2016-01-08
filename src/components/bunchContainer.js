@@ -22,7 +22,7 @@ var {
 
 var Styles = StyleSheet.create({
   container: {
-    height: defaultStyles.bodyHeight - defaultStyles.chatBarHeight,
+    height: defaultStyles.container,
     paddingTop: defaultStyles.navBarHeight,
   },
   loadMore: {
@@ -36,6 +36,26 @@ var Styles = StyleSheet.create({
     fontFamily: 'Roboto-Regular', 
     color: defaultStyles.medium,
   },
+  image: {
+    marginTop: 60,
+    alignSelf: 'center',
+    width: 1290 * 0.15,
+    height: 1380 * 0.15,
+  },
+  title: {
+    marginTop: 16,
+    fontSize: 16,
+    fontFamily: 'Roboto-Bold',
+    color: defaultStyles.dark,
+    alignSelf: 'center',
+  },
+  text: {
+    marginTop: 8,
+    fontSize: 14,
+    fontFamily: 'Roboto-Regular',
+    color: defaultStyles.gray,
+    alignSelf: 'center',
+  },
 });
 
 module.exports = React.createClass({
@@ -43,6 +63,8 @@ module.exports = React.createClass({
     navigator: React.PropTypes.object,
     store: React.PropTypes.object,
     squashMessages: React.PropTypes.func,
+    removeExpiredChats: React.PropTypes.func,
+    verified: React.PropTypes.bool,
   },
   getInitialState: function() {
     return {
@@ -59,21 +81,22 @@ module.exports = React.createClass({
       chatId: rowData.chat.id
     });
   },
-  onAvatarPress: function (rowData) {
-    var user = rowData.chat.get('createdBy');
-
-    this.props.navigator.push({
-      name: 'profile',
-      component: Profile,
-      handle: user.attributes.handle,
-    });
+  onAvatarPress: function (imageUrl) {
+    if (imageUrl) {
+      this.props.navigator.push({
+        name: 'enlarge photo',
+        component: EnlargePhoto,
+        hasSideMenu: false,
+        photo: imageUrl,
+      });
+    }
   },
-  onPressImage: function (imageURL) {
+  onPressImage: function (imageUrl) {
     this.props.navigator.push({
       name: 'enlarge photo',
       component: EnlargePhoto,
       hasSideMenu: false,
-      photo: imageURL,
+      photo: imageUrl,
     });
   },
   onHashtagPress: function (word) {
@@ -83,12 +106,11 @@ module.exports = React.createClass({
       hashtag: word,
     });
   },
-  onMentionPress: function (mention) {
-    var handle = _.trim(mention, '@');
-
+  onMentionPress: function (uid, handle) {
     this.props.navigator.push({
       name: 'profile',
       component: Profile,
+      uid: uid,
       handle: handle,
     });
   },
@@ -102,6 +124,7 @@ module.exports = React.createClass({
         squashMessages={this.props.squashMessages}
         onHashtagPress={this.onHashtagPress}
         onMentionPress={this.onMentionPress}
+        removeExpiredChats={this.props.removeExpiredChats}
       />
     );
   },
@@ -112,15 +135,58 @@ module.exports = React.createClass({
       </View>
     );
   },
+  renderList: function () {
+    return (
+      <ListView
+        dataSource={this.state.dataSource.cloneWithRows(this.props.store.messages)}
+        renderRow={this.renderChatRow}
+        renderFooter={this.renderChatFooter}
+        automaticallyAdjustContentInsets={false}
+      />
+    );
+  },
+  renderEmpty: function () {
+    return (
+      <View>
+        <Image
+          style={Styles.image}
+          source={require('../assets/empty.png')}
+        />
+        <Text style={Styles.title}>
+          ABSOLUTELY NOTHING...
+        </Text>
+        <Text style={Styles.text}>
+          Keep calm social jelly, start a conversation.
+        </Text>
+      </View>
+    );
+  },
+  renderNotVerified: function () {
+    return (
+      <View>
+        <Image
+          style={Styles.image}
+          source={require('../assets/jellycop.png')}
+        />
+        <Text style={Styles.title}>
+          YOU HAVEN'T BEEN VERIFIED...
+        </Text>
+        <Text style={Styles.text}>
+          Jelly Cop says "Verify your email to chat!"
+        </Text>
+      </View>
+    );
+  },
   render: function() {
+    var showEmpty, notVerified;
+
+    if (_.isEmpty(this.props.store.messages) && !this.props.store.loading) {
+      showEmpty = true;
+    }
+
     return (
       <View style={Styles.container}>
-        <ListView
-          dataSource={this.state.dataSource.cloneWithRows(this.props.store.messages)}
-          renderRow={this.renderChatRow}
-          renderFooter={this.renderChatFooter}
-          automaticallyAdjustContentInsets={false}
-        />
+        {this.props.verified ? (showEmpty ? this.renderEmpty() : this.renderList()) : this.renderNotVerified()}
         {this.props.children}
       </View>
     );

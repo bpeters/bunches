@@ -20,26 +20,17 @@ var {
 } = React;
 
 var AddPhoto;
-var Loading;
 
 if (Platform.OS === 'android') {
   AddPhoto = require('./addPhotoAndroid');
-  Loading = require('../elements/loadingAndroid');
 } else {
   AddPhoto = require('./addPhotoIOS')
-  Loading = require('../elements/loadingIOS');
 }
 
 var Styles = StyleSheet.create({
   body: {
     backgroundColor: defaultStyles.background,
     height: defaultStyles.bodyHeight,
-  },
-  loadingView: {
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    top: defaultStyles.navBarHeight - 28,
-    right: (defaultStyles.bodyWidth / 2) - 28,
   },
 });
 
@@ -88,15 +79,18 @@ module.exports = React.createClass({
       },
     });
   },
-  renderLoading: function () {
-    return (
-      <View style={Styles.loadingView}>
-        <Loading />
-      </View>
-    );
-  },
   render: function () {
     var title = _.get(this.props.store.bunch, 'attributes.name');
+
+    var emailVerified = _.get(this.props.store.user, 'emailVerified');
+
+    var verified = true;
+
+    if(emailVerified === false && !this.props.store.loading){
+      if(title !== 'Global' && title !== 'Feedback'){
+        verified = false;
+      }
+    }
 
     return (
       <View style={Styles.body}>
@@ -115,19 +109,25 @@ module.exports = React.createClass({
           store={this.props.store}
           getUsers={this.props.actions.getUsers}
           clearMentions={this.props.actions.clearMentions}
+          verified={verified}
         >
           <BunchContainer
             navigator={this.props.navigator}
             store={this.props.store}
             squashMessages={this.props.actions.squashMessages}
+            removeExpiredChats={this.props.actions.removeExpiredChats}
+            verified={verified}
           >
             <NavBar
               title={title}
               menuButton={this.props.menuButton}
+              clearSuccess={this.props.actions.clearSuccess}
+              loading={this.props.store.loading}
+              success={this.props.store.success}
+              store={this.props.store}
             />
           </BunchContainer>
         </ChatBar>
-        {this.props.store.loading ? this.renderLoading() : null}
       </View>
     );
   }

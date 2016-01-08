@@ -70,10 +70,12 @@ module.exports = {
     })
   },
   listenToUserStatus: function () {
-
     AppStateIOS.addEventListener('change', (currentAppState) => {
       if (currentAppState === 'background'){
         this.deleteUserStatus(this.store.bunch.id, this.store.user.objectId);
+        _.forEach(this.store.chats, (chat) => {
+          this.deleteTyper(chat.id);
+        })
       } else {
         this.addUserStatus(this.store.bunch.id, this.store.user.objectId);
       }
@@ -203,6 +205,9 @@ module.exports = {
             return promise;
           })
           .then(() => {
+
+            this.store.notifications = [];
+
             this.store.messages = _.chain(this.store.messages)
               .map((message) => {
 
@@ -232,6 +237,11 @@ module.exports = {
                 message.newCount = newCount;
                 message.mention = mention;
 
+                var userIds = _.pluck(message.messages, 'uid');
+                if (_.indexOf(userIds, this.store.user.objectId) >= 0 && message.newCount > 0) {
+                  this.store.notifications.push(message);
+                }
+
                 return message;
               })
               .sortBy((message) => {
@@ -245,6 +255,7 @@ module.exports = {
               chats: this.store.chats,
               bunch: this.store.bunch,
               user: this.store.user,
+              notifications: this.store.notifications,
               loading: false,
             });
           });
@@ -271,28 +282,29 @@ module.exports = {
 
       if (!_.find(messages, {'key' : k})) {
         v.key = k;
-
-        promiseMessages.push(
-          Storage.getItem(k).then((stored) => {
-
-            if (!stored) {
-              v = handleNotification(v, this.store.user);
-            }
-
-            messages.push(v);
-
-            return;
-          })
-        );
-
+        messages.push(v);
       }
 
     });
 
-    return Promise.each(promiseMessages, (promise) => {
-      return promise;
-    })
-    .then(() => {
+    var keys = _.pluck(messages, 'key');
+
+    return Storage.getAllItems(keys)
+    .then((storage) => {
+
+      storage = _.chain(storage)
+      .filter((item) => {
+        return item[1];
+      })
+      .flatten()
+      .uniq()
+      .value();
+
+      _.forEach(messages, (message) => {
+        if (_.indexOf(storage, message.key) < 0) {
+          message = handleNotification(message, this.store.user);
+        }
+      });
 
       var chat = _.find(this.store.messages, {'id' : key});
 

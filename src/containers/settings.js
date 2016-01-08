@@ -5,8 +5,6 @@ var _ = require('lodash');
 
 var NavBar = require('../components/navBar');
 var Button = require('../elements/button');
-var Success = require('../elements/success');
-var Landing = require('../containers/landing');
 
 var defaultStyles = require('../styles');
 
@@ -27,14 +25,11 @@ var {
 } = React;
 
 var AddPhoto;
-var Loading;
 
 if (Platform.OS === 'android') {
   AddPhoto = require('./settingsPhotoAndroid');
-  Loading = require('../elements/loadingAndroid');
 } else {
   AddPhoto = require('./settingsPhotoIOS');
-  Loading = require('../elements/loadingIOS');
 }
 
 var Styles = StyleSheet.create({
@@ -53,30 +48,14 @@ var Styles = StyleSheet.create({
     left: 16,
     top: 16,
   },
-  label: {
-    marginTop: 16,
-    marginBottom: 16,
-    fontFamily: 'Roboto-Bold',
-  },
   input: {
     width: defaultStyles.bodyWidth - 16 - 16,
     height: 56,
     borderRadius: 4,
-    marginBottom: 16,
+    marginTop: 16,
     backgroundColor: defaultStyles.white,
     paddingLeft: 16,
     fontFamily: 'Roboto-Light',
-  },
-  successView: {
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    top: defaultStyles.navBarHeight - 28,
-    left: (defaultStyles.bodyWidth / 2) - 28
-  },
-  buttonView: {
-    position: 'absolute',
-    bottom: 16,
-    left: 16,
   },
   static: {
     flex:1,
@@ -88,10 +67,11 @@ var Styles = StyleSheet.create({
     marginLeft:16,
   },
   infoLabel: {
-    marginTop: 16,
+    marginTop: 8,
     fontFamily: 'Roboto-Regular',
-    fontSize: 18,
+    fontSize: 16,
     color: defaultStyles.medium,
+    width: defaultStyles.bodyWidth - 16 - 16 - 56 - 40,
   },
   labelName: {
     color: defaultStyles.dark,
@@ -116,12 +96,6 @@ var Styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'transparent',
   },
-  loadingView: {
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    top: defaultStyles.navBarHeight - 28,
-    right: (defaultStyles.bodyWidth / 2) - 28,
-  },
 });
 
 module.exports = React.createClass({
@@ -142,18 +116,14 @@ module.exports = React.createClass({
     }
   },
   inputFocused: function (refName) {
-    setTimeout(() => {
-      this.refs.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
-        React.findNodeHandle(this.refs[refName]),
-        110,
-        true
-      );
-    }, 50);
+    this.refs.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
+      React.findNodeHandle(this.refs[refName]),
+      116,
+      true
+    );
   },
   inputBlured: function (refName) {
-    setTimeout(() => {
-      this.refs.scrollView.getScrollResponder().scrollTo(0, 0);
-    }, 50);
+    this.refs.scrollView.getScrollResponder().scrollTo(0, 0);
   },
   onPhotoChange: function(image) {
     this.setState({image});
@@ -205,7 +175,7 @@ module.exports = React.createClass({
           }
         });
       } else {
-        this.props.actions.updateUser('password', this.state.password);
+        this.props.actions.updateUser('password', _.trim(this.state.password));
         this.setState({
           password: null,
         });
@@ -220,7 +190,7 @@ module.exports = React.createClass({
     }
 
     if (this.state.name) {
-      this.props.actions.updateUser('name', this.state.name);
+      this.props.actions.updateUser('name', _.trim(this.state.name));
       this.setState({
         name: null,
       });
@@ -228,6 +198,8 @@ module.exports = React.createClass({
 
   },
   onlogOut: function () {
+    var Landing = require('./landing');
+
     this.props.navigator.replace({
       name: 'landing',
       component: Landing,
@@ -254,31 +226,13 @@ module.exports = React.createClass({
       />
     )
   },
-  renderSuccess: function () {
-    setTimeout(() => {
-      this.props.actions.clearSuccess();
-    }, 3000);
-
-    return (
-      <View style={Styles.successView}>
-        <Success />
-      </View>
-    );
-  },
-  renderLoading: function () {
-    return (
-      <View style={Styles.loadingView}>
-        <Loading />
-      </View>
-    );
-  },
   renderButton: function () {
     return (
       <View>
         <Button
           onPress={this.onUpdateAccount}
           title='SAVE'
-          color={defaultStyles.red}
+          color={defaultStyles.blue}
         />
       </View>
     );
@@ -304,6 +258,10 @@ module.exports = React.createClass({
           <NavBar
             title='Account'
             menuButton={this.props.menuButton}
+            clearSuccess={this.props.actions.clearSuccess}
+            loading={this.props.store.loading}
+            success={this.props.store.success}
+            store={this.props.store}
           />
           <View style={Styles.inputView}>
             <View style={Styles.static}>
@@ -317,6 +275,9 @@ module.exports = React.createClass({
                   {user.name}
                 </Text>
                 <Text style={Styles.infoLabel}>
+                  {'@' + user.handle}
+                </Text>
+                <Text style={Styles.infoLabel}>
                   {user.email}
                 </Text>
               </View>
@@ -328,39 +289,30 @@ module.exports = React.createClass({
               scrollEnabled={false}
             >
               <View ref='input'>
-                <Text style={Styles.label}>
-                  Full Name
-                </Text>
                 <TextInput
                   style={Styles.input}
                   onChangeText={(name) => this.setState({name})}
                   value={this.state.name}
-                  placeholder={user.name}
+                  placeholder='Full Name'
                   autoCorrect={false}
                   placeholderTextColor={defaultStyles.gray}
                 />
-                <Text style={Styles.label}>
-                  Username
-                </Text>
                 <TextInput
                   style={Styles.input}
                   onChangeText={(username) => this.setState({username})}
                   value={this.state.username}
-                  placeholder={user.handle}
+                  placeholder='Username'
                   placeholderTextColor={defaultStyles.gray}
                   autoCapitalize='none'
                   autoCorrect={false}
                   onFocus={this.inputFocused.bind(this, 'input')}
                   onBlur={this.inputBlured.bind(this, 'input')}
                 />
-                <Text style={Styles.label}>
-                  Password
-                </Text>
                 <TextInput
                   ref='password'
                   style={Styles.input}
                   onChangeText={(password) => this.setState({password})}
-                  placeholder="**********"
+                  placeholder="Password"
                   placeholderTextColor={defaultStyles.gray}
                   value={this.state.password}
                   secureTextEntry={true}
@@ -373,15 +325,13 @@ module.exports = React.createClass({
               </View>
             </ScrollView>
           </View>
-          <View style={Styles.buttonView}>
+          <View style={defaultStyles.buttonView}>
             <Button
               onPress={this.onlogOut}
               title='LOG OUT'
-              color={defaultStyles.blue}
+              color={defaultStyles.red}
             />
           </View>
-        {this.props.store.loading ? this.renderLoading() : null}
-        {this.props.store.success ? this.renderSuccess() : null}
       </View>
     );
   }

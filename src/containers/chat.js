@@ -8,7 +8,6 @@ var NavBar = require('../components/navBar');
 var NavBarChat = require('../components/navBarChat');
 var ChatContainer = require('../components/chatContainer');
 var ChatBar = require('../components/chatBar');
-var Success = require('../elements/success');
 var Timer = require('../elements/timer');
 var PhotoPreview = require('./photoPreview');
 
@@ -23,14 +22,11 @@ var {
 } = React;
 
 var AddPhoto;
-var Loading;
 
 if (Platform.OS === 'android') {
   AddPhoto = require('./addPhotoAndroid');
-  Loading = require('../elements/loadingAndroid');
 } else {
   AddPhoto = require('./addPhotoIOS')
-  Loading = require('../elements/loadingIOS');
 }
 
 var Styles = StyleSheet.create({
@@ -38,18 +34,26 @@ var Styles = StyleSheet.create({
     backgroundColor: defaultStyles.background,
     height: defaultStyles.bodyHeight,
   },
-  loadingView: {
+  titleWarning: {
+    flex: 1,
     position: 'absolute',
-    backgroundColor: 'transparent',
-    top: defaultStyles.navBarHeight + defaultStyles.navBarHeight - 28,
-    right: (defaultStyles.bodyWidth / 2) - 28,
+    top: 100,
+    height: 50,
+    width: defaultStyles.bodyWidth,
+    backgroundColor: defaultStyles.blue,
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: 0.8,
   },
-  successView: {
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    top: defaultStyles.navBarHeight + defaultStyles.navBarHeight - 28,
-    left: (defaultStyles.bodyWidth / 2) - 28
+  titleWarningText: {
+    fontSize: 14,
+    color: defaultStyles.white,
+    fontFamily: 'Roboto-Regular',
+    textAlign: 'center',
   },
+  textBold: {
+    fontFamily: 'Roboto-Bold',
+  }
 });
 
 module.exports = React.createClass({
@@ -81,22 +85,32 @@ module.exports = React.createClass({
   onBackPress: function () {
     this.props.navigator.pop();
   },
-  renderLoading: function () {
+  countdown: function (expiration, chatId){
+    var timeLeft = moment(expiration) - moment();
+    setTimeout(() => {
+      this.props.navigator.pop();
+      this.props.actions.removeExpiredChats(chatId);
+    }, timeLeft);
+  },
+  renderTitleWarning: function() {
     return (
-      <View style={Styles.loadingView}>
-        <Loading />
+      <View style={Styles.titleWarning}>
+        <Text style={Styles.titleWarningText}>
+          {'Looks like your chat needs a title. Send a message with a hashtag to update title. i.e. '}
+          <Text style={Styles.textBold}>
+            #bunches4life
+          </Text>
+        </Text>
       </View>
     );
   },
-  renderSuccess: function () {
-    setTimeout(() => {
-      this.props.actions.clearSuccess();
-    }, 3000);
-
+  renderNotification: function () {
     return (
-      <View style={Styles.successView}>
-        <Success />
-      </View>
+      <Notification
+        notification={this.props.store.pushNotification}
+        onPressNotificationClose={this.props.actions.clearPushNotification}
+        onPressNotification={this.onPressNotification}
+      />
     );
   },
   render: function() {
@@ -120,11 +134,15 @@ module.exports = React.createClass({
       .reverse();
 
     var typers = _.find(this.props.store.typers, {'id' : chatId}) || {
-      chatId: null,
+      id: null,
       users: [],
     };
 
-    var title = this.props.store.bunch.attributes.name;
+    var userCount = _.uniq(data.messages, 'uid').length;
+
+    var shouldUpdateTitle = (chatAttributes.name === this.props.store.user.handle);
+
+    this.countdown(moment(chatAttributes.expirationDate).toDate(), chatId);
 
     return (
       <View style={Styles.body}>
@@ -147,6 +165,7 @@ module.exports = React.createClass({
           addTyper={this.props.actions.addTyper}
           deleteTyper={this.props.actions.deleteTyper}
           forChat={true}
+          verified={true}
         >
           <ChatContainer
             user={this.props.store.user}
@@ -156,14 +175,15 @@ module.exports = React.createClass({
             squashMessages={this.props.actions.squashMessages}
             queryUser={this.props.actions.queryUser}
           >
-            <NavBar
-              title={title}
-              menuButton={this.props.menuButton}
-            />
             <NavBarChat
               title={chatAttributes.name}
               onBackPress={this.onBackPress}
               score={data.score}
+              userCount={userCount}
+              expiration={moment(chatAttributes.expirationDate).toDate()}
+              clearSuccess={this.props.actions.clearSuccess}
+              loading={this.props.store.loading}
+              success={this.props.store.success}
             />
             <Timer
               expiration={moment(chatAttributes.expirationDate).toDate()}
@@ -171,10 +191,10 @@ module.exports = React.createClass({
               view='bunch'
               width={defaultStyles.bodyWidth - 10}
             />
+            {shouldUpdateTitle ? this.renderTitleWarning() : null}
           </ChatContainer>
         </ChatBar>
-        {this.props.store.loading ? this.renderLoading() : null}
-        {this.props.store.success ? this.renderSuccess() : null}
+        {this.props.store.pushNotification ? this.renderNotification() : null}
       </View>
     );
   }

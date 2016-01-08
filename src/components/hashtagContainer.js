@@ -58,15 +58,12 @@ module.exports = React.createClass({
       chatId: rowData.chat.id
     });
   },
-  onAvatarPress: function (rowData) {
-    var Profile = require('../containers/profile');
-
-    var user = rowData.chat.get('createdBy');
-
+  onAvatarPress: function (imageURL) {
     this.props.navigator.push({
-      name: 'profile',
-      component: Profile,
-      handle: user.attributes.handle,
+      name: 'enlarge photo',
+      component: EnlargePhoto,
+      hasSideMenu: false,
+      photo: imageURL,
     });
   },
   onPressImage: function (imageURL) {
@@ -86,6 +83,16 @@ module.exports = React.createClass({
       hashtag: word,
     });
   },
+  onMentionPress: function (uid, handle) {
+    var Profile = require('../containers/profile');
+
+    this.props.navigator.push({
+      name: 'profile',
+      component: Profile,
+      uid: uid,
+      handle: handle,
+    });
+  },
   renderChatRow: function(rowData) {
     return (
       <ChatCard
@@ -95,6 +102,7 @@ module.exports = React.createClass({
         onPressImage={this.onPressImage}
         squashMessages={this.props.squashMessages}
         onHashtagPress={this.onHashtagPress}
+        onMentionPress={this.onMentionPress}
       />
     );
   },

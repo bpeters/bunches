@@ -11,6 +11,25 @@ import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 
+// Added for camera
+import com.facebook.react.CompositeReactPackage;
+import com.lwansbrough.ReactCamera.ReactCameraPackage;
+
+// Added for CodePush
+import com.microsoft.codepush.react.CodePush;
+
+// Added for Camera Roll
+import fr.bamlab.rncameraroll.CameraRollPackage;
+
+
+// Added for Icons
+import com.smixx.reactnativeicons.ReactNativeIcons;  // <--- import
+import java.util.Arrays; // <--- import this if you want to specify which fonts to load
+import com.smixx.reactnativeicons.IconFont; // <--- import this if you want to specify which fonts to load
+
+
+
+
 public class MainActivity extends Activity implements DefaultHardwareBackBtnHandler {
 
     private ReactInstanceManager mReactInstanceManager;
@@ -21,14 +40,30 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
         super.onCreate(savedInstanceState);
         mReactRootView = new ReactRootView(this);
 
+        CodePush codePush = new CodePush("mmtzbrYrru6M28Ngw-0NiAqbLpvYEJXL5qzrg", this);
+
+
         mReactInstanceManager = ReactInstanceManager.builder()
                 .setApplication(getApplication())
-                .setBundleAssetName("index.android.bundle")
+                .setJSBundleFile(codePush.getBundleUrl("index.android.bundle"))
                 .setJSMainModuleName("index.android")
                 .addPackage(new MainReactPackage())
+                .addPackage(new ReactCameraPackage(this))
+                .addPackage(new ReactNativeIcons())
+                .addPackage(codePush.getReactPackage())
+                .addPackage(new CameraRollPackage())
                 .setUseDeveloperSupport(BuildConfig.DEBUG)
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();
+
+        // mReactInstanceManager = ReactInstanceManager.builder()
+        //         .setApplication(getApplication())
+        //         .setBundleAssetName("index.android.bundle")
+        //         .setJSMainModuleName("index.android")
+        //         .addPackage(new MainReactPackage())
+        //         .setUseDeveloperSupport(BuildConfig.DEBUG)
+        //         .setInitialLifecycleState(LifecycleState.RESUMED)
+        //         .build();
 
         mReactRootView.startReactApplication(mReactInstanceManager, "bunches", null);
 

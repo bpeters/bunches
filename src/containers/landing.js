@@ -20,9 +20,17 @@ var Styles = StyleSheet.create({
     alignItems: 'stretch',
     backgroundColor: defaultStyles.white,
   },
-  image: {
+  imageBubble: {
+    marginTop: 160,
+    alignSelf: 'center',
+    width: 295 * 0.5,
+    height: 299 * 0.5,
+  },
+  imageLogo: {
     marginTop: 60,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    width: 400 * 0.6,
+    height: 74 * 0.6,
   },
   buttonView: {
     position: 'absolute',
@@ -55,19 +63,23 @@ module.exports = React.createClass({
     return (
       <View style={Styles.view}>
         <Image
-          style={Styles.image}
+          style={Styles.imageBubble}
+          source={require('../assets/bubble.png')}
+        />
+        <Image
+          style={Styles.imageLogo}
           source={require('../assets/logo.png')}
         />
         <View style={Styles.buttonView}>
           <Button
             onPress={this.onLoginPress}
             title='SIGN IN'
-            color={defaultStyles.blue}
+            color={defaultStyles.red}
           />
           <Button
             onPress={this.onCreateAccountPress}
             title='CREATE ACCOUNT'
-            color={defaultStyles.red}
+            color={defaultStyles.blue}
           />
           </View>
       </View>

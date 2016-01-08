@@ -4,6 +4,7 @@ var React = require('react-native');
 var _ = require('lodash');
 
 var defaultStyles = require('../styles');
+var sayings = require('../assets/sayings');
 
 var {
   View,
@@ -13,11 +14,18 @@ var {
   ScrollView,
   Text,
   ListView,
+  Platform,
 } = React;
 
 var IconButton = require('../elements/iconButton');
 var MentionContainer = require('./mentionContainer');
-var CameraRollContainer = require('./cameraRollContainer');
+
+var CameraRollContainer;
+if(Platform.OS === 'ios'){
+  CameraRollContainer = require('./cameraRollContainerIOS');
+} else {
+  CameraRollContainer = require('./cameraRollContainerAndroid');
+}
 
 var Styles = StyleSheet.create({
   scroll: {
@@ -56,6 +64,7 @@ var Styles = StyleSheet.create({
     alignItems: 'center',
   },
   iconContainer : {
+    width: defaultStyles.bodyWidth - 12,
     height: 44,
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -68,7 +77,7 @@ var Styles = StyleSheet.create({
     alignItems: 'center',
   },
   textSend: {
-    color: defaultStyles.blue,
+    color: defaultStyles.red,
     fontWeight: 'bold',
     fontFamily: 'Roboto-Regular',
   },
@@ -88,39 +97,50 @@ module.exports = React.createClass({
     addTyper: React.PropTypes.func,
     deleteTyper: React.PropTypes.func,
     forChat: React.PropTypes.bool,
+    verified: React.PropTypes.bool,
   },
   getInitialState: function () {
-    var showTextInput = this.props.forChat ? true : false;
     return {
       message: null,
       mention: null,
-      inputShow: showTextInput,
+      inputShow: false,
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2
       }),
     };
   },
+  componentWillUnmount: function (){
+    if (this.props.forChat) {
+      this.props.deleteTyper(this.props.chat.objectId || this.props.chat.id);
+    }
+  },
   inputFocused: function (refName) {
-    setTimeout(() => {
-      this.refs.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
-        React.findNodeHandle(this.refs[refName]),
-        this.props.height,
-        true
-      );
-    }, 50);
+    this.refs.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
+      React.findNodeHandle(this.refs[refName]),
+      this.props.height,
+      true
+    );
 
     if (this.props.forChat) {
       this.props.addTyper(this.props.chat.objectId || this.props.chat.id);
     }
   },
   inputBlured: function (refName) {
-    setTimeout(() => {
-      this.refs.scrollView.getScrollResponder().scrollTo(0, 0);
-    }, 50);
+    this.refs.scrollView.getScrollResponder().scrollTo(0, 0);
 
     if (this.props.forChat) {
       this.props.deleteTyper(this.props.chat.objectId || this.props.chat.id);
     }
+  },
+  onMentionIconPress: function (){
+    var text = '@';
+    this.props.getUsers();
+    this.setState({
+      message: text,
+      mention: text,
+      inputShow: true,
+    });
+    this.refs.inputField.focus();
   },
   onChangeText: function (message) {
 
@@ -151,7 +171,8 @@ module.exports = React.createClass({
     }
 
     this.setState({
-      message: null
+      message: null,
+      mention: null,
     });
   },
   onPressMention: function (mention) {
@@ -166,22 +187,26 @@ module.exports = React.createClass({
       mention: null,
     });
 
+    this.refs.inputField.focus();
     this.props.clearMentions();
   },
   onPressMentionClose: function () {
     var message = _.clone(this.state.message);
-    var end = message.indexOf(this.state.mention);
 
-    message = message.substring(0, end);
+    if (message) {
+      var end = message.indexOf(this.state.mention);
 
-    this.setState({
-      message: message,
-      mention: null,
-    });
+      message = message.substring(0, end);
 
-    this.setState({
-      mention: null,
-    });
+      this.setState({
+        message: message,
+        mention: null,
+      });
+    } else {
+      this.setState({
+        mention: null,
+      });
+    }
 
     this.props.clearMentions();
   },
@@ -192,7 +217,7 @@ module.exports = React.createClass({
           onPress={rowData.onPress}
           icon={rowData.icon}
           size={24}
-          color={defaultStyles.blue}
+          color={defaultStyles.red}
         />
       </View>
     )
@@ -204,12 +229,23 @@ module.exports = React.createClass({
 
     this.setState({
       inputShow:!this.state.inputShow,
-      cameraRoll: false
+      cameraRoll: false,
+      mention: null,
+      message: null,
     });
+
+    if (this.state.inputShow) {
+      this.refs.inputField.focus();
+    }
   },
   onCameraRollPress: function() {
     this.setState({
       cameraRoll:!this.state.cameraRoll
+    });
+  },
+  onPowerPress: function() {
+    this.props.createMessage(this.props.chat, {
+      message: '/!/!/!/' + this.props.chat.attributes.name + _.sample(sayings)
     });
   },
   onPressCameraRollPhoto: function (photo) {
@@ -228,6 +264,7 @@ module.exports = React.createClass({
       <View style={Styles.wrap}>
         {this.renderIcon(textInputBackIcon)}
         <TextInput
+          ref='inputField'
           style={Styles.input}
           onChangeText={(message) => {this.onChangeText(message)}}
           onSubmitEditing={() => {
@@ -267,6 +304,13 @@ module.exports = React.createClass({
       {icon: 'ion|images', onPress: this.onCameraRollPress}
     ];
 
+    if (this.props.forChat) {
+      icons.push(
+        {icon: 'ion|at', onPress: this.onMentionIconPress},
+        {icon: 'fontawesome|bolt', onPress: this.onPowerPress}
+      );
+    }
+
     return (
       <View style={Styles.wrap}>
         <View style={Styles.iconContainer}>
@@ -301,6 +345,16 @@ module.exports = React.createClass({
     );
   },
   render: function() {
+
+    var chatBar;
+
+    if(this.props.verified){
+      chatBar = 
+      <View ref='chat' style={Styles.body}>
+        {this.state.inputShow ? this.renderChat() : this.renderIcons()}
+      </View>;
+    }
+    
     return (
       <ScrollView
         ref='scrollView'
@@ -309,11 +363,9 @@ module.exports = React.createClass({
         scrollEnabled={false}
       >
         {this.props.children}
-        {this.state.mention ? this.renderMentions() : null}
-        {this.state.cameraRoll ? this.renderCameraRoll() : null}
-        <View ref='chat' style={Styles.body}>
-          {this.state.inputShow ? this.renderChat() : this.renderIcons()}
-        </View>
+        {this.props.verified ? (this.state.mention ? this.renderMentions() : null) : null}
+        {this.props.verified ? (this.state.cameraRoll ? this.renderCameraRoll() : null) : null}
+        {chatBar}
       </ScrollView>
     );
   }

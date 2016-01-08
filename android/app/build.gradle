@@ -74,5 +74,13 @@ android {
 dependencies {
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
-    compile "com.facebook.react:react-native:0.15.+"
+    compile "com.facebook.react:react-native:0.17.+"
+
+    // New
+    compile project(':react-native-icons')
+    compile project(':com.lwansbrough.ReactCamera')
+    compile project(':react-native-code-push')
+
+    compile project(":rn-camera-roll")
+    compile fileTree(dir: "node_modules/rn-camera-roll/android/libs", include: ["*.jar"])
 }

@@ -92,7 +92,7 @@ module.exports = React.createClass({
   },
   render: function() {
     return (
-      <TouchableOpacity onPress={this.props.onPress}>
+      <TouchableOpacity onPress={this.props.imageURL ? this.props.onPress : null}>
         <View style={Styles.body}>
           {this.props.imageURL ? this.renderImage() : this.renderIcon()}
         </View>

@@ -14,6 +14,7 @@ var Splash = require('./elements/splash');
 var {
   View,
   Navigator,
+  Platform,
 } = React;
 
 module.exports= React.createClass({
@@ -51,21 +52,36 @@ module.exports= React.createClass({
       resetPassword: this.resetPassword,
       squashMessages: this.squashMessages,
       getHashtagChats: this.getHashtagChats,
+      removeExpiredChats: this.removeExpiredChats,
     };
 
-    if (route.name === 'profile' && route.handle !== this.state.profileHandle && !this.state.loading) {
-      this.getUserByHandle(route.handle)
+    if (route.name === 'profile' && route.uid !== this.state.profileUser && !this.state.loading) {
+      this.queryUser(route.uid)
         .then((user) => {
           this.getProfileChats(user);
         });
     } else if (route.name === 'hashtag' && route.hashtag !== this.state.hashtag && !this.state.loading) {
-      setTimeout(() => { 
+      setTimeout(() => {
         this.getHashtagChats(route.hashtag);
       }, 300);
-    } else if (route.name === 'chat') {
-      setTimeout(() => { 
-        this.clearNotifications(route.chatId);
+    } else if (route.name === 'chat' && !this.store.wait && route.chatId !== this.store.chat) {
+      this.store.wait = true;
+      this.store.chat = route.chatId;
+
+      setTimeout(() => {
+        var notification = _.find(this.state.notifications, {id : route.chatId});
+
+        if (notification) {
+          this.clearNotifications(route.chatId);
+        }
+
+        this.clearPushNotifications(route.chatId);
+
+        this.store.wait = false;
       }, 300);
+
+    } else if (route.name !== 'chat') {
+      this.store.chat = null;
     }
 
     if (route.hasSideMenu) {
@@ -89,6 +105,12 @@ module.exports= React.createClass({
     }
   },
   configureScene: function (route) {
+    var transition;
+    if(Platform.OS === 'ios'){
+      transition = Navigator.SceneConfigs.VerticalUpSwipeJump;
+    } else {
+      transition = Navigator.SceneConfigs.FloatFromBottomAndroid;
+    }
     if (route.name) {
       switch (route.name) {
         case 'enlarge photo':
@@ -97,9 +119,9 @@ module.exports= React.createClass({
           return Navigator.SceneConfigs.FloatFromRight;
         case 'add photo':
         case 'photo preview':
-          return Navigator.SceneConfigs.VerticalUpSwipeJump;
+          return transition;
         default:
-          return Navigator.SceneConfigs.HorizontalSwipeJump;
+          return Navigator.SceneConfigs.FloatFromRight;
       }
     } else {
       return Navigator.SceneConfigs.FloatFromRight;

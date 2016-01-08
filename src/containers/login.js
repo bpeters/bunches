@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 var Button = require('../elements/button');
 var NavBarOnboard = require('../components/navBarOnboard');
+var Loading = require('../elements/loading');
 
 var defaultStyles = require('../styles');
 
@@ -15,18 +16,9 @@ var {
   StyleSheet,
   Text,
   ScrollView,
-  AlertIOS,
   Platform,
   TouchableOpacity,
 } = React;
-
-var Loading;
-
-if (Platform.OS === 'android') {
-  Loading = require('../elements/loadingAndroid');
-} else {
-  Loading = require('../elements/loadingIOS');
-}
 
 var Styles = StyleSheet.create({
   view: {
@@ -37,6 +29,7 @@ var Styles = StyleSheet.create({
   inputView: {
     left: 16,
     top: defaultStyles.navBarHeight + 16,
+    height: 300,
   },
   input: {
     width: defaultStyles.bodyWidth - 16 - 16,
@@ -51,12 +44,6 @@ var Styles = StyleSheet.create({
     position: 'absolute',
     bottom: 16,
     left: 16,
-  },
-  loadingView: {
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    top: defaultStyles.navBarHeight - 28,
-    right: (defaultStyles.bodyWidth / 2) - 28,
   },
   forgotPassword: {
     fontFamily: 'Roboto-Regular',
@@ -92,7 +79,7 @@ module.exports = React.createClass({
     this.props.navigator.pop();
   },
   onLogin: function () {
-    this.props.actions.loginUser(this.state.email, this.state.password);
+    this.props.actions.loginUser(_.trim(this.state.email), _.trim(this.state.password));
   },
   onResetPassword: function () {
     this.props.actions.resetPassword(this.state.email);
@@ -105,20 +92,13 @@ module.exports = React.createClass({
       forgotPassword: !this.state.forgotPassword
     });
   },
-  renderLoading: function () {
-    return (
-      <View style={Styles.loadingView}>
-        <Loading />
-      </View>
-    );
-  },
   renderButton: function () {
     return (
       <View style={Styles.buttonView}>
         <Button
           onPress={this.onLogin}
           title='SIGN IN'
-          color={defaultStyles.red}
+          color={defaultStyles.blue}
         />
       </View>
     );
@@ -129,7 +109,7 @@ module.exports = React.createClass({
         <Button
           onPress={this.onResetPassword}
           title='RESET PASSWORD'
-          color={defaultStyles.blue}
+          color={defaultStyles.red}
         />
       </View>
     );
@@ -206,10 +186,13 @@ module.exports = React.createClass({
           <NavBarOnboard
             title='Sign In'
             onBackPress={this.onBackPress}
+            clearSuccess={this.props.actions.clearSuccess}
+            loading={this.props.store.loading}
+            success={this.props.store.success}
           />
           {this.state.forgotPassword ? this.renderForgotPassword() : this.renderLogin()}
         </ScrollView>
-        {this.props.store.loading ? this.renderLoading() : (!this.state.forgotPassword ? this.renderButton() : this.renderResetButton())}
+        {this.props.store.loading ? null : (!this.state.forgotPassword ? this.renderButton() : this.renderResetButton())}
       </View>
     );
   }

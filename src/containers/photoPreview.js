@@ -40,7 +40,7 @@ var Styles = StyleSheet.create({
     borderRadius: 90,
     borderWidth: 5,
     borderColor: defaultStyles.white,
-    backgroundColor: defaultStyles.red,
+    backgroundColor: defaultStyles.blue,
     opacity: 0.7,
   },
   iconViewRight: {
@@ -89,7 +89,7 @@ module.exports = React.createClass({
   onNewChat: function () {
     var Chat = require('./chat');
 
-    this.props.actions.createChat(null, this.props.route.photo);
+    this.props.actions.createChat('', this.props.route.photo);
 
     var bunch = this.props.store.bunch;
     var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
@@ -116,7 +116,7 @@ module.exports = React.createClass({
         <View style={Styles.container}>
           <Image
             source={{
-              uri: this.props.route.photo,
+              uri: 'data:image/jpeg;base64,' + this.props.route.photo,
             }}
             style={Styles.preview}
           />
