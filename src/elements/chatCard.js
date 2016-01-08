@@ -75,6 +75,7 @@ var Styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Roboto-Regular',
     color: defaultStyles.blue,
+    width: 150,
   },
   chatName: {
     fontSize: 14,
