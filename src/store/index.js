@@ -167,21 +167,26 @@ module.exports = {
     });
   },
   checkForHashtags: function (message) {
-    var words = message.split(' ');
-    var urlExpression = /(#[a-z\d]+)/gi;
-    var urlRegex = new RegExp(urlExpression);
 
-    return new Promise(function(resolve, reject){
-      if (message.match(urlRegex)) {
-        _.forEach(words, (word, i) => {
-          if (_.startsWith(word, '#')) {
-            resolve(word);
-          }
-        });
-      } else {
-        resolve();
+    return new Promise((resolve, reject) => {
+
+      if (message) {
+        var words = message.split(' ');
+        var hashExpression = /(#[a-z\d]+)/gi;
+        var hashRegex = new RegExp(hashExpression);
+
+        if (message.match(hashRegex)) {
+          _.forEach(words, (word, i) => {
+            if (_.startsWith(word, '#')) {
+              return resolve(word);
+            }
+          });
+        }
       }
-    }); 
+
+      return resolve();
+    });
+
   },
   updateChatTitle: function (chat, title) {
     var Chat = Parse.Object.extend("Chat");
@@ -210,36 +215,38 @@ module.exports = {
         var bunch = this.store.bunch;
         var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
 
-        ParseReact.Mutation.Create('Chat', {
+        return ParseReact.Mutation.Create('Chat', {
           name: title,
           expirationDate: new Date(expirationDate),
           belongsTo: bunch,
           createdBy: this.store.user,
           isDead: false,
         })
-        .dispatch()
-        .then((chat) => {
+        .dispatch();
+      })
+      .then((chat) => {
 
-          this.store.newChat = chat;
+        this.store.newChat = chat;
 
-          this.setState({
-            newChat: this.store.newChat
-          });
-
-          if (photo) {
-            this.uploadImage(photo)
-              .then((image) => {
-                this.createMessage(chat, {
-                  image: image,
-                  message: message,
-                });
-              });
-          } else {
-            this.createMessage(chat, {
-              message: message
-            });
-          }
+        this.setState({
+          newChat: this.store.newChat
         });
+
+        if (photo) {
+          this.uploadImage(photo)
+            .then((image) => {
+              this.createMessage(chat, {
+                image: image,
+                message: message,
+              });
+            });
+        } else {
+          this.createMessage(chat, {
+            message: message
+          });
+        }
+      }, (error) => {
+        this.handleParseError(error, 'Failed to Create Chat');
       });
   },
   createMessage: function (chat, options) {
@@ -327,7 +334,9 @@ module.exports = {
 
       messenger.push(message);
 
-      if (chat.attributes.name === this.store.user.handle) {
+      var name = chat.name || chat.attributes.name;
+
+      if (name === this.store.user.handle) {
         return this.checkForHashtags(options.message);
       } else {
         return;

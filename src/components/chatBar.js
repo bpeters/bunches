@@ -117,7 +117,7 @@ module.exports = React.createClass({
   inputFocused: function (refName) {
     this.refs.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
       React.findNodeHandle(this.refs[refName]),
-      this.props.height,
+      222,
       true
     );
 
