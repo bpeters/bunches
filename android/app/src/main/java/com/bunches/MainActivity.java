@@ -28,6 +28,9 @@ import com.smixx.reactnativeicons.IconFont; // <--- import this if you want to s
 // Added for Parse
 import com.parse.Parse;
 
+// Added for VideoPreview
+import com.brentvatne.react.ReactVideoPackage;
+
 
 public class MainActivity extends Activity implements DefaultHardwareBackBtnHandler {
 
@@ -55,6 +58,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
                 .addPackage(new MainReactPackage())
                 .addPackage(new ReactCameraPackage(this))
                 .addPackage(new ReactNativeIcons())
+                .addPackage(new ReactVideoPackage())
                 .addPackage(codePush.getReactPackage())
                 .setUseDeveloperSupport(BuildConfig.DEBUG)
                 .setInitialLifecycleState(LifecycleState.RESUMED)

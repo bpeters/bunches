@@ -19,9 +19,11 @@ var Camera = require('react-native-camera');
 
 var IconButton = require('../elements/iconButton');
 
+var VideoPreview = require('../containers/videoPreviewAndroid');
+
 var defaultStyles = require('../styles');
 
-var timer = 5000;
+var timer = 10000;
 
 var Styles = StyleSheet.create({
   overall: {
@@ -100,7 +102,33 @@ var Styles = StyleSheet.create({
   fill: {
     backgroundColor: defaultStyles.red,
     borderRadius: 45,
-  }
+  },
+
+
+
+
+  iconViewBottom: {
+    position:'absolute',
+    bottom: 16,
+    left: 16,
+    width: 56,
+    height: 56,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: defaultStyles.dark,
+    opacity: 0.8,
+    borderRadius: 28,
+  },
+
+
+
+
+
+
+
+
+
 });
 
 module.exports = React.createClass({
@@ -123,6 +151,7 @@ module.exports = React.createClass({
       pressAction: new Animated.Value(0),
       progressSize: 90,
       showButton: true,
+      percent: 0,
     };
   },
   componentWillMount: function() {
@@ -152,6 +181,33 @@ module.exports = React.createClass({
       this.setState({photo:image,preview:true});
     });
   },
+
+
+
+  onSaveVideoPress: function () {
+    //console.log('hello');
+    this.refs.cam.saveVideo((percent) => {
+      console.log(percent);
+      //this.setState({percent:percent})
+    });
+  },
+
+  onPreviewTest: function () {
+
+    //var path = "/storage/extSdCard/DCIM/Camera/Domino.mp4";
+
+    var path = "/storage/emulated/0/bunches.mp4";
+    //var path = "/storage/emulated/0/Snapchat/Snapchat-5999471489590759194.mp4";
+    //path = "http://files.parsetfss.com/0fddd9cf-f4d4-4699-81df-b9e09d9a5f66/tfss-83316f54-d56d-42ce-94f5-79428f72a66a-bunches.mp4";
+    this.props.navigator.push({
+          name: "video preview",
+          component: VideoPreview,
+          hasSideMenu: false,
+          videoPath: path,
+        });
+  },
+
+
   onVideoRecordStart: function () {
     this.setState({
       showButton: false,
@@ -169,15 +225,28 @@ module.exports = React.createClass({
   onVideoRecordStop: function () {
     clearTimeout();
     if(!this.state.isPhoto){
-      this.refs.cam.captureVideo();
-      this.setState({
-        showButton: true,
-        isPhoto: true,
+      this.refs.cam.captureVideo((path) => {
+        
+        console.log(path);
+
+
+        // var newPath = "file:/" + path;
+        // this.props.navigator.push({
+        //   name: "video preview",
+        //   component: VideoPreview,
+        //   hasSideMenu: false,
+        //   videoPath: newPath,
+        // });
+
       });
-      Animated.timing(this.state.pressAction, {
-        duration: timer,
-        toValue: 0
-      }).start();
+      // this.setState({
+      //   showButton: true,
+      //   isPhoto: true,
+      // });
+      // Animated.timing(this.state.pressAction, {
+      //   duration: timer,
+      //   toValue: 0
+      // }).start();
     }
   },
   onCameraSwitch: function() {
@@ -290,6 +359,19 @@ module.exports = React.createClass({
           size={30}
         />
       </View>
+
+
+      <View style={Styles.iconViewBottom}>
+        <IconButton
+          onPress={this.onPreviewTest}
+          icon='material|check'
+          size={30}
+        />
+      </View>
+
+
+
+
     </View>
     );
   },
