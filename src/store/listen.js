@@ -71,11 +71,11 @@ module.exports = {
   },
   listenToUserStatus: function () {
     AppStateIOS.addEventListener('change', (currentAppState) => {
-      if (currentAppState === 'background'){
+      if (currentAppState === 'background') {
         this.deleteUserStatus(this.store.bunch.id, this.store.user.objectId);
         _.forEach(this.store.chats, (chat) => {
           this.deleteTyper(chat.id);
-        })
+        });
       } else {
         this.addUserStatus(this.store.bunch.id, this.store.user.objectId);
       }

@@ -149,12 +149,18 @@ module.exports = React.createClass({
   },
   onCameraPress: function () {
     this.refs.cam.capture({
-      target: Camera.constants.CaptureTarget.memory
-    }, (err, image) => {
-      this.setState({
-        photo: 'data:image/jpeg;base64,' + image,
-        preview: true
+      target: Camera.constants.CaptureTarget.cameraRoll
+    }, (err, data) => {
+
+      var image = data.replace('file://', '');
+
+      NativeModules.ReadImageData.readImage(image, (image64) => {
+        this.setState({
+          photo: 'data:image/jpeg;base64,' + image64,
+          preview: true
+        });
       });
+
     });
   },
   onCameraSwitch: function() {
