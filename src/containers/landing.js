@@ -47,11 +47,12 @@ module.exports = React.createClass({
     store: React.PropTypes.object,
   },
   componentDidMount: function () {
+    if (this.props.store.bunch && this.props.store.user) {
+      var bunchId = _.clone(this.props.store.bunch.id);
+      var userId = _.clone(this.props.store.user.objectId);
 
-    var bunchId = _.clone(this.props.store.bunch.id);
-    var userId = _.clone(this.props.store.user.objectId);
-
-    this.props.actions.logoutUser(bunchId, userId);
+      this.props.actions.logoutUser(bunchId, userId);
+    }
   },
   onLoginPress: function () {
     this.props.navigator.push({

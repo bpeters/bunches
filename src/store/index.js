@@ -303,14 +303,14 @@ module.exports = {
 
         _.forEach(mentions, (mention) => {
 
-            var handle = _.trimLeft(mention, '@');
+            var handle = _.trimLeft(mention.toLowerCase(), '@');
 
             promiseMentions.push(
               this.getUserByHandle(handle)
                 .then((user) => {
                   if (user) {
                     Notification.mention(this.store.user, user.id, options.message, chat);
-                    return mention + '/?/?/?/' + user.id + '/?/?/?/';
+                    return mention.toLowerCase() + '/?/?/?/' + user.id + '/?/?/?/';
                   } else {
                     return;
                   }
@@ -334,7 +334,7 @@ module.exports = {
               var split = mention.split('/?/?/?/');
               var old = split[0];
 
-              if (old === word) {
+              if (old === word.toLowerCase()) {
                 word = mention;
               }
             }
