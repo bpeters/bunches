@@ -68,11 +68,11 @@ module.exports = React.createClass({
     var Bunch = require('./bunch');
 
     if (nextProps.store.user) {
-      this.props.navigator.replace({
+      this.props.navigator.immediatelyResetRouteStack([{
         name: 'bunch',
         component: Bunch,
         hasSideMenu: true,
-      });
+      }]);
     }
   },
   onBackPress: function () {

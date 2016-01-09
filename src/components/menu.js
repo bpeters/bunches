@@ -144,7 +144,7 @@ var Menu = React.createClass({
 
       this.props.actions.switchBunches(rowData)
         .then(() => {
-          this.props.navigator.replace({
+          this.props.navigator.push({
             name: 'bunch',
             component: Bunch,
             hasSideMenu: true,
