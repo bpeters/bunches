@@ -15,10 +15,16 @@
 
 #import "RCTPushNotificationManager.h"
 
+#import "Parse/Parse.h"
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  
+  [Parse setApplicationId:@"dsgXdFhexcMreakStwdqPqNLY0tUjMzGFKsF6g5H"
+                clientKey:@"VIgO2d9LhkwFMY9UVgbQFsXrKgh8bwYk7DAgpqWh"];
+
   NSURL *jsCodeLocation;
 
   /**
