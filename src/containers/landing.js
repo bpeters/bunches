@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react-native');
+var _ = require('lodash');
 
 var Button = require('../elements/button');
 var Login = require('./login');
@@ -43,9 +44,14 @@ module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
     actions: React.PropTypes.object,
+    store: React.PropTypes.object,
   },
   componentDidMount: function () {
-    this.props.actions.logoutUser();
+
+    var bunchId = _.clone(this.props.store.bunch.id);
+    var userId = _.clone(this.props.store.user.objectId);
+
+    this.props.actions.logoutUser(bunchId, userId);
   },
   onLoginPress: function () {
     this.props.navigator.push({

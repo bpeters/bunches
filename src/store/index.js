@@ -102,16 +102,31 @@ module.exports = {
     this.setState(this.store);
   },
   switchBunches: function (bunch) {
-    this.stopListeningToChats();
+    var oldBunchId = _.clone(this.store.bunch.id);
+
     this.store.bunch = bunch;
     this.store.chats = [];
     this.store.messages = [];
 
-    Query.chats(this.store.bunch)
+    this.setState({
+      loading: true,
+      bunch: this.store.bunch,
+      chats: this.store.chats,
+      messages: this.store.messages,
+    });
+
+    this.deleteUserStatus(oldBunchId, this.store.user.objectId);
+    this.stopListeningToChats(oldBunchId);
+
+    this.addUserStatus(bunch.id, this.store.user.objectId);
+
+    return Query.chats(this.store.bunch)
       .then((chats) => {
         this.store.chats = chats;
 
         this.listenToChats();
+
+        return;
       }, (err) => {
         this.handleParseError(err);
       });
@@ -562,11 +577,11 @@ module.exports = {
       }
     });
   },
-  logoutUser: function () {
+  logoutUser: function (bunchId, userId) {
     Storage.clean(this.store.messages)
       .then(() => {
         Parse.User.logOut();
-        this.deleteUserStatus(this.store.bunch.id, this.store.user.objectId);
+        this.deleteUserStatus(bunchId, userId);
         this.tearDownStore();
       });
   },

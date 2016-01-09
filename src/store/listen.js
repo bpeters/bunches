@@ -89,21 +89,19 @@ module.exports = {
     ref.push(userId);
   },
   deleteUserStatus: function(bunchId, userId) {
-    if (this.store.user) {
-      var url = config.firebase.url + '/bunch/' + bunchId + '/status/';
-      var ref = new Firebase(url);
+    var url = config.firebase.url + '/bunch/' + bunchId + '/status/';
+    var ref = new Firebase(url);
 
-      ref.once('value', (snapshot) => {
+    ref.once('value', (snapshot) => {
 
-        _.forEach(snapshot.val(), (value, key) => {
-          if (value === userId) {
-            new Firebase(url + '/' + key)
-              .remove();
-          }
-        });
-
+      _.forEach(snapshot.val(), (value, key) => {
+        if (value === userId) {
+          new Firebase(url + '/' + key)
+            .remove();
+        }
       });
-    }
+
+    });
   },
   listenToTyper: function () {
 
@@ -175,8 +173,8 @@ module.exports = {
 
     new Firebase(url).on('value', this.prepareMessages);
   },
-  stopListeningToChats: function () {
-    var url = config.firebase.url + '/bunch/' + this.store.bunch.id;
+  stopListeningToChats: function (oldBunchId) {
+    var url = config.firebase.url + '/bunch/' + oldBunchId;
 
     new Firebase(url).off('value', this.prepareMessages);
   },
