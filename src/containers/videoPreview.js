@@ -21,7 +21,7 @@ var Styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'cyan',
+    backgroundColor: 'black',
   },
   fullScreen: {
     position: 'absolute',
@@ -61,13 +61,6 @@ module.exports = React.createClass({
   },
   getInitialState: function () {
     return {
-      rate: 1,
-      volume: 1,
-      muted: false,
-      resizeMode: 'cover',
-      duration: 0.0,
-      currentTime: 0.0,
-      controls: false,
       paused: true,
     }
   },
@@ -84,13 +77,13 @@ module.exports = React.createClass({
           onPress={() => {this.setState({paused: !this.state.paused})}}
         >
           <Video
-            source={{uri: "http://files.parsetfss.com/0fddd9cf-f4d4-4699-81df-b9e09d9a5f66/tfss-fc43d765-ee42-48e8-a2a5-340d9b6f176b-bunches.mp4"}}
+            source={{uri: "https://files.parsetfss.com/0fddd9cf-f4d4-4699-81df-b9e09d9a5f66/tfss-fc43d765-ee42-48e8-a2a5-340d9b6f176b-bunches.mp4"}}
             style={Styles.fullScreen}
             rate={1.0}
             paused={this.state.paused}
             volume={1.0}
             muted={false}
-            resizeMode={'cover'}
+            resizeMode={'contain'}
             repeat={true}
           />
         </TouchableOpacity>

@@ -19,14 +19,10 @@ var {
 var Camera = require('react-native-camera');
 var IconButton = require('../elements/iconButton');
 var CameraRoll = require('rn-camera-roll').default;
-//var VideoPreview = require('./videoPreviewAndroid');
-
 var Video = require('react-native-video');
 
-
-
 var defaultStyles = require('../styles');
-var timer = 10000;
+var timer = 5000;
 
 var Styles = StyleSheet.create({
   overall: {
@@ -235,12 +231,7 @@ module.exports = React.createClass({
       }).start();
     }
   },
-  onVideoSave: function () {
-    this.refs.cameraHide.saveVideo(this.state.path, (message) => {
-      console.log(message);
-      // this.setState({photo:image,preview:true});
-    });
-  },
+  
   onPressClose: function () {
     this.props.navigator.pop();
   },
@@ -284,7 +275,35 @@ module.exports = React.createClass({
     });
   },
   onNewMessage: function () {
-    this.props.actions.createImageMessage(this.props.route.chat, this.state.photo);
+    this.props.actions.createMessage(this.props.route.chat, {image: this.state.photo});
+    this.props.navigator.pop();
+  },
+  onNewVideoChat: function () {
+    var Chat = require('./chat');
+
+    var save = this.refs.cameraHide.saveVideo(this.state.path);
+
+    this.props.actions.createChat(this.state.message, null, save);
+
+    var bunch = this.props.store.bunch;
+    var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
+
+    this.props.navigator.replace({
+      name: 'chat',
+      component: Chat,
+      hasSideMenu: false,
+      newChat: {
+        name: null,
+        expirationDate: expirationDate,
+        createdAt: Date.now(),
+        photo: this.state.photo,
+      },
+    });
+  },
+  onNewVideoMessage: function () {
+    var save = this.refs.cameraHide.saveVideo(this.state.path);
+   
+    this.props.actions.createMessage(this.props.route.chat, {video: save});
     this.props.navigator.pop();
   },
   onImagePress: function (image) {

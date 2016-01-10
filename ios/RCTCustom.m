@@ -55,32 +55,34 @@ RCT_EXPORT_METHOD(readImage:(NSString *)input callback:(RCTResponseSenderBlock)c
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(saveVideo:(NSString *)input)
+RCT_EXPORT_METHOD(saveVideo:(NSString *)input callback:(RCTResponseSenderBlock)callback)
 {
   
   // Create NSURL from uri
-  NSURL *url = [[NSURL alloc] initWithString:input];
+  //NSURL *url = [[NSURL alloc] initWithString:input];
   
-  NSData *videoData = [NSData dataWithContentsOfFile:url];
+  NSData *videoData = [NSData dataWithContentsOfFile: input];
   
   // Save the image to Parse
   PFFile *imageFile = [PFFile fileWithName:@"bunches.mp4" data:videoData];
   
   [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-    if (!error) {
+    if (succeeded) {
       // The image has now been uploaded to Parse. Associate it with a new object
-      PFObject* newPhotoObject = [PFObject objectWithClassName:@"PhotoObject"];
-      [newPhotoObject setObject:imageFile forKey:@"image"];
+      PFObject* newPhotoObject = [PFObject objectWithClassName:@"Videos"];
+      [newPhotoObject setObject:imageFile forKey:@"file"];
       
-      [newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (!error) {
-          NSLog(@"Saved");
+      [newPhotoObject saveInBackgroundWithBlock:^(BOOL success, NSError *err) {
+        if (success) {
+          callback(@[imageFile.url, newPhotoObject.objectId]);
         }
         else{
           // Error
-          NSLog(@"Error: %@ %@", error, [error userInfo]);
+          NSLog(@"Error: %@", err);
         }
       }];
+    } else {
+      NSLog(@"Error: %@", error);
     }
   }];
   

@@ -19,7 +19,7 @@ var {
 
 var Camera = require('react-native-camera');
 var IconButton = require('../elements/iconButton');
-var VideoPreview = require('./videoPreviewIOS');
+var Video = require('react-native-video');
 
 var defaultStyles = require('../styles');
 var timer = 5000;
@@ -141,7 +141,24 @@ var Styles = StyleSheet.create({
    borderRadius: 45,
   },
 
-
+  videoContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
+  },
+  fullScreen: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
+  iconViewCenter: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    opacity: 0.8,
+  },
 
 
   preview: {
@@ -168,13 +185,14 @@ module.exports = React.createClass({
       message: '',
       images: [],
 
-      videoPath: null,
       isPhoto: true,
       buttonColor: defaultStyles.blue,
       pressAction: new Animated.Value(0),
       progressSize: 90,
       showButton: true,
       percent: 0,
+      path: '',
+      paused: true,
     };
   },
 
@@ -213,18 +231,12 @@ module.exports = React.createClass({
       audio: true, 
       mode: Camera.constants.CaptureMode.video, 
       target: Camera.constants.CaptureTarget.disk
-    }, (err, data) => {
-      console.log(err);
-      console.log(data);
-
-      console.log('navigate', data);
-
-      this.props.navigator.push({
-        name: "video preview",
-        component: VideoPreview,
-        hasSideMenu: false,
-        videoPath: data,
-      });
+    }, (err, path) => {
+        this.setState({
+          preview: true,
+          path: path,
+          showButton: true,
+        })
     });
   },
   onVideoRecordStop: function () {
@@ -295,6 +307,8 @@ module.exports = React.createClass({
   onPreviewClose: function(){
     this.setState({
       photo: '',
+      message: '',
+      path: '',
       preview: false
     });
   },
@@ -319,7 +333,35 @@ module.exports = React.createClass({
     });
   },
   onNewMessage: function () {
-    this.props.actions.createImageMessage(this.props.route.chat, this.state.photo);
+    this.props.actions.createMessage(this.props.route.chat, {image: this.state.photo});
+    this.props.navigator.pop();
+  },
+  onNewVideoChat: function () {
+    var Chat = require('./chat');
+
+    var save = this.refs.cameraHide.saveVideo(this.state.path);
+
+    this.props.actions.createChat(this.state.message, null, save);
+
+    var bunch = this.props.store.bunch;
+    var expirationDate = moment().add(bunch.attributes.ttl, 'ms').format();
+
+    this.props.navigator.replace({
+      name: 'chat',
+      component: Chat,
+      hasSideMenu: false,
+      newChat: {
+        name: null,
+        expirationDate: expirationDate,
+        createdAt: Date.now(),
+        photo: this.state.photo,
+      },
+    });
+  },
+  onNewVideoMessage: function () {
+    var save = this.refs.cameraHide.saveVideo(this.state.path);
+   
+    this.props.actions.createMessage(this.props.route.chat, {video: save});
     this.props.navigator.pop();
   },
   onImagePress: function (data) {
@@ -331,6 +373,52 @@ module.exports = React.createClass({
         preview: true
       });
     });
+  },
+  renderVideoPreview: function () {
+    return (
+      <View style={Styles.videoContainer}>
+        <Camera 
+          style={Styles.cameraHide}
+          ref='cameraHide'
+        ></Camera>
+        <TouchableOpacity
+          style={Styles.fullScreen}
+          onPress={() => {this.setState({paused: !this.state.paused})}}
+        >
+          <Video
+            source={{uri: this.state.path}}
+            style={Styles.fullScreen}
+            rate={1.0}
+            paused={this.state.paused}
+            volume={1.0}
+            muted={false}
+            resizeMode={'cover'}
+            repeat={true}
+          />
+        </TouchableOpacity>
+        <View style={Styles.iconViewCenter}>
+          <IconButton
+            onPress={() => {this.setState({paused: !this.state.paused})}}
+            icon={this.state.paused ? 'material|play' : 'material|pause'}
+            size={100}
+          />
+        </View>
+        <View style={Styles.iconViewTopLeft}>
+          <IconButton
+            onPress={this.onPreviewClose}
+            icon='material|close'
+            size={30}
+          />
+        </View>
+        <View style={Styles.iconViewTopRight}>
+          <IconButton
+            onPress={this.props.route.chat ? this.onNewVideoMessage : this.onNewVideoChat}
+            icon='material|check'
+            size={30}
+          />
+        </View>
+      </View>
+    );
   },
   renderPreview: function () {
     return (
@@ -387,24 +475,22 @@ module.exports = React.createClass({
       </View>
     );
   },
-
-renderCaptureButton: function() {
-   return (
-     <View style={[Styles.captureButton, {
-       backgroundColor: this.state.buttonColor,
-     }]}
-     onLayout={this.getButtonSize}>
-     </View>
-   )
- },
- renderProgress: function() {
-   return (
-     <View style={Styles.animated}>
-       <Animated.View style={[Styles.fill, this.getProgressSize()]} />
-     </View>
-   )
- },
-
+  renderCaptureButton: function() {
+    return (
+      <View style={[Styles.captureButton, {
+          backgroundColor: this.state.buttonColor,
+        }]}
+        onLayout={this.getButtonSize}>
+      </View>
+    )
+  },
+  renderProgress: function() {
+    return (
+      <View style={Styles.animated}>
+        <Animated.View style={[Styles.fill, this.getProgressSize()]} />
+      </View>
+    )
+  },
   renderCamera: function() {
     return (
       <Camera
@@ -447,7 +533,10 @@ renderCaptureButton: function() {
   render: function() {
     return (
       <View style={Styles.overall}>
-        {this.state.preview ? this.renderPreview() : (this.state.cameraRoll ? this.renderCameraRoll() : this.renderCamera())}
+        {this.state.preview ? 
+          (this.state.path ? this.renderVideoPreview() : this.renderPreview() ) : 
+          (this.state.cameraRoll ? this.renderCameraRoll() : this.renderCamera())
+        }
       </View>
     );
   }

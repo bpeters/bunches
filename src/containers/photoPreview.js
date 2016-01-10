@@ -107,7 +107,7 @@ module.exports = React.createClass({
     });
   },
   onNewMessage: function () {
-    this.props.actions.createImageMessage(this.props.route.chat, this.props.route.photo);
+    this.props.actions.createMessage(this.props.route.chat, {image: this.props.route.photo});
     this.props.navigator.pop();
   },
   render: function() {

@@ -202,7 +202,18 @@ module.exports = {
       }
     });
   },
-  createChat: function (message, photo) {
+
+
+
+
+
+
+
+
+
+
+
+  createChat: function (message, image, video) {
     this.setState({
       loading: true,
     });
@@ -232,19 +243,11 @@ module.exports = {
           newChat: this.store.newChat
         });
 
-        if (photo) {
-          this.uploadImage(photo)
-            .then((image) => {
-              this.createMessage(chat, {
-                image: image,
-                message: message,
-              });
-            });
-        } else {
-          this.createMessage(chat, {
-            message: message
-          });
-        }
+        this.createMessage(chat, {
+          message: message,
+          image: image,
+          video: video,
+        });
       }, (error) => {
         this.handleParseError(error, 'Failed to Create Chat');
       });
@@ -255,16 +258,18 @@ module.exports = {
     var messenger = new Firebase(url);
     var user = this.store.user;
 
-    var message;
+    var message, newChat, newPath;
 
     ParseReact.Mutation.Create('Chat2User', {
       chat: chat,
       user: user,
-      image: options.image,
       text: options.message,
     })
     .dispatch()
     .then((chat2user) => {
+
+      newChat = chat2user;
+      newPath = url + '/' + chat2user.objectId;
 
       message = {
         uid: user.objectId || user.id,
@@ -272,7 +277,6 @@ module.exports = {
         handle: user.handle,
         username: user.username,
         userImageURL: user.image ? user.image.url() : null,
-        imageURL: options.image ? options.image.url() : null,
         time: new Date().getTime(),
       };
 
@@ -332,7 +336,13 @@ module.exports = {
         message.message = formatted.join(' ');
       }
 
-      messenger.push(message);
+      var messenger = new Firebase(newPath);
+      messenger.set(message);
+
+      if (options.image || options.video) {
+        this.updateMessage(newChat, messenger, options.image, options.video)
+      }
+      
 
       var name = chat.name || chat.attributes.name;
 
@@ -350,17 +360,32 @@ module.exports = {
       this.handleParseError(error, 'Failed to Create Message');
     });
   },
-  createImageMessage: function (chat, photo) {
-    this.setState({
-      loading: true,
-    });
+  updateMessage: function (chat, messenger, image, video) {
 
-    this.uploadImage(photo)
-      .then((image) => {
-        this.createMessage(chat, {
-          image: image,
-        });
-      });
+    if(image) {
+      this.uploadImage(image)
+        .then((img) => {
+          messenger.update({imageURL: img.url()});
+          return ParseReact.Mutation.Set(chat,{
+              image: img,
+            })
+            .dispatch();
+        }, (error) => {
+          this.handleParseError(error, 'Failed to Save Image');
+        })
+    } else {
+      video.then((obj) => {
+          messenger.update({videoURL: obj.url});
+          return Query.videoById(obj.id);
+        }).then((vid) => {
+            return ParseReact.Mutation.Set(chat,{
+              video: vid,
+            })
+            .dispatch();
+        }, (error) => {
+          this.handleParseError(error, 'Failed to Save Video');
+        })
+    }
   },
   checkEducationEmail: function (email) {
     var urlExpression = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.+-]+\.edu?/gi;

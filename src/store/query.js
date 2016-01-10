@@ -41,4 +41,8 @@ module.exports = {
 
     return query.first();
   },
+  videoById: function (id) {
+    var query = new Parse.Query('Videos');
+    return query.get(id);
+  },
 }
