@@ -1,18 +1,22 @@
 'use strict';
 
 var React = require('react-native');
+
 var {
   AppRegistry,
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
-  AlertIOS,
+  NativeModules,
 } = React;
 
 var Video = require('react-native-video');
+var IconButton = require('../elements/iconButton');
 
-var styles = StyleSheet.create({
+var defaultStyles = require('../styles');
+
+var Styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -25,6 +29,19 @@ var styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
+  },
+  iconViewTopLeft: {
+   position:'absolute',
+   top: 16,
+   left: 16,
+   width: 56,
+   height: 56,
+   flex: 1,
+   justifyContent: 'center',
+   alignItems: 'center',
+   backgroundColor: defaultStyles.dark,
+   opacity: 0.8,
+   borderRadius: 28,
   },
   controls: {
     backgroundColor: "transparent",
@@ -120,6 +137,10 @@ module.exports = React.createClass({
     this.setState({currentTime: data.currentTime});
   },
 
+  onPressSave: function () {
+    NativeModules.SaveVideoData.saveVideo(this.props.route.videoPath);
+  },
+
   getCurrentTimePercentage: function () {
     if (this.state.currentTime > 0) {
       return parseFloat(this.state.currentTime) / parseFloat(this.state.duration);
@@ -127,172 +148,42 @@ module.exports = React.createClass({
       return 0;
     }
   },
-
-  renderSkinControl: function (skin) {
-    var isSelected = this.state.skin == skin;
-    var selectControls = skin == 'native' || skin == 'embed';
-    return (
-      <TouchableOpacity onPress={() => { this.setState({
-          controls: selectControls,
-          skin: skin
-        }) }}>
-        <Text style={[styles.controlOption, {fontWeight: isSelected ? "bold" : "normal"}]}>
-          {skin}
-        </Text>
-      </TouchableOpacity>
-    );
-  },
-
-  renderRateControl: function (rate) {
-    var isSelected = (this.state.rate == rate);
-
-    return (
-      <TouchableOpacity onPress={() => { this.setState({rate: rate}) }}>
-        <Text style={[styles.controlOption, {fontWeight: isSelected ? "bold" : "normal"}]}>
-          {rate}x
-        </Text>
-      </TouchableOpacity>
-    )
-  },
-
-  renderResizeModeControl: function (resizeMode) {
-    var isSelected = (this.state.resizeMode == resizeMode);
-
-    return (
-      <TouchableOpacity onPress={() => { this.setState({resizeMode: resizeMode}) }}>
-        <Text style={[styles.controlOption, {fontWeight: isSelected ? "bold" : "normal"}]}>
-          {resizeMode}
-        </Text>
-      </TouchableOpacity>
-    )
-  },
-
-  renderVolumeControl: function (volume) {
-    var isSelected = (this.state.volume == volume);
-
-    return (
-      <TouchableOpacity onPress={() => { this.setState({volume: volume}) }}>
-        <Text style={[styles.controlOption, {fontWeight: isSelected ? "bold" : "normal"}]}>
-          {volume * 100}%
-        </Text>
-      </TouchableOpacity>
-    )
-  },
-
   renderCustomSkin: function () {
     var flexCompleted = this.getCurrentTimePercentage() * 100;
     var flexRemaining = (1 - this.getCurrentTimePercentage()) * 100;
 
     return (
-      <View style={styles.container}>
-        <TouchableOpacity style={styles.fullScreen} onPress={() => {this.setState({paused: !this.state.paused})}}>
-          <Video source={{uri: this.props.route.videoPath}}
-                 style={styles.fullScreen}
-                 rate={this.state.rate}
-                 paused={this.state.paused}
-                 volume={this.state.volume}
-                 muted={this.state.muted}
-                 resizeMode={this.state.resizeMode}
-                 onLoad={this.onLoad}
-                 onProgress={this.onProgress}
-                 onEnd={() => { AlertIOS.alert('Done!') }}
-                 repeat={true} />
+      <View style={Styles.container}>
+        <TouchableOpacity
+          style={Styles.fullScreen}
+          onPress={() => {this.setState({paused: !this.state.paused})}}
+        >
+          <Video
+            source={{uri: this.props.route.videoPath}}
+            style={Styles.fullScreen}
+            rate={this.state.rate}
+            paused={this.state.paused}
+            volume={this.state.volume}
+            muted={this.state.muted}
+            resizeMode={this.state.resizeMode}
+            onLoad={this.onLoad}
+            onProgress={this.onProgress}
+            repeat={false}
+          />
         </TouchableOpacity>
-
-        <View style={styles.controls}>
-          <View style={styles.generalControls}>
-            <View style={styles.skinControl}>
-              {this.renderSkinControl('custom')}
-              {this.renderSkinControl('native')}
-              {this.renderSkinControl('embed')}
-            </View>
-          </View>
-          <View style={styles.generalControls}>
-            <View style={styles.rateControl}>
-              {this.renderRateControl(0.5)}
-              {this.renderRateControl(1.0)}
-              {this.renderRateControl(2.0)}
-            </View>
-
-            <View style={styles.volumeControl}>
-              {this.renderVolumeControl(0.5)}
-              {this.renderVolumeControl(1)}
-              {this.renderVolumeControl(1.5)}
-            </View>
-
-            <View style={styles.resizeModeControl}>
-              {this.renderResizeModeControl('cover')}
-              {this.renderResizeModeControl('contain')}
-              {this.renderResizeModeControl('stretch')}
-            </View>
-          </View>
-
-          <View style={styles.trackingControls}>
-            <View style={styles.progress}>
-              <View style={[styles.innerProgressCompleted, {flex: flexCompleted}]} />
-              <View style={[styles.innerProgressRemaining, {flex: flexRemaining}]} />
-            </View>
-          </View>
+        <View style={Styles.iconViewTopLeft}>
+          <IconButton
+            onPress={this.onPressSave}
+            icon='material|check'
+            size={30}
+          />
         </View>
-      </View>
-    );
-  },
-
-  renderNativeSkin: function () {
-    var videoStyle = this.state.skin == 'embed' ? styles.nativeVideoControls : styles.fullScreen;
-    return (
-      <View style={styles.container}>
-        <View style={styles.fullScreen}>
-          <Video source={{uri: this.props.route.videoPath}}
-                 style={videoStyle}
-                 rate={this.state.rate}
-                 paused={this.state.paused}
-                 volume={this.state.volume}
-                 muted={this.state.muted}
-                 resizeMode={this.state.resizeMode}
-                 onLoad={this.onLoad}
-                 onProgress={this.onProgress}
-                 onEnd={() => { AlertIOS.alert('Done!') }}
-                 repeat={true}
-                 controls={this.state.controls} />
-        </View>
-        <View style={styles.controls}>
-          <View style={styles.generalControls}>
-            <View style={styles.skinControl}>
-              {this.renderSkinControl('custom')}
-              {this.renderSkinControl('native')}
-              {this.renderSkinControl('embed')}
-            </View>
-          </View>
-          <View style={styles.generalControls}>
-            <View style={styles.rateControl}>
-              {this.renderRateControl(0.5)}
-              {this.renderRateControl(1.0)}
-              {this.renderRateControl(2.0)}
-            </View>
-
-            <View style={styles.volumeControl}>
-              {this.renderVolumeControl(0.5)}
-              {this.renderVolumeControl(1)}
-              {this.renderVolumeControl(1.5)}
-            </View>
-
-            <View style={styles.resizeModeControl}>
-              {this.renderResizeModeControl('cover')}
-              {this.renderResizeModeControl('contain')}
-              {this.renderResizeModeControl('stretch')}
-            </View>
-          </View>
-        </View>
-
       </View>
     );
   },
   
   render: function () {
-    return this.state.controls ? this.renderNativeSkin() : this.renderCustomSkin();
+    return this.renderCustomSkin();
   }
   
 });
-
-

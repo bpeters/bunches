@@ -17,13 +17,15 @@ var {
 } = React;
 
 var Camera = require('react-native-camera');
-
 var IconButton = require('../elements/iconButton');
+var CameraRoll = require('rn-camera-roll').default;
+var VideoPreview = require('./videoPreviewAndroid');
+
+var Video = require('react-native-video');
+
+
 
 var defaultStyles = require('../styles');
-
-var CameraRoll = require('rn-camera-roll').default;
-
 var timer = 10000;
 
 var Styles = StyleSheet.create({
@@ -132,6 +134,24 @@ var Styles = StyleSheet.create({
     backgroundColor: defaultStyles.red,
     borderRadius: 45,
   },
+
+  videoContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
+  },
+  fullScreen: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
+  cameraHide: {
+    height: 0,
+    width: 0,
+  },
 });
 
 module.exports = React.createClass({
@@ -157,7 +177,8 @@ module.exports = React.createClass({
       progressSize: 90,
       showButton: true,
       percent: 0,
-      path: 'poop',
+      path: '',
+      paused: true,
     };
   },
   componentWillMount: function() {
@@ -185,15 +206,18 @@ module.exports = React.createClass({
 
 
 
+
+
+
   onVideoRecordStart: function () {
     this.setState({
       showButton: false,
       isPhoto: false,
     });
     this.refs.cam.captureVideo();
-    setTimeout(() => {
-      this.onVideoRecordStop();
-    }, timer);
+    // setTimeout(() => {
+    //   this.onVideoRecordStop();
+    // }, timer);
     Animated.timing(this.state.pressAction, {
       duration: timer,
       toValue: 1
@@ -203,35 +227,43 @@ module.exports = React.createClass({
     clearTimeout();
     if(!this.state.isPhoto){
       this.refs.cam.captureVideo((path) => {
-        
+        console.log(path);
+
         this.setState({
+          preview: true,
           path: path,
-        });
-
-
-        // var newPath = "file:/" + path;
+          showButton: true,
+        })
+        
         // this.props.navigator.push({
         //   name: "video preview",
         //   component: VideoPreview,
         //   hasSideMenu: false,
-        //   videoPath: newPath,
+        //   videoPath: path,
         // });
+
+
 
       });
       // this.setState({
       //   showButton: true,
       //   isPhoto: true,
       // });
-      // Animated.timing(this.state.pressAction, {
-      //   duration: timer,
-      //   toValue: 0
-      // }).start();
+      Animated.timing(this.state.pressAction, {
+        duration: timer,
+        toValue: 0
+      }).start();
     }
   },
 
 
 
-
+  onVideoSave: function () {
+    this.refs.cameraHide.saveVideo(this.state.path, (message) => {
+      console.log(message);
+      // this.setState({photo:image,preview:true});
+    });
+  },
 
 
 
@@ -254,6 +286,7 @@ module.exports = React.createClass({
     this.setState({
       photo: '',
       message: '',
+      path: '',
       preview: false
     });
   },
@@ -329,6 +362,45 @@ module.exports = React.createClass({
           <IconButton
             onPress={this.onCameraRoll}
             icon='material|arrow-left'
+            size={30}
+          />
+        </View>
+      </View>
+    );
+  },
+  renderVideoPreview: function () {
+    return (
+      <View style={Styles.videoContainer}>
+        <Camera 
+          style={Styles.cameraHide}
+          ref='cameraHide'
+        ></Camera>
+        <TouchableOpacity
+          style={Styles.fullScreen}
+          onPress={() => {this.setState({paused: !this.state.paused})}}
+        >
+          <Video
+            source={{uri: this.state.path}}
+            style={Styles.fullScreen}
+            rate={1.0}
+            paused={this.state.paused}
+            volume={1.0}
+            muted={false}
+            resizeMode={'cover'}
+            repeat={false}
+          />
+        </TouchableOpacity>
+        <View style={Styles.iconViewLeft}>
+          <IconButton
+            onPress={this.onPreviewClose}
+            icon='material|close'
+            size={30}
+          />
+        </View>
+        <View style={Styles.iconViewRight}>
+          <IconButton
+            onPress={this.props.route.chat ? this.onNewVideoMessage : this.onNewVideoChat}
+            icon='material|check'
             size={30}
           />
         </View>
@@ -416,17 +488,18 @@ module.exports = React.createClass({
           />
         </View>
 
-        <View>
-          <Text>{this.state.path}</Text>
-        </View>
-
       </View>
     );
   },
   render: function() {
     return (
       <View style={Styles.overall}>
-        {this.state.preview ? this.renderPreview() : (this.state.cameraRoll ? this.renderCameraRoll() : this.renderCamera())}
+
+        {this.state.preview ? 
+          (this.state.path ? this.renderVideoPreview() : this.renderPreview() ) : 
+          (this.state.cameraRoll ? this.renderCameraRoll() : this.renderCamera())
+        }
+
       </View>
     );
   }

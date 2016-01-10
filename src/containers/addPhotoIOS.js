@@ -14,104 +14,140 @@ var {
   CameraRoll,
   NativeModules,
   ScrollView,
+  Animated,
 } = React;
 
 var Camera = require('react-native-camera');
-
 var IconButton = require('../elements/iconButton');
+var VideoPreview = require('./videoPreviewIOS');
 
 var defaultStyles = require('../styles');
+var timer = 5000;
 
 var Styles = StyleSheet.create({
   overall: {
     flex: 1,
   },
   container: {
-    backgroundColor: defaultStyles.dark,
-    flex: 1,
+   backgroundColor: defaultStyles.dark,
+   flex: 1,
   },
   cameraRoll: {
-    marginTop: 56 + 16,
-    flex: 1,
+   marginTop: 56 + 16,
+   flex: 1,
   },
   imageGrid: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center'
+   flex: 1,
+   flexDirection: 'row',
+   flexWrap: 'wrap',
+   justifyContent: 'center'
   },
   image: {
-    width: 100,
-    height: 100,
-    margin: 10,
-    borderWidth: 2,
-    borderColor: defaultStyles.medium,
-    borderRadius: 4,
+   width: 100,
+   height: 100,
+   margin: 10,
+   borderWidth: 2,
+   borderColor: defaultStyles.medium,
+   borderRadius: 4,
   },
   camera: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
+   position: 'absolute',
+   top: 0,
+   right: 0,
+   bottom: 0,
+   left: 0,
   },
   capture: {
-    position: 'absolute',
-    left: defaultStyles.bodyWidth / 2 - 40,
-    bottom: 30, 
+   position: 'absolute',
+   left: defaultStyles.bodyWidth / 2 - 40,
+   bottom: 30, 
   },
   captureButton: {
-    height: 90,
-    width: 90,
-    borderRadius: 90,
-    borderWidth: 5,
-    borderColor: defaultStyles.white,
-    backgroundColor: defaultStyles.blue,
-    opacity: 0.7,
+   height: 90,
+   width: 90,
+   borderRadius: 45,
+   borderWidth: 5,
+   borderColor: defaultStyles.white,
+   opacity: 0.7,
   },
   iconViewTopRight: {
-    position:'absolute',
-    top: 16,
-    right: 16,
-    width: 56,
-    height: 56,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: defaultStyles.dark,
-    opacity: 0.8,
-    borderRadius: 28,
+   position:'absolute',
+   top: 16,
+   right: 16,
+   width: 56,
+   height: 56,
+   flex: 1,
+   justifyContent: 'center',
+   alignItems: 'center',
+   backgroundColor: defaultStyles.dark,
+   opacity: 0.8,
+   borderRadius: 28,
   },
   iconViewTopLeft: {
-    position:'absolute',
-    top: 16,
-    left: 16,
-    width: 56,
-    height: 56,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: defaultStyles.dark,
-    opacity: 0.8,
-    borderRadius: 28,
+   position:'absolute',
+   top: 16,
+   left: 16,
+   width: 56,
+   height: 56,
+   flex: 1,
+   justifyContent: 'center',
+   alignItems: 'center',
+   backgroundColor: defaultStyles.dark,
+   opacity: 0.8,
+   borderRadius: 28,
   },
   iconViewBottomLeft: {
-    position:'absolute',
-    bottom: 16,
-    left: 16,
-    width: 56,
-    height: 56,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: defaultStyles.dark,
-    opacity: 0.8,
-    borderRadius: 28,
+   position:'absolute',
+   bottom: 16,
+   left: 16,
+   width: 56,
+   height: 56,
+   flex: 1,
+   justifyContent: 'center',
+   alignItems: 'center',
+   backgroundColor: defaultStyles.dark,
+   opacity: 0.8,
+   borderRadius: 28,
   },
+
+
+
+  iconViewBottom: {
+   position:'absolute',
+   bottom: 16,
+   right: 16,
+   width: 56,
+   height: 56,
+   flex: 1,
+   justifyContent: 'center',
+   alignItems: 'center',
+   backgroundColor: defaultStyles.dark,
+   opacity: 0.8,
+   borderRadius: 28,
+  },
+  animated: {
+   height: 90,
+   width: 90,
+   borderRadius: 45,
+   borderWidth: 5,
+   borderColor: defaultStyles.white,
+   flexDirection: 'column',
+   alignItems: 'center',
+   justifyContent: 'center',
+   opacity: 1,
+  },
+  fill: {
+   backgroundColor: defaultStyles.red,
+   borderRadius: 45,
+  },
+
+
+
+
   preview: {
-    width: defaultStyles.bodyWidth,
-    height: defaultStyles.bodyHeight,
-    backgroundColor: defaultStyles.dark,
+   width: defaultStyles.bodyWidth,
+   height: defaultStyles.bodyHeight,
+   backgroundColor: defaultStyles.dark,
   },
 });
 
@@ -131,8 +167,82 @@ module.exports = React.createClass({
       photo: '',
       message: '',
       images: [],
+
+      videoPath: null,
+      isPhoto: true,
+      buttonColor: defaultStyles.blue,
+      pressAction: new Animated.Value(0),
+      progressSize: 90,
+      showButton: true,
+      percent: 0,
     };
   },
+
+  componentWillMount: function() {
+    this._value = 0;
+    this.state.pressAction.addListener((v) => this._value = v.value);
+  },
+  getButtonSize: function(e) {
+    this.setState({
+      progressSize: e.nativeEvent.layout.width - 10,
+    });
+  },
+  getProgressSize: function() {
+     var size = this.state.pressAction.interpolate({
+       inputRange: [0, 1],
+       outputRange: [this.state.progressSize, 0]
+     });
+
+     return {
+       width: size,
+       height: size,
+     }
+  },
+  onVideoRecordStart: function () {
+    this.setState({
+      showButton: false,
+      isPhoto: false,
+    });
+
+    Animated.timing(this.state.pressAction, {
+      duration: timer,
+      toValue: 1
+    }).start();
+
+    this.refs.cam.capture({
+      audio: true, 
+      mode: Camera.constants.CaptureMode.video, 
+      target: Camera.constants.CaptureTarget.disk
+    }, (err, data) => {
+      console.log(err);
+      console.log(data);
+
+      console.log('navigate', data);
+
+      this.props.navigator.push({
+        name: "video preview",
+        component: VideoPreview,
+        hasSideMenu: false,
+        videoPath: data,
+      });
+    });
+  },
+  onVideoRecordStop: function () {
+    if (!this.state.isPhoto) {
+      this.setState({
+        showButton: true,
+        isPhoto: true,
+      });
+      Animated.timing(this.state.pressAction, {
+        duration: timer,
+        toValue: 0
+      }).start();
+      this.refs.cam.stopCapture();
+
+    }
+  },
+
+
   storeImages: function (data) {
     var assets = data.edges;
     var images = assets.map( asset => asset.node.image );
@@ -277,6 +387,24 @@ module.exports = React.createClass({
       </View>
     );
   },
+
+renderCaptureButton: function() {
+   return (
+     <View style={[Styles.captureButton, {
+       backgroundColor: this.state.buttonColor,
+     }]}
+     onLayout={this.getButtonSize}>
+     </View>
+   )
+ },
+ renderProgress: function() {
+   return (
+     <View style={Styles.animated}>
+       <Animated.View style={[Styles.fill, this.getProgressSize()]} />
+     </View>
+   )
+ },
+
   renderCamera: function() {
     return (
       <Camera
@@ -284,8 +412,13 @@ module.exports = React.createClass({
         ref='cam'
         type={this.state.cameraType}
       >
-        <TouchableOpacity style={Styles.capture} onPress={this.onCameraPress} >
-          <View style={Styles.captureButton} />
+        <TouchableOpacity 
+          style={Styles.capture}
+          onPress={this.onCameraPress}
+          onLongPress={this.onVideoRecordStart}
+          onPressOut={this.onVideoRecordStop}
+        >
+          {this.state.showButton ? this.renderCaptureButton() : this.renderProgress()}
         </TouchableOpacity>
         <View style={Styles.iconViewTopLeft}>
           <IconButton

@@ -23,12 +23,16 @@ import com.microsoft.codepush.react.CodePush;
 // React Native Camera Roll
 import fr.bamlab.rncameraroll.CameraRollPackage;
 
-
 // React Native Icons
 import com.smixx.reactnativeicons.ReactNativeIcons;
 
+// React Native Video
+import com.brentvatne.react.ReactVideoPackage;
+
 // Parse
 import com.parse.Parse;
+
+// end added dependencies
 
 
 public class MainActivity extends Activity implements DefaultHardwareBackBtnHandler {
@@ -55,6 +59,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
                 .addPackage(new ReactNativeIcons())
                 .addPackage(codePush.getReactPackage())
                 .addPackage(new CameraRollPackage())
+                .addPackage(new ReactVideoPackage())
                 .setUseDeveloperSupport(BuildConfig.DEBUG)
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();

@@ -1,6 +1,9 @@
 #import "RCTBridgeModule.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <UIKit/UIKit.h>
+
+#import "Parse/Parse.h"
+
 @interface ReadImageData : NSObject <RCTBridgeModule>
 @end
 
@@ -20,13 +23,13 @@ RCT_EXPORT_METHOD(readImage:(NSString *)input callback:(RCTResponseSenderBlock)c
   
   // Using the ALAssetsLibrary instance and our NSURL object open the image.
   [library assetForURL:url resultBlock:^(ALAsset *asset) {
-      
+    
     ALAssetRepresentation *representation = [asset defaultRepresentation];
     //CGImageRef imageRef = [representation fullResolutionImage];
-      UIImage *imageRef = [UIImage
-                      imageWithCGImage:[representation fullScreenImage]
-                      scale:[representation scale]
-                      orientation:UIImageOrientationUp];
+    UIImage *imageRef = [UIImage
+                         imageWithCGImage:[representation fullScreenImage]
+                         scale:[representation scale]
+                         orientation:UIImageOrientationUp];
     
     // Create UIImageJPEGRepresentation from CGImageRef
     NSData *imageData = UIImageJPEGRepresentation(imageRef, 0.1);
@@ -41,6 +44,45 @@ RCT_EXPORT_METHOD(readImage:(NSString *)input callback:(RCTResponseSenderBlock)c
   }];
   
   
+  
+}
+@end
+
+@interface SaveVideoData : NSObject <RCTBridgeModule>
+@end
+
+@implementation SaveVideoData
+
+RCT_EXPORT_MODULE();
+
+RCT_EXPORT_METHOD(saveVideo:(NSString *)input)
+{
+  
+  // Create NSURL from uri
+  NSURL *url = [[NSURL alloc] initWithString:input];
+  
+  NSData *videoData = [NSData dataWithContentsOfFile:url];
+  
+  // Save the image to Parse
+  PFFile *imageFile = [PFFile fileWithName:@"bunches.mp4" data:videoData];
+  
+  [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    if (!error) {
+      // The image has now been uploaded to Parse. Associate it with a new object
+      PFObject* newPhotoObject = [PFObject objectWithClassName:@"PhotoObject"];
+      [newPhotoObject setObject:imageFile forKey:@"image"];
+      
+      [newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (!error) {
+          NSLog(@"Saved");
+        }
+        else{
+          // Error
+          NSLog(@"Error: %@ %@", error, [error userInfo]);
+        }
+      }];
+    }
+  }];
   
 }
 @end
