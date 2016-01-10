@@ -114,6 +114,7 @@ module.exports= React.createClass({
     if (route.name) {
       switch (route.name) {
         case 'enlarge photo':
+        case 'bunch':
           return Navigator.SceneConfigs.FadeAndroid;
         case 'settings':
           return Navigator.SceneConfigs.FloatFromRight;
