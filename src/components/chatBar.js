@@ -115,11 +115,12 @@ module.exports = React.createClass({
     }
   },
   inputFocused: function (refName) {
-    this.refs.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
-      React.findNodeHandle(this.refs[refName]),
-      0,
-      true
-    );
+
+    setTimeout(() => {
+      this.refs.scrollView.getScrollResponder().scrollResponderScrollNativeHandleToKeyboard(
+        React.findNodeHandle(this.refs[refName]), 0, true
+      )
+    }, 220);
 
     if (this.props.forChat) {
       this.props.addTyper(this.props.chat.objectId || this.props.chat.id);
