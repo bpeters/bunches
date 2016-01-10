@@ -11,6 +11,7 @@ var InvertibleScrollView = require('react-native-invertible-scroll-view');
 var Profile = require('../containers/profile');
 var Message = require('../elements/message');
 var Hashtag = require('../containers/hashtag');
+var VideoPreview = require('../containers/videoPreview');
 
 var defaultStyles = require('../styles');
 
@@ -24,6 +25,8 @@ var {
   TouchableOpacity,
   Image,
 } = React;
+
+
 
 var Styles = StyleSheet.create({
   container: {
@@ -99,6 +102,13 @@ var Styles = StyleSheet.create({
     color: defaultStyles.blue,
     fontFamily: 'Roboto-Regular',
   },
+
+  test: {
+    borderWidth: 1,
+    borderColor: 'blue',
+    height: 100,
+  }
+
 });
 
 module.exports = React.createClass({
@@ -134,6 +144,14 @@ module.exports = React.createClass({
       photo: imageURL,
     });
   },
+  onPressVideo: function (videoURL) {
+    this.props.navigator.push({
+      name: "video preview",
+      component: VideoPreview,
+      hasSideMenu: false,
+      videoPath: videoURL,
+    });
+  },
   onHashtagPress: function (word) {
     this.props.navigator.push({
       name: 'hashtag',
@@ -148,6 +166,20 @@ module.exports = React.createClass({
       uid: uid,
       handle: handle,
     });
+  },
+  renderVideo: function (videoURL) {
+    return (
+      <View style={Styles.imageWrap}>
+        <TouchableOpacity style={Styles.test} activeOpacity={0.9} onPress={() => {this.onPressVideo(videoURL)}}>
+          <Image
+            source={{
+              uri: videoURL,
+            }}
+            style={Styles.image}
+          /> 
+        </TouchableOpacity>
+      </View>
+    );
   },
   renderImage: function (imageURL) {
     return (
@@ -207,6 +239,7 @@ module.exports = React.createClass({
           </View>
           {rowData.message ? this.renderMessage(rowData.message) : null}
           {rowData.imageURL ? this.renderImage(rowData.imageURL) : null}
+          {rowData.videoURL ? this.renderVideo(rowData.videoURL) : null}
           {!_.isEmpty(rowData.squash) ? this.renderSquash(rowData.squash) : null}
         </View>
       </View>

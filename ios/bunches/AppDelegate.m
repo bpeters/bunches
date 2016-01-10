@@ -15,10 +15,15 @@
 
 #import "RCTPushNotificationManager.h"
 
+#import "Parse/Parse.h"
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+
+  [Parse setApplicationId:@"dsgXdFhexcMreakStwdqPqNLY0tUjMzGFKsF6g5H"
+                clientKey:@"VIgO2d9LhkwFMY9UVgbQFsXrKgh8bwYk7DAgpqWh"];
   NSURL *jsCodeLocation;
 
   /**
@@ -35,8 +40,8 @@
    * on the same Wi-Fi network.
    */
 
-  jsCodeLocation = [NSURL URLWithString:@"http://192.168.1.142:8081/index.ios.bundle?platform=ios&dev=true"];
-  //jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
+  //jsCodeLocation = [NSURL URLWithString:@"http://192.168.1.142:8081/index.ios.bundle?platform=ios&dev=true"];
+  jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
 
   /**
    * OPTION 2
