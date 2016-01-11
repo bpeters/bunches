@@ -2,7 +2,8 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <UIKit/UIKit.h>
 
-#import "Parse/Parse.h"
+#import <AWSCore/AWSCore.h>
+#import <AWSS3/AWSS3.h>
 
 @interface ReadImageData : NSObject <RCTBridgeModule>
 @end
@@ -59,32 +60,42 @@ RCT_EXPORT_METHOD(saveVideo:(NSString *)input callback:(RCTResponseSenderBlock)c
 {
   
   // Create NSURL from uri
-  //NSURL *url = [[NSURL alloc] initWithString:input];
+  NSURL *fileURL = [[NSURL alloc] initWithString:input];
   
-  NSData *videoData = [NSData dataWithContentsOfFile: input];
+  // Create timestamp for filename
+  NSDate *currentDate = [NSDate date];
+  NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+  [dateFormatter setDateFormat:@"dd.MM.YY HH:mm:ss"];
+  NSString *dateString = [dateFormatter stringFromDate:currentDate];
+
+  // Create strings for filename
+  NSString *file = @"videos/bunches-";
+  NSString *ext = @".mp4";
   
-  // Save the image to Parse
-  PFFile *imageFile = [PFFile fileWithName:@"bunches.mp4" data:videoData];
+  // Concatenate string to form filename
+  NSArray *myStrings = [[NSArray alloc] initWithObjects:file, dateString, ext, nil];
+  NSString *fileName = [myStrings componentsJoinedByString:@""];
   
-  [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-      // The image has now been uploaded to Parse. Associate it with a new object
-      PFObject* newPhotoObject = [PFObject objectWithClassName:@"Videos"];
-      [newPhotoObject setObject:imageFile forKey:@"file"];
-      
-      [newPhotoObject saveInBackgroundWithBlock:^(BOOL success, NSError *err) {
-        if (success) {
-          callback(@[imageFile.url, newPhotoObject.objectId]);
-        }
-        else{
-          // Error
-          NSLog(@"Error: %@", err);
-        }
-      }];
-    } else {
-      NSLog(@"Error: %@", error);
+  
+  AWSS3TransferUtility *transferUtility = [AWSS3TransferUtility defaultS3TransferUtility];
+  [[transferUtility uploadFile:fileURL
+                        bucket:@"bunchesapp"
+                           key:fileName
+                   contentType:@"video/mp4"
+                    expression:nil
+              completionHander:nil] continueWithBlock:^id(AWSTask *task) {
+    if (task.error) {
+      NSLog(@"Error: %@", task.error);
     }
+    if (task.exception) {
+      NSLog(@"Exception: %@", task.exception);
+    }
+    if (task.result) {
+      //AWSS3TransferUtilityUploadTask *uploadTask = task.result;
+      callback(@[fileName]);
+    }
+    return nil;
   }];
-  
+
 }
 @end

@@ -82,7 +82,7 @@ module.exports = React.createClass({
           onPress={() => {this.setState({paused: !this.state.paused})}}
         >
           <Video
-            source={{uri: "https://s3-us-west-2.amazonaws.com/bunchesapp/videos/test.mp4"}}
+            source={{uri: "https://s3-us-west-2.amazonaws.com/bunchesapp/videos/killer.mp4"}}
             style={Styles.fullScreen}
             rate={1.0}
             paused={this.state.paused}

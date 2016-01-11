@@ -39,9 +39,9 @@
 		89D3B5CB1C1168AB00004F20 /* Material-Design-Iconic-Font.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5B61C1168AB00004F20 /* Material-Design-Iconic-Font.ttf */; };
 		89D3B5CC1C1168AB00004F20 /* octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5B71C1168AB00004F20 /* octicons.ttf */; };
 		89D3B5CD1C1168AB00004F20 /* zocial-regular-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B5B81C1168AB00004F20 /* zocial-regular-webfont.ttf */; };
+		B150E1011C444CFE0065411A /* AWSCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B150E0FF1C444CFE0065411A /* AWSCore.framework */; };
+		B150E1021C444CFE0065411A /* AWSS3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B150E1001C444CFE0065411A /* AWSS3.framework */; };
 		B16DAB361C421205000E4AB8 /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B16DAB351C4211F0000E4AB8 /* libRCTVideo.a */; };
-		B1A994DC1C420DF100ED63F3 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A994DA1C420DF100ED63F3 /* Bolts.framework */; };
-		B1A994DD1C420DF100ED63F3 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A994DB1C420DF100ED63F3 /* Parse.framework */; };
 		B1A994E71C420EC200ED63F3 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A994DE1C420EC200ED63F3 /* AudioToolbox.framework */; };
 		B1A994E81C420EC200ED63F3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A994DF1C420EC200ED63F3 /* CFNetwork.framework */; };
 		B1A994E91C420EC200ED63F3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A994E01C420EC200ED63F3 /* CoreGraphics.framework */; };
@@ -229,9 +229,9 @@
 		89D3B5B61C1168AB00004F20 /* Material-Design-Iconic-Font.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Material-Design-Iconic-Font.ttf"; sourceTree = "<group>"; };
 		89D3B5B71C1168AB00004F20 /* octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = octicons.ttf; sourceTree = "<group>"; };
 		89D3B5B81C1168AB00004F20 /* zocial-regular-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "zocial-regular-webfont.ttf"; sourceTree = "<group>"; };
+		B150E0FF1C444CFE0065411A /* AWSCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSCore.framework; sourceTree = "<group>"; };
+		B150E1001C444CFE0065411A /* AWSS3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSS3.framework; sourceTree = "<group>"; };
 		B16DAB301C4211F0000E4AB8 /* RCTVideo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTVideo.xcodeproj; path = "../node_modules/react-native-video/RCTVideo.xcodeproj"; sourceTree = "<group>"; };
-		B1A994DA1C420DF100ED63F3 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
-		B1A994DB1C420DF100ED63F3 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		B1A994DE1C420EC200ED63F3 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		B1A994DF1C420EC200ED63F3 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		B1A994E01C420EC200ED63F3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -274,15 +274,15 @@
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
-				B1A994DD1C420DF100ED63F3 /* Parse.framework in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
-				B1A994DC1C420DF100ED63F3 /* Bolts.framework in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
+				B150E1021C444CFE0065411A /* AWSS3.framework in Frameworks */,
 				B16DAB361C421205000E4AB8 /* libRCTVideo.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
+				B150E1011C444CFE0065411A /* AWSCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -433,12 +433,12 @@
 				B1A994E41C420EC200ED63F3 /* Security.framework */,
 				B1A994E51C420EC200ED63F3 /* StoreKit.framework */,
 				B1A994E61C420EC200ED63F3 /* SystemConfiguration.framework */,
-				B1A994DA1C420DF100ED63F3 /* Bolts.framework */,
-				B1A994DB1C420DF100ED63F3 /* Parse.framework */,
 				8903CCB31C19E8A100F83CFE /* libz.tbd */,
 				89C5D65C1C193DE5005DFCD6 /* main.jsbundle */,
 				89D3B5A41C1168AB00004F20 /* FAKFontAwesome.h */,
 				89D3B5A51C1168AB00004F20 /* FAKFontAwesome.m */,
+				B150E0FF1C444CFE0065411A /* AWSCore.framework */,
+				B150E1001C444CFE0065411A /* AWSS3.framework */,
 				89D3B5A61C1168AB00004F20 /* FAKFoundationIcons.h */,
 				89D3B5A71C1168AB00004F20 /* FAKFoundationIcons.m */,
 				89D3B5A81C1168AB00004F20 /* FAKIcon.h */,

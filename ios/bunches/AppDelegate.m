@@ -15,15 +15,19 @@
 
 #import "RCTPushNotificationManager.h"
 
-#import "Parse/Parse.h"
+#import <AWSS3/AWSS3.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  // For Amazon AWS
+  AWSCognitoCredentialsProvider *credentialsProvider = [[AWSCognitoCredentialsProvider alloc] initWithRegionType:AWSRegionUSEast1
+                                                                                                  identityPoolId:@"us-east-1:b3be3966-a986-416f-8755-57dbedb1517e"];
+  AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSEast1
+                                                                       credentialsProvider:credentialsProvider];
+  AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
 
-  [Parse setApplicationId:@"dsgXdFhexcMreakStwdqPqNLY0tUjMzGFKsF6g5H"
-                clientKey:@"VIgO2d9LhkwFMY9UVgbQFsXrKgh8bwYk7DAgpqWh"];
   NSURL *jsCodeLocation;
 
   /**
