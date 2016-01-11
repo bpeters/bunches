@@ -29,9 +29,6 @@ import com.smixx.reactnativeicons.ReactNativeIcons;
 // React Native Video
 import com.brentvatne.react.ReactVideoPackage;
 
-// Parse
-import com.parse.Parse;
-
 // end added dependencies
 
 
@@ -45,10 +42,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
         super.onCreate(savedInstanceState);
         mReactRootView = new ReactRootView(this);
 
-        Parse.initialize(this);
-
         CodePush codePush = new CodePush("mmtzbrYrru6M28Ngw-0NiAqbLpvYEJXL5qzrg", this);
-
 
         mReactInstanceManager = ReactInstanceManager.builder()
                 .setApplication(getApplication())
@@ -63,15 +57,6 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
                 .setUseDeveloperSupport(BuildConfig.DEBUG)
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();
-
-        // mReactInstanceManager = ReactInstanceManager.builder()
-        //         .setApplication(getApplication())
-        //         .setBundleAssetName("index.android.bundle")
-        //         .setJSMainModuleName("index.android")
-        //         .addPackage(new MainReactPackage())
-        //         .setUseDeveloperSupport(BuildConfig.DEBUG)
-        //         .setInitialLifecycleState(LifecycleState.RESUMED)
-        //         .build();
 
         mReactRootView.startReactApplication(mReactInstanceManager, "bunches", null);
 

@@ -11,6 +11,8 @@ var PhotoPreview = require('./photoPreview');
 
 var defaultStyles = require('../styles');
 
+var VideoPreview = require('../containers/videoPreview');
+
 var {
   View,
   StyleSheet,
@@ -59,6 +61,25 @@ module.exports = React.createClass({
       photo: image,
     });
   },
+
+
+
+
+  onTest: function () {
+    this.props.navigator.push({
+      name: "video preview",
+      component: VideoPreview,
+      hasSideMenu: false,
+    });
+  },
+
+
+
+
+
+
+
+
   createChat: function (message) {
     var Chat = require('./chat');
 
@@ -110,6 +131,7 @@ module.exports = React.createClass({
           getUsers={this.props.actions.getUsers}
           clearMentions={this.props.actions.clearMentions}
           verified={verified}
+          onTest={this.onTest}
         >
           <BunchContainer
             navigator={this.props.navigator}

@@ -488,7 +488,7 @@ module.exports = React.createClass({
     return (
       <View style={Styles.animated}>
         <Animated.View style={[Styles.fill, this.getProgressSize()]} />
-      </View>
+    </View>
     )
   },
   renderCamera: function() {

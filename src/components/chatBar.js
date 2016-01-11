@@ -27,6 +27,8 @@ if(Platform.OS === 'ios'){
   CameraRollContainer = require('./cameraRollContainerAndroid');
 }
 
+
+
 var Styles = StyleSheet.create({
   scroll: {
     flex: 1,
@@ -98,6 +100,7 @@ module.exports = React.createClass({
     deleteTyper: React.PropTypes.func,
     forChat: React.PropTypes.bool,
     verified: React.PropTypes.bool,
+    onTest: React.PropTypes.func,
   },
   getInitialState: function () {
     return {
@@ -160,6 +163,10 @@ module.exports = React.createClass({
       mention: mention,
     });
   },
+
+  
+
+
   addChatMessage: function() {
 
     if (this.props.createMessage) {
@@ -301,7 +308,9 @@ module.exports = React.createClass({
       {icon: 'ion|compose', onPress: this.toggleTextInput},
       {icon: 'material|camera', onPress: this.props.onCameraPress},
       {icon: 'fontawesome|smile-o', onPress: this.props.onSelfiePress},
-      {icon: 'ion|images', onPress: this.onCameraRollPress}
+      {icon: 'ion|images', onPress: this.onCameraRollPress},
+
+      {icon: 'fontawesome|car', onPress: this.props.onTest}
     ];
 
     if (this.props.forChat) {

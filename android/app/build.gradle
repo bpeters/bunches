@@ -76,6 +76,11 @@ dependencies {
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:0.17.+"
 
+    // AWS S3
+    compile 'com.amazonaws:aws-android-sdk-core:2.+'
+    compile 'com.amazonaws:aws-android-sdk-cognito:2.+'
+    compile 'com.amazonaws:aws-android-sdk-s3:2.+'
+
 
     // React Native Icons
     compile project(':react-native-icons')
@@ -98,6 +103,8 @@ dependencies {
     // Parse
     compile 'com.parse.bolts:bolts-android:1.+'
     compile 'com.parse:parse-android:1.+'
+
+
 
 
     

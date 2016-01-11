@@ -374,12 +374,15 @@ module.exports = {
           this.handleParseError(error, 'Failed to Save Image');
         })
     } else {
-      video.then((obj) => {
-          messenger.update({videoURL: obj.url});
-          return Query.videoById(obj.id);
-        }).then((vid) => {
+
+
+
+
+
+      video.then((url) => {
+          messenger.update({videoURL: url});
             return ParseReact.Mutation.Set(chat,{
-              video: vid,
+              videoURL: url,
             })
             .dispatch();
         }, (error) => {

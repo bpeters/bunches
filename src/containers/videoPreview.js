@@ -54,16 +54,21 @@ var Styles = StyleSheet.create({
 module.exports = React.createClass({
   propTypes: {
     navigator: React.PropTypes.object,
-    route: React.PropTypes.object,
-    store: React.PropTypes.object,
-    actions: React.PropTypes.object,
-    user: React.PropTypes.object,
   },
   getInitialState: function () {
     return {
       paused: true,
     }
   },
+
+  onLoad: function () {
+    console.log('done loading');
+  },
+
+  onLoadStart: function () {
+    console.log('loading...')
+  },
+
 
   onPressClose: function () {
     this.props.navigator.pop();
@@ -77,12 +82,14 @@ module.exports = React.createClass({
           onPress={() => {this.setState({paused: !this.state.paused})}}
         >
           <Video
-            source={{uri: "https://files.parsetfss.com/0fddd9cf-f4d4-4699-81df-b9e09d9a5f66/tfss-fc43d765-ee42-48e8-a2a5-340d9b6f176b-bunches.mp4"}}
+            source={{uri: "https://s3-us-west-2.amazonaws.com/bunchesapp/videos/test.mp4"}}
             style={Styles.fullScreen}
             rate={1.0}
             paused={this.state.paused}
             volume={1.0}
             muted={false}
+            onLoadStart={this.onLoadStart} // Callback when video starts to load
+            onLoad={this.onLoad} 
             resizeMode={'contain'}
             repeat={true}
           />
@@ -96,7 +103,7 @@ module.exports = React.createClass({
         </View>
         <View style={Styles.iconViewTopLeft}>
           <IconButton
-            onPress={this.onPreviewClose}
+            onPress={this.onPressClose}
             icon='material|close'
             size={30}
           />
