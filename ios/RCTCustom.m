@@ -108,47 +108,48 @@ RCT_EXPORT_METHOD(saveVideo:(NSString *)input callback:(RCTResponseSenderBlock)c
   
   // Create NSURL from uri
   NSURL *videoURL = [NSURL URLWithString:input];
-  
+
   AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
   
- // Create timestamp for filename
- NSDate *currentDate = [NSDate date];
- NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
- [dateFormatter setDateFormat:@"dd.MM.YY-HH:mm:ss"];
- NSString *dateString = [dateFormatter stringFromDate:currentDate];
+  // Create timestamp for filename
+  NSDate *currentDate = [NSDate date];
+  NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+  [dateFormatter setDateFormat:@"dd.MM.YY-HH:mm:ss"];
+  NSString *dateString = [dateFormatter stringFromDate:currentDate];
 
- // Create strings for filename
- NSString *fileVideo = @"videos/bunches-";
- NSString *fileImage = @"firstFrames/bunches-";
+  // Create strings for filename
+  NSString *fileVideo = @"videos/bunches-";
+  NSString *fileImage = @"firstFrames/bunches-";
   NSString *fileImageLocal = @"bunches-";
- NSString *extVideo = @".mp4";
- NSString *extImage = @".png";
- 
- // Concatenate string to form filenames
+  NSString *extVideo = @".mp4";
+  NSString *extImage = @".png";
+
+  // Concatenate string to form filenames
   // Remote video image name
- NSArray *vids = [[NSArray alloc] initWithObjects:fileVideo, dateString, extVideo, nil];
- NSString *fileNameVideo = [vids componentsJoinedByString:@""];
+  NSArray *vids = [[NSArray alloc] initWithObjects:fileVideo, dateString, extVideo, nil];
+  NSString *fileNameVideo = [vids componentsJoinedByString:@""];
 
   // Remote image name
- NSArray *imgs = [[NSArray alloc] initWithObjects:fileImage, dateString, extImage, nil];
- NSString *fileNameImage = [imgs componentsJoinedByString:@""];
+  NSArray *imgs = [[NSArray alloc] initWithObjects:fileImage, dateString, extImage, nil];
+  NSString *fileNameImage = [imgs componentsJoinedByString:@""];
   
   // Local image name
   NSArray *imgsLocal = [[NSArray alloc] initWithObjects:fileImageLocal, dateString, extImage, nil];
   NSString *fileNameImageLocal = [imgsLocal componentsJoinedByString:@""];
 
+  // Grab first frame of video
+  AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:videoURL options:nil];
+  AVAssetImageGenerator *generate = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+  generate.appliesPreferredTrackTransform = YES;
+  NSError *err = NULL;
+  CMTime time = CMTimeMake(1, 10);
+  CGImageRef ref = [generate copyCGImageAtTime:time actualTime:NULL error:&err];
+  UIImage *firstFrameBig = [[UIImage alloc] initWithCGImage:ref];
 
- // Grab first frame of video
- AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:videoURL options:nil];
- AVAssetImageGenerator *generate = [[AVAssetImageGenerator alloc] initWithAsset:asset];
- generate.appliesPreferredTrackTransform = YES;
- NSError *err = NULL;
- CMTime time = CMTimeMake(1, 2);
- CGImageRef ref = [generate copyCGImageAtTime:time actualTime:NULL error:&err];
- UIImage *firstFrame = [[UIImage alloc] initWithCGImage:ref];
+  // // Compress image
+  UIImage *firstFrame = [UIImage imageWithData:UIImageJPEGRepresentation(firstFrameBig, 0.5)];
 
-
- // Convert image to NSURL 
+  // Convert image to NSURL 
   NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
   NSString *filePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", fileNameImageLocal]];
   [UIImagePNGRepresentation(firstFrame) writeToFile:filePath atomically:YES];
@@ -156,25 +157,25 @@ RCT_EXPORT_METHOD(saveVideo:(NSString *)input callback:(RCTResponseSenderBlock)c
   NSURL *imageURL = [NSURL fileURLWithPath:filePath];
  
  // Upload video
- AWSS3TransferUtility *transferVideo = [AWSS3TransferUtility defaultS3TransferUtility];
- [[transferVideo uploadFile:videoURL
+  AWSS3TransferUtility *transferVideo = [AWSS3TransferUtility defaultS3TransferUtility];
+  [[transferVideo uploadFile:videoURL
                        bucket:@"bunchesapp"
                           key:fileNameVideo
                   contentType:@"video/mp4"
                    expression:nil
              completionHander:nil] continueWithBlock:^id(AWSTask *task) {
-   if (task.error) {
-     NSLog(@"Error: %@", task.error);
-   }
-   if (task.exception) {
-     NSLog(@"Exception: %@", task.exception);
-   }
-   if (task.result) {
-     //AWSS3TransferUtilityUploadTask *uploadTask = task.result;
-     //callback(@[fileNameVideo]);
-   }
-   return nil;
- }];
+    if (task.error) {
+      NSLog(@"Error: %@", task.error);
+    }
+    if (task.exception) {
+      NSLog(@"Exception: %@", task.exception);
+    }
+    if (task.result) {
+      //AWSS3TransferUtilityUploadTask *uploadTask = task.result;
+      //callback(@[fileNameVideo]);
+    }
+    return nil;
+  }];
 
   // Upload first frame
   AWSS3TransferUtility *transferImage = [AWSS3TransferUtility defaultS3TransferUtility];
