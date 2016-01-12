@@ -362,7 +362,7 @@ module.exports = {
   },
   updateMessage: function (chat, messenger, image, video) {
 
-    if(image) {
+    if (image) {
       this.uploadImage(image)
         .then((img) => {
           messenger.update({imageURL: img.url()});
@@ -372,7 +372,7 @@ module.exports = {
             .dispatch();
         }, (error) => {
           this.handleParseError(error, 'Failed to Save Image');
-        })
+        });
     } else {
 
 
@@ -388,7 +388,7 @@ module.exports = {
             .dispatch();
         }, (error) => {
           this.handleParseError(error, 'Failed to Save Video');
-        })
+        });
     }
   },
   checkEducationEmail: function (email) {
