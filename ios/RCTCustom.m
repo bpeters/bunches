@@ -4,6 +4,7 @@
 
 #import <AWSCore/AWSCore.h>
 #import <AWSS3/AWSS3.h>
+#import <AVFoundation/AVFoundation.h>
 
 @interface ReadImageData : NSObject <RCTBridgeModule>
 @end
@@ -69,18 +70,37 @@ RCT_EXPORT_METHOD(saveVideo:(NSString *)input callback:(RCTResponseSenderBlock)c
   NSString *dateString = [dateFormatter stringFromDate:currentDate];
 
   // Create strings for filename
-  NSString *file = @"videos/bunches-";
-  NSString *ext = @".mp4";
+  NSString *fileVideo = @"videos/bunches-";
+  NSString *fileImage = @"firstFrames/bunches-";
+  NSString *extVideo = @".mp4";
+  NSString *extImage = @".png";
   
-  // Concatenate string to form filename
-  NSArray *myStrings = [[NSArray alloc] initWithObjects:file, dateString, ext, nil];
-  NSString *fileName = [myStrings componentsJoinedByString:@""];
+  // Concatenate string to form filenames
+  NSArray *vids = [[NSArray alloc] initWithObjects:fileVideo, dateString, extVideo, nil];
+  NSString *fileNameVideo = [vids componentsJoinedByString:@""];
+
+  NSArray *imgs = [[NSArray alloc] initWithObjects:fileImage, dateString, extImage, nil];
+  NSString *fileNameImage = [imgs componentsJoinedByString:@""];
+
+  // Grab first frame of video
+  AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:fileURL options:nil];
+  AVAssetImageGenerator *generate = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+  generate.appliesPreferredTrackTransform = YES;
+  NSError *err = NULL;
+  CMTime time = CMTimeMake(1, 2);
+  CGImageRef ref = [generate copyCGImageAtTime:time actualTime:NULL error:&err];
+  UIImage *firstFrame = [[UIImage alloc] initWithCGImage:ref];
   
+  // Convert into URL for AWS
+  NSData *imageData = [NSData dataWithData:UIImagePNGRepresentation(firstFrame)];
+  NSString *urlString = [[NSString alloc] initWithData:imageData encoding:NSUTF8StringEncoding];
+  NSURL *imageURL = [[NSURL alloc] initWithString:urlString];
   
-  AWSS3TransferUtility *transferUtility = [AWSS3TransferUtility defaultS3TransferUtility];
-  [[transferUtility uploadFile:fileURL
+  // Upload video
+  AWSS3TransferUtility *transferVideo = [AWSS3TransferUtility defaultS3TransferUtility];
+  [[transferVideo uploadFile:fileURL
                         bucket:@"bunchesapp"
-                           key:fileName
+                           key:fileNameVideo
                    contentType:@"video/mp4"
                     expression:nil
               completionHander:nil] continueWithBlock:^id(AWSTask *task) {
@@ -92,7 +112,28 @@ RCT_EXPORT_METHOD(saveVideo:(NSString *)input callback:(RCTResponseSenderBlock)c
     }
     if (task.result) {
       //AWSS3TransferUtilityUploadTask *uploadTask = task.result;
-      callback(@[fileName]);
+      //callback(@[fileNameVideo]);
+    }
+    return nil;
+  }];
+
+  // Upload first frame
+  AWSS3TransferUtility *transferImage = [AWSS3TransferUtility defaultS3TransferUtility];
+  [[transferImage uploadFile:imageURL
+                        bucket:@"bunchesapp"
+                           key:fileNameImage
+                   contentType:@"image/png"
+                    expression:nil
+              completionHander:nil] continueWithBlock:^id(AWSTask *task) {
+    if (task.error) {
+      NSLog(@"Error: %@", task.error);
+    }
+    if (task.exception) {
+      NSLog(@"Exception: %@", task.exception);
+    }
+    if (task.result) {
+      //AWSS3TransferUtilityUploadTask *uploadTask = task.result;
+      callback(@[fileNameVideo,fileNameImage]);
     }
     return nil;
   }];
