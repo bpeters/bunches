@@ -3,6 +3,7 @@
 var React = require('react-native');
 var moment = require('moment');
 var _ = require('lodash');
+var Promise = require('bluebird');
 
 var {
   StyleSheet,
@@ -191,7 +192,7 @@ module.exports = React.createClass({
       progressSize: 90,
       showButton: true,
       percent: 0,
-      path: '',
+      videoPath: '',
       paused: true,
     };
   },
@@ -232,11 +233,17 @@ module.exports = React.createClass({
       mode: Camera.constants.CaptureMode.video, 
       target: Camera.constants.CaptureTarget.disk
     }, (err, path) => {
-        this.setState({
-          preview: true,
-          path: path,
-          showButton: true,
-        })
+      var save = new Promise((resolve, reject) => {
+        return NativeModules.SaveVideoData.saveVideo(path, (url, id) => {
+          return resolve({
+            url: url,
+            id: id
+          });
+        });
+      });
+     
+      this.props.actions.createMessage(this.props.route.chat, {video: save});
+      this.props.navigator.pop();
     });
   },
   onVideoRecordStop: function () {
@@ -308,7 +315,7 @@ module.exports = React.createClass({
     this.setState({
       photo: '',
       message: '',
-      path: '',
+      videoPath: '',
       preview: false
     });
   },
@@ -339,7 +346,18 @@ module.exports = React.createClass({
   onNewVideoChat: function () {
     var Chat = require('./chat');
 
-    var save = this.refs.cameraHide.saveVideo(this.state.path);
+    console.log(this.state.videoPath);
+
+    var save = new Promise((resolve, reject) => {
+      return NativeModules.SaveVideoData.saveVideo(this.state.videoPath, (url, id) => {
+        console.log(url, id);
+
+        return resolve({
+          url: url,
+          id: id
+        });
+      });
+    });
 
     this.props.actions.createChat(this.state.message, null, save);
 
@@ -359,7 +377,14 @@ module.exports = React.createClass({
     });
   },
   onNewVideoMessage: function () {
-    var save = this.refs.cameraHide.saveVideo(this.state.path);
+    var save = new Promise((resolve, reject) => {
+      return NativeModules.SaveVideoData.saveVideo(this.state.videoPath, (url, id) => {
+        return resolve({
+          url: url,
+          id: id
+        });
+      });
+    });
    
     this.props.actions.createMessage(this.props.route.chat, {video: save});
     this.props.navigator.pop();
@@ -377,16 +402,15 @@ module.exports = React.createClass({
   renderVideoPreview: function () {
     return (
       <View style={Styles.videoContainer}>
-        <Camera 
-          style={Styles.cameraHide}
-          ref='cameraHide'
-        ></Camera>
         <TouchableOpacity
           style={Styles.fullScreen}
           onPress={() => {this.setState({paused: !this.state.paused})}}
         >
           <Video
-            source={{uri: this.state.path}}
+            source={{
+              uri: this.state.videoPath,
+              type: 'mov'
+            }}
             style={Styles.fullScreen}
             rate={1.0}
             paused={this.state.paused}
@@ -534,7 +558,7 @@ module.exports = React.createClass({
     return (
       <View style={Styles.overall}>
         {this.state.preview ? 
-          (this.state.path ? this.renderVideoPreview() : this.renderPreview() ) : 
+          (this.state.videoPath ? this.renderVideoPreview() : this.renderPreview() ) : 
           (this.state.cameraRoll ? this.renderCameraRoll() : this.renderCamera())
         }
       </View>
