@@ -28,7 +28,7 @@
                                                         initWithRegionType:AWSRegionUSEast1
                                                         identityPoolId:@"us-east-1:b3be3966-a986-416f-8755-57dbedb1517e"];
   
-  AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSEast1 credentialsProvider:credentialsProvider];
+  AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSWest2 credentialsProvider:credentialsProvider];
   
   [AWSServiceManager defaultServiceManager].defaultServiceConfiguration = configuration;
 

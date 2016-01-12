@@ -233,9 +233,9 @@ module.exports = React.createClass({
       mode: Camera.constants.CaptureMode.video, 
       target: Camera.constants.CaptureTarget.disk
     }, (err, path) => {
-      console.log(err, path);
+      //console.log(err, path);
       var save = new Promise((resolve, reject) => {
-        return NativeModules.SaveVideoData.saveVideo('file://' + path, (videoURL, imageURL) => {
+        return NativeModules.SaveVideoData.saveVideo("file://" +  path, (videoURL, imageURL) => {
           console.log(videoURL, imageURL);
           return resolve({
             videoURL: videoURL,
