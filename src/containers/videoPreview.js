@@ -13,6 +13,7 @@ var {
 
 var Video = require('react-native-video');
 var IconButton = require('../elements/iconButton');
+var config = require('../config/default');
 
 var defaultStyles = require('../styles');
 
@@ -82,7 +83,7 @@ module.exports = React.createClass({
           onPress={() => {this.setState({paused: !this.state.paused})}}
         >
           <Video
-            source={{uri: "https://s3-us-west-2.amazonaws.com/bunchesapp/videos/killer.mp4"}}
+            source={{uri: config.aws.url + this.props.route.path}}
             style={Styles.fullScreen}
             rate={1.0}
             paused={this.state.paused}

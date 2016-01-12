@@ -6,6 +6,7 @@ var moment = require('moment');
 
 var Avatar = require('../elements/avatar');
 var PopImage = require('../elements/popImage');
+var PopVideo = require('../elements/popVideo');
 var EnlargePhoto = require('../containers/enlargePhoto');
 var InvertibleScrollView = require('react-native-invertible-scroll-view');
 var Profile = require('../containers/profile');
@@ -102,12 +103,10 @@ var Styles = StyleSheet.create({
     color: defaultStyles.blue,
     fontFamily: 'Roboto-Regular',
   },
-
-  test: {
-    borderWidth: 1,
-    borderColor: 'blue',
-    height: 100,
-  }
+  image: {
+    height: 176,
+    borderRadius: 4,
+  },
 
 });
 
@@ -149,7 +148,7 @@ module.exports = React.createClass({
       name: "video preview",
       component: VideoPreview,
       hasSideMenu: false,
-      videoPath: videoURL,
+      path: videoURL,
     });
   },
   onHashtagPress: function (word) {
@@ -167,17 +166,13 @@ module.exports = React.createClass({
       handle: handle,
     });
   },
-  renderVideo: function (videoURL) {
+  renderVideo: function (videoURL, imageURL) {
     return (
       <View style={Styles.imageWrap}>
-        <TouchableOpacity style={Styles.test} activeOpacity={0.9} onPress={() => {this.onPressVideo(videoURL)}}>
-          <Image
-            source={{
-              uri: videoURL,
-            }}
-            style={Styles.image}
-          /> 
-        </TouchableOpacity>
+        <PopVideo
+          onPress={() => {this.onPressVideo(videoURL)}}
+          photo={imageURL}
+        />
       </View>
     );
   },
@@ -238,8 +233,7 @@ module.exports = React.createClass({
             </View>
           </View>
           {rowData.message ? this.renderMessage(rowData.message) : null}
-          {rowData.imageURL ? this.renderImage(rowData.imageURL) : null}
-          {rowData.videoURL ? this.renderVideo(rowData.videoURL) : null}
+          {rowData.imageURL ? (rowData.videoURL ? this.renderVideo(rowData.videoURL,rowData.imageURL) : this.renderImage(rowData.imageURL) )  : null}
           {!_.isEmpty(rowData.squash) ? this.renderSquash(rowData.squash) : null}
         </View>
       </View>

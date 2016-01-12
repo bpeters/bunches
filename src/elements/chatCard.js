@@ -8,6 +8,7 @@ var Avatar = require('../elements/avatar');
 var Timer = require('../elements/timer');
 var Counter = require('../elements/counter');
 var PopImage = require('../elements/popImage');
+var PopVideo = require('../elements/popVideo');
 var Message = require('../elements/message');
 var StatBar = require('../elements/statBar');
 var ChatHashtag = require('../elements/chatHashtag');
@@ -172,6 +173,7 @@ module.exports = React.createClass({
     onPressRow: React.PropTypes.func,
     onAvatarPress: React.PropTypes.func,
     onPressImage: React.PropTypes.func,
+    onPressVideo: React.PropTypes.func,
     rowData: React.PropTypes.object,
     squashMessages: React.PropTypes.func,
     onHashtagPress: React.PropTypes.func,
@@ -197,7 +199,7 @@ module.exports = React.createClass({
         <ListView
           horizontal={true}
           dataSource={this.state.dataSource.cloneWithRows(images)}
-          renderRow={this.renderImage}
+          renderRow={this.renderRow}
           showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
           contentOffset={{x: x, y: 0}}
@@ -218,12 +220,30 @@ module.exports = React.createClass({
       </View>
     );
   },
+
+  renderRow: function (rowData) {
+    if(rowData.vid){
+      return this.renderVideo(rowData);
+    } else {
+      return this.renderImage(rowData);
+    }
+  },
   renderImage: function (rowData) {
     return (
       <View style={Styles.rowImage}>
         <PopImage
-          onPress={() => {this.props.onPressImage(rowData)}}
-          photo={rowData}
+          onPress={() => {this.props.onPressImage(rowData.img)}}
+          photo={rowData.img}
+        />
+      </View>
+    );
+  },
+  renderVideo: function (rowData) {
+    return (
+      <View style={Styles.rowImage}>
+        <PopVideo
+          onPress={() => {this.props.onPressVideo(rowData.vid)}}
+          photo={rowData.img}
         />
       </View>
     );
@@ -298,8 +318,9 @@ module.exports = React.createClass({
     
     var userCount = _.uniq(rowData.messages, 'uid').length;
 
-    var mostRecentImages = [];
+    var mostRecentMedia = [];
     var mostRecentMessages = [];
+    var mostRecentVideos = [];
     var hashtags = [];
     var onlineStatus;
     
@@ -307,7 +328,12 @@ module.exports = React.createClass({
     _.forEach(rowData.messages, (message) => {
 
       if (message.imageURL) {
-        mostRecentImages.push(message.imageURL);
+        if (message.videoURL) {
+          mostRecentMedia.push({img: message.imageURL, vid: message.videoURL})
+        } else {
+          mostRecentMedia.push({img: message.imageURL});
+        }
+        
       }
 
       if (message.message) {
@@ -357,7 +383,7 @@ module.exports = React.createClass({
               </View>
             </View>
           </View>
-          {mostRecentImages.length ? this.renderCarousel(mostRecentImages.reverse()) : null}
+          {mostRecentMedia.length ? this.renderCarousel(mostRecentMedia.reverse()) : null}
           {mostRecentMessages.length ? this.renderLastTwoMessages(mostRecentMessages) : null}
           <StatBar
             score={rowData.score}

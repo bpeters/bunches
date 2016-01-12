@@ -379,10 +379,11 @@ module.exports = {
 
 
 
-      video.then((url) => {
-          messenger.update({videoURL: url});
+      video.then((obj) => {
+          messenger.update({videoURL: obj.videoURL, imageURL: obj.imageURL});
             return ParseReact.Mutation.Set(chat,{
-              videoURL: url,
+              videoURL: obj.videoURL,
+              imageURL: obj.imageURL
             })
             .dispatch();
         }, (error) => {

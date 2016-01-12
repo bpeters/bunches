@@ -8,6 +8,7 @@ var EnlargePhoto = require('../containers/enlargePhoto');
 var Profile = require('../containers/profile');
 var ChatCard = require('../elements/chatCard');
 var Hashtag = require('../containers/hashtag');
+var VideoPreview = require('../containers/videoPreview');
 
 var defaultStyles = require('../styles');
 
@@ -91,6 +92,14 @@ module.exports = React.createClass({
       });
     }
   },
+  onPressVideo: function (videoURL) {
+    this.props.navigator.push({
+      name: "video preview",
+      component: VideoPreview,
+      hasSideMenu: false,
+      path: videoURL,
+    });
+  },
   onPressImage: function (imageUrl) {
     this.props.navigator.push({
       name: 'enlarge photo',
@@ -121,6 +130,7 @@ module.exports = React.createClass({
         onPressRow={this.onPressRow}
         onAvatarPress={this.onAvatarPress}
         onPressImage={this.onPressImage}
+        onPressVideo={this.onPressVideo}
         squashMessages={this.props.squashMessages}
         onHashtagPress={this.onHashtagPress}
         onMentionPress={this.onMentionPress}
