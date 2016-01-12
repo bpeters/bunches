@@ -15,18 +15,22 @@
 
 #import "RCTPushNotificationManager.h"
 
-#import <AWSS3/AWSS3.h>
+#import <AWSCore/AWSCore.h>
+#import <AWSCognito/AWSCognito.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   // For Amazon AWS
-  AWSCognitoCredentialsProvider *credentialsProvider = [[AWSCognitoCredentialsProvider alloc] initWithRegionType:AWSRegionUSEast1
-                                                                                                  identityPoolId:@"us-east-1:b3be3966-a986-416f-8755-57dbedb1517e"];
-  AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSEast1
-                                                                       credentialsProvider:credentialsProvider];
-  AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
+  
+  AWSCognitoCredentialsProvider *credentialsProvider = [[AWSCognitoCredentialsProvider alloc]
+                                                        initWithRegionType:AWSRegionUSEast1
+                                                        identityPoolId:@"us-east-1:b3be3966-a986-416f-8755-57dbedb1517e"];
+  
+  AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSEast1 credentialsProvider:credentialsProvider];
+  
+  [AWSServiceManager defaultServiceManager].defaultServiceConfiguration = configuration;
 
   NSURL *jsCodeLocation;
 
@@ -44,7 +48,7 @@
    * on the same Wi-Fi network.
    */
 
-  jsCodeLocation = [NSURL URLWithString:@"http://192.168.1.142:8081/index.ios.bundle?platform=ios&dev=true"];
+  //jsCodeLocation = [NSURL URLWithString:@"http://192.168.1.142:8081/index.ios.bundle?platform=ios&dev=true"];
   //jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
 
   /**
@@ -54,7 +58,7 @@
    */
 
   //jsCodeLocation = [CodePush bundleURL];
-  //jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+  jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"bunches"

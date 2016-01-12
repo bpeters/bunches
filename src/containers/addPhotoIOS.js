@@ -233,17 +233,19 @@ module.exports = React.createClass({
       mode: Camera.constants.CaptureMode.video, 
       target: Camera.constants.CaptureTarget.disk
     }, (err, path) => {
+      console.log(err, path);
       var save = new Promise((resolve, reject) => {
-        return NativeModules.SaveVideoData.saveVideo(path, (url, id) => {
+        return NativeModules.SaveVideoData.saveVideo('file://' + path, (videoURL, imageURL) => {
+          console.log(videoURL, imageURL);
           return resolve({
-            url: url,
-            id: id
+            videoURL: videoURL,
+            imageURL: imageURL
           });
         });
       });
      
-      this.props.actions.createMessage(this.props.route.chat, {video: save});
-      this.props.navigator.pop();
+      // this.props.actions.createMessage(this.props.route.chat, {video: save});
+      // this.props.navigator.pop();
     });
   },
   onVideoRecordStop: function () {

@@ -11,6 +11,7 @@ var Splash = require('./elements/splash');
 
 Parse.initialize(config.parse.applicationId, config.parse.key);
 
+//Yellowbox is the fucking devil
 console.disableYellowBox = true;
 
 var {

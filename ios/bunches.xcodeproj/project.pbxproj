@@ -23,6 +23,8 @@
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8903CCB21C19E7CE00F83CFE /* libCodePush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8903CCA51C19E7BA00F83CFE /* libCodePush.a */; };
 		8903CCB41C19E8A100F83CFE /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8903CCB31C19E8A100F83CFE /* libz.tbd */; };
+		893FFE781C44C59C00E2032D /* AWSCognito.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 893FFE771C44C59C00E2032D /* AWSCognito.framework */; };
+		893FFE8C1C44CB9D00E2032D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 893FFE8B1C44CB9D00E2032D /* UIKit.framework */; };
 		8953C1201C29E7E200DC3AD8 /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8953C1191C29E7D500DC3AD8 /* libRCTPushNotification.a */; };
 		899B29D91C1D376E0075EDB6 /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 899B29CE1C1D375F0075EDB6 /* libRCTCameraRoll.a */; };
 		89C5D65D1C193DE5005DFCD6 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 89C5D65C1C193DE5005DFCD6 /* main.jsbundle */; };
@@ -197,6 +199,8 @@
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8903CCA01C19E7BA00F83CFE /* CodePush.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CodePush.xcodeproj; path = "../node_modules/react-native-code-push/CodePush.xcodeproj"; sourceTree = "<group>"; };
 		8903CCB31C19E8A100F83CFE /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		893FFE771C44C59C00E2032D /* AWSCognito.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSCognito.framework; sourceTree = "<group>"; };
+		893FFE8B1C44CB9D00E2032D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8953C10C1C29E7D500DC3AD8 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		899B29C61C1D375E0075EDB6 /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		899B29F91C1E01A50075EDB6 /* RCTCustom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCustom.m; sourceTree = "<group>"; };
@@ -255,6 +259,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				893FFE8C1C44CB9D00E2032D /* UIKit.framework in Frameworks */,
 				B1A994E71C420EC200ED63F3 /* AudioToolbox.framework in Frameworks */,
 				B1A994E81C420EC200ED63F3 /* CFNetwork.framework in Frameworks */,
 				B1A994E91C420EC200ED63F3 /* CoreGraphics.framework in Frameworks */,
@@ -282,6 +287,7 @@
 				B150E1021C444CFE0065411A /* AWSS3.framework in Frameworks */,
 				B16DAB361C421205000E4AB8 /* libRCTVideo.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
+				893FFE781C44C59C00E2032D /* AWSCognito.framework in Frameworks */,
 				B150E1011C444CFE0065411A /* AWSCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -424,6 +430,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				893FFE8B1C44CB9D00E2032D /* UIKit.framework */,
 				B1A994DE1C420EC200ED63F3 /* AudioToolbox.framework */,
 				B1A994DF1C420EC200ED63F3 /* CFNetwork.framework */,
 				B1A994E01C420EC200ED63F3 /* CoreGraphics.framework */,
@@ -440,6 +447,7 @@
 				B150E0FF1C444CFE0065411A /* AWSCore.framework */,
 				B150E1001C444CFE0065411A /* AWSS3.framework */,
 				89D3B5A61C1168AB00004F20 /* FAKFoundationIcons.h */,
+				893FFE771C44C59C00E2032D /* AWSCognito.framework */,
 				89D3B5A71C1168AB00004F20 /* FAKFoundationIcons.m */,
 				89D3B5A81C1168AB00004F20 /* FAKIcon.h */,
 				89D3B5A91C1168AB00004F20 /* FAKIcon.m */,
