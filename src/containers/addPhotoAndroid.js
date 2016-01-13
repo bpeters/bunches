@@ -178,7 +178,7 @@ module.exports = React.createClass({
       progressSize: 90,
       showButton: true,
       percent: 0,
-      path: 'http://files.parsetfss.com/0fddd9cf-f4d4-4699-81df-b9e09d9a5f66/tfss-f1793fde-9801-4cab-89e9-27351d59c5ef-bunches.mp4',
+      path: '',
       paused: true,
     };
   },

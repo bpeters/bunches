@@ -192,7 +192,7 @@ module.exports = React.createClass({
       progressSize: 90,
       showButton: true,
       percent: 0,
-      videoPath: '',
+      path: '',
       paused: true,
     };
   },
@@ -233,16 +233,22 @@ module.exports = React.createClass({
       mode: Camera.constants.CaptureMode.video, 
       target: Camera.constants.CaptureTarget.disk
     }, (err, path) => {
-      //console.log(err, path);
-      var save = new Promise((resolve, reject) => {
-        return NativeModules.SaveVideoData.saveVideo("file://" +  path, (videoURL, imageURL) => {
-          console.log(videoURL, imageURL);
-          return resolve({
-            videoURL: videoURL,
-            imageURL: imageURL
-          });
-        });
-      });
+      this.setState({
+          preview: true,
+          path: "file://" + path,
+          showButton: true,
+        })
+
+
+      // var save = new Promise((resolve, reject) => {
+      //   return NativeModules.SaveVideoData.saveVideo("file://" +  path, (videoURL, imageURL) => {
+      //     console.log(videoURL, imageURL);
+      //     return resolve({
+      //       videoURL: videoURL,
+      //       imageURL: imageURL
+      //     });
+      //   });
+      // });
      
       // this.props.actions.createMessage(this.props.route.chat, {video: save});
       // this.props.navigator.pop();
@@ -317,7 +323,7 @@ module.exports = React.createClass({
     this.setState({
       photo: '',
       message: '',
-      videoPath: '',
+      path: '',
       preview: false
     });
   },
@@ -348,15 +354,14 @@ module.exports = React.createClass({
   onNewVideoChat: function () {
     var Chat = require('./chat');
 
-    console.log(this.state.videoPath);
+    console.log(this.state.path);
 
     var save = new Promise((resolve, reject) => {
-      return NativeModules.SaveVideoData.saveVideo(this.state.videoPath, (url, id) => {
-        console.log(url, id);
-
+      return NativeModules.SaveVideoData.saveVideo("file://" +  path, (videoURL, imageURL) => {
+        console.log(videoURL, imageURL);
         return resolve({
-          url: url,
-          id: id
+          videoURL: videoURL,
+          imageURL: imageURL
         });
       });
     });
@@ -380,10 +385,11 @@ module.exports = React.createClass({
   },
   onNewVideoMessage: function () {
     var save = new Promise((resolve, reject) => {
-      return NativeModules.SaveVideoData.saveVideo(this.state.videoPath, (url, id) => {
+      return NativeModules.SaveVideoData.saveVideo("file://" +  path, (videoURL, imageURL) => {
+        console.log(videoURL, imageURL);
         return resolve({
-          url: url,
-          id: id
+          videoURL: videoURL,
+          imageURL: imageURL
         });
       });
     });
@@ -410,8 +416,7 @@ module.exports = React.createClass({
         >
           <Video
             source={{
-              uri: this.state.videoPath,
-              type: 'mov'
+              uri: this.state.path
             }}
             style={Styles.fullScreen}
             rate={1.0}
@@ -560,7 +565,7 @@ module.exports = React.createClass({
     return (
       <View style={Styles.overall}>
         {this.state.preview ? 
-          (this.state.videoPath ? this.renderVideoPreview() : this.renderPreview() ) : 
+          (this.state.path ? this.renderVideoPreview() : this.renderPreview() ) : 
           (this.state.cameraRoll ? this.renderCameraRoll() : this.renderCamera())
         }
       </View>
