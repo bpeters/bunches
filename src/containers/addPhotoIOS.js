@@ -24,6 +24,7 @@ var Video = require('react-native-video');
 
 var defaultStyles = require('../styles');
 var timer = 5000;
+// var colors = [defaultStyles.light, defaultStyles.red]
 
 var Styles = StyleSheet.create({
   overall: {
@@ -137,11 +138,6 @@ var Styles = StyleSheet.create({
    justifyContent: 'center',
    opacity: 1,
   },
-  fill: {
-   backgroundColor: defaultStyles.red,
-   borderRadius: 45,
-  },
-
   videoContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -156,16 +152,28 @@ var Styles = StyleSheet.create({
     right: 0,
   },
   iconViewCenter: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    opacity: 0.8,
+   width: 100,
+   height: 100,
+   justifyContent: 'center',
+   alignItems: 'center',
+   backgroundColor: defaultStyles.dark,
+   opacity: 0.8,
+   borderRadius: 50,
   },
-
-
   preview: {
    width: defaultStyles.bodyWidth,
    height: defaultStyles.bodyHeight,
    backgroundColor: defaultStyles.dark,
+  },
+  progressBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  fill: {
+    backgroundColor: defaultStyles.red,
+    height: 10,
   },
 });
 
@@ -185,13 +193,10 @@ module.exports = React.createClass({
       photo: '',
       message: '',
       images: [],
-
       isPhoto: true,
       buttonColor: defaultStyles.blue,
       pressAction: new Animated.Value(0),
-      progressSize: 90,
-      showButton: true,
-      percent: 0,
+      progressBar: defaultStyles.bodyWidth,
       path: '',
       paused: true,
     };
@@ -201,25 +206,23 @@ module.exports = React.createClass({
     this._value = 0;
     this.state.pressAction.addListener((v) => this._value = v.value);
   },
-  getButtonSize: function(e) {
-    this.setState({
-      progressSize: e.nativeEvent.layout.width - 10,
+  getProgressBar: function() {
+    var size = this.state.pressAction.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, this.state.progressBar]
     });
-  },
-  getProgressSize: function() {
-     var size = this.state.pressAction.interpolate({
-       inputRange: [0, 1],
-       outputRange: [this.state.progressSize, 0]
-     });
+    // var bgColor = this.state.pressAction.interpolate({
+    //   inputRange: [0, 1],
+    //   outputRange: colors
+    // })
 
-     return {
-       width: size,
-       height: size,
-     }
+    return {
+      width: size
+    }
   },
   onVideoRecordStart: function () {
     this.setState({
-      showButton: false,
+      buttonColor: defaultStyles.red,
       isPhoto: false,
     });
 
@@ -234,42 +237,25 @@ module.exports = React.createClass({
       target: Camera.constants.CaptureTarget.disk
     }, (err, path) => {
       this.setState({
-          preview: true,
-          path: "file://" + path,
-          showButton: true,
-        })
-
-
-      // var save = new Promise((resolve, reject) => {
-      //   return NativeModules.SaveVideoData.saveVideo("file://" +  path, (videoURL, imageURL) => {
-      //     console.log(videoURL, imageURL);
-      //     return resolve({
-      //       videoURL: videoURL,
-      //       imageURL: imageURL
-      //     });
-      //   });
-      // });
-     
-      // this.props.actions.createMessage(this.props.route.chat, {video: save});
-      // this.props.navigator.pop();
+        preview: true,
+        path: "file://" + path,
+      })
     });
   },
   onVideoRecordStop: function () {
     if (!this.state.isPhoto) {
       this.setState({
-        showButton: true,
+        buttonColor: defaultStyles.blue,
         isPhoto: true,
       });
       Animated.timing(this.state.pressAction, {
-        duration: timer,
+        duration: 0,
         toValue: 0
       }).start();
       this.refs.cam.stopCapture();
 
     }
   },
-
-
   storeImages: function (data) {
     var assets = data.edges;
     var images = assets.map( asset => asset.node.image );
@@ -354,10 +340,8 @@ module.exports = React.createClass({
   onNewVideoChat: function () {
     var Chat = require('./chat');
 
-    console.log(this.state.path);
-
     var save = new Promise((resolve, reject) => {
-      return NativeModules.SaveVideoData.saveVideo("file://" +  path, (videoURL, imageURL) => {
+      return NativeModules.SaveVideoData.saveVideo(this.state.path, (videoURL, imageURL) => {
         console.log(videoURL, imageURL);
         return resolve({
           videoURL: videoURL,
@@ -385,7 +369,7 @@ module.exports = React.createClass({
   },
   onNewVideoMessage: function () {
     var save = new Promise((resolve, reject) => {
-      return NativeModules.SaveVideoData.saveVideo("file://" +  path, (videoURL, imageURL) => {
+      return NativeModules.SaveVideoData.saveVideo(this.state.path, (videoURL, imageURL) => {
         console.log(videoURL, imageURL);
         return resolve({
           videoURL: videoURL,
@@ -431,7 +415,7 @@ module.exports = React.createClass({
           <IconButton
             onPress={() => {this.setState({paused: !this.state.paused})}}
             icon={this.state.paused ? 'material|play' : 'material|pause'}
-            size={100}
+            size={70}
           />
         </View>
         <View style={Styles.iconViewTopLeft}>
@@ -506,22 +490,6 @@ module.exports = React.createClass({
       </View>
     );
   },
-  renderCaptureButton: function() {
-    return (
-      <View style={[Styles.captureButton, {
-          backgroundColor: this.state.buttonColor,
-        }]}
-        onLayout={this.getButtonSize}>
-      </View>
-    )
-  },
-  renderProgress: function() {
-    return (
-      <View style={Styles.animated}>
-        <Animated.View style={[Styles.fill, this.getProgressSize()]} />
-    </View>
-    )
-  },
   renderCamera: function() {
     return (
       <Camera
@@ -535,7 +503,11 @@ module.exports = React.createClass({
           onLongPress={this.onVideoRecordStart}
           onPressOut={this.onVideoRecordStop}
         >
-          {this.state.showButton ? this.renderCaptureButton() : this.renderProgress()}
+          <View style={[Styles.captureButton, {
+          backgroundColor: this.state.buttonColor,
+        }]}
+        onLayout={this.getButtonSize}>
+      </View>
         </TouchableOpacity>
         <View style={Styles.iconViewTopLeft}>
           <IconButton
@@ -557,6 +529,9 @@ module.exports = React.createClass({
             icon='ion|images'
             size={30}
           />
+        </View>
+        <View style={Styles.progressBar}>
+          <Animated.View style={[Styles.fill, this.getProgressBar()]} />
         </View>
       </Camera>
     );
